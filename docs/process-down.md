@@ -17,3 +17,15 @@
 - full isHitTestVisible (?)
 - effective transform (to x,y)
 - effective clip (?)
+
+## Overrides
+
+- Canvas
+  - composite layout clip (noop)
+- Image
+  - stretch transform
+  - overlap 
+- Popup
+  - calculate carrier transform
+- UserControl (unused)
+  - composite layout clip (noop)
