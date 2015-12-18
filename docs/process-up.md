@@ -1,5 +1,8 @@
 # Process Up
 
+The purpose of the process phases is to pre-compute metrics used to prune the tree during rendering and hit testing.
+The process up phase focuses on paint extents gained from aggregating children. 
+
 ## Inputs
 - width
 - height
