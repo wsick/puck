@@ -3,7 +3,7 @@ Canvas scene render library
 
 ## Objective
 Create canvas tree renderer that is optimized for rendering scene trees.  
-Scene trees can take aggressive optimizations since ancestors influence how and whether an ancestry renders.
+Scene trees can take aggressive optimizations since ancestors influence how and whether an ancestor renders.
 
 This renderer is focused on reducing memory footprint while maintaining optimal DRY (don't repeat yourself) techniques to optimize CPU impact.
 
@@ -13,9 +13,9 @@ Among the obvious benefits of microservices, we hope to tease apart a 2D UI engi
 
 ## Components
 Puck consists of 3 actors:
-- [DownProcessor](docs/process-down.md)
-- [UpProcessor](docs/process-up.md)
-- [Renderer](docs/render.md)
+* [DownProcessor](docs/process-down.md)
+* [UpProcessor](docs/process-up.md)
+* [Renderer](docs/render.md)
 
-* This is expected to change.  There are elements of process down and process up that require dynamic sizing.
+NOTE: This is expected to change.  There are elements of process down and process up that require dynamic sizing.
 This should be done in a layout drafter.
