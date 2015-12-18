@@ -19,7 +19,6 @@
 - effective clip (?)
 
 ## Overrides
-
 - Canvas
   - composite layout clip (noop)
 - Image
