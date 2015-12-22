@@ -1,33 +1,34 @@
 # Process Down
 
 The purpose of the process phases is to pre-compute metrics used to prune the tree during rendering and hit testing.
-The process down phase is focused on members that are altered by ancestors. 
+The process down phase is focused on members that are altered by ancestors.
+ 
+## State
 
-## Inputs
-- * visibility
-- * opacity
-- * isHitTestVisible
-- transform
-- transformOrigin
-- x - offset from left (in local coordinate space)
-- y - offset from top (in local coordinate space)
-- width (in local coordinate space)
-- height - (in local coordinate space)
+The following state is used as input to the process down phase.
 
-## Outputs
-- full visibility (?)
-- full opacity (?)
-- full isHitTestVisible (?)
-- effective transform (to x,y)
-- effective clip (?)
+```typescript
+export interface IElementState {
+    //range: [0.0, 1.0]
+    opacity: number;
+    visible: boolean;
+    //visual offset from parent
+    offset: IPoint;
+    size: ISize;
+    transform: Float32Array;
+    //origin of transform in relative coordinate space ([0.0,1.0], [0.0,1.0])
+    transformOrigin: IPoint;
+}
+```
 
-## Overrides
-- Canvas
-  - composite layout clip (noop)
-- Image
-  - stretch transform
-  - overlap 
-- Popup
-  - calculate carrier transform
-- UserControl (unused)
-  - composite layout clip (noop)
+## Composite
+
+During the process down phase, the following elements in the composite object are calculated.
+```typescript
+export interface IElementComposite {
+    opacity: number;
+    visible: boolean;
+    transform: Float32Array;
+    // others
+}
+```
