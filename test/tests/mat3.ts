@@ -5,6 +5,12 @@ namespace puck.mat3.tests {
         return Array.prototype.slice.call(f32arr, 0);
     }
 
+    var FLOAT_EPSILON = 0.000001;
+
+    function close(num1: number, num2: number): boolean {
+        return Math.abs(num1 - num2) < FLOAT_EPSILON;
+    }
+
     QUnit.test("create", (assert) => {
         var mat = create();
         assert.ok(mat instanceof Float32Array);
@@ -129,5 +135,26 @@ namespace puck.mat3.tests {
         cur = mat3.createScale(2, 4);
         mat3.preapply(cur, mat3.createTranslate(10, 20));
         deepEqual(toArray(cur), [2, 0, 0, 4, 20, 80]);
+    });
+
+    QUnit.test("inverse", () => {
+        var cur = mat3.createTranslate(10, 20);
+        deepEqual(toArray(mat3.inverse(cur)), [1, 0, 0, 1, -10, -20]);
+
+        cur = mat3.createScale(2, 4);
+        deepEqual(toArray(mat3.inverse(cur)), [1 / 2, 0, 0, 1 / 4, 0, 0]);
+
+        cur = mat3.createRotate(Math.PI / 2);
+        var inverse = mat3.inverse(cur);
+        ok(close(inverse[0], 0));
+        ok(close(inverse[1], -1));
+        ok(close(inverse[2], 1));
+        ok(close(inverse[3], 0));
+        ok(close(inverse[4], 0));
+        ok(close(inverse[5], 0));
+
+        cur = mat3.createSkew(Math.PI / 4, 0);
+        inverse = mat3.inverse(cur);
+        deepEqual(toArray(inverse), [1, 0, -1, 1, 0, 0]);
     });
 }
