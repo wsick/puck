@@ -1,11 +1,10 @@
 namespace puck.mat3.tests {
+    var FLOAT_EPSILON = 0.000001;
     QUnit.module("mat3");
 
     function toArray(f32arr: Float32Array): number[] {
         return Array.prototype.slice.call(f32arr, 0);
     }
-
-    var FLOAT_EPSILON = 0.000001;
 
     function close(num1: number, num2: number): boolean {
         return Math.abs(num1 - num2) < FLOAT_EPSILON;
