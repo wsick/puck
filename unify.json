@@ -1,0 +1,14 @@
+{
+  "name": "puck",
+  "client": {},
+  "type": "lib",
+  "dist": "dist/puck",
+  "library": {
+    "type": "export",
+    "exports": "puck"
+  },
+  "themes": "none",
+  "typings": [
+    "dist/puck.d.ts"
+  ]
+}
