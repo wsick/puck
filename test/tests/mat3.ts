@@ -1,31 +1,30 @@
 namespace puck.mat3.tests {
+    var FLOAT_EPSILON = 0.000001;
     QUnit.module("mat3");
 
     function toArray(f32arr: Float32Array): number[] {
         return Array.prototype.slice.call(f32arr, 0);
     }
 
-    var FLOAT_EPSILON = 0.000001;
-
     function close(num1: number, num2: number): boolean {
         return Math.abs(num1 - num2) < FLOAT_EPSILON;
     }
 
     QUnit.test("create", (assert) => {
-        var mat = create();
+        var mat = mat3.create();
         assert.ok(mat instanceof Float32Array);
         assert.deepEqual(toArray(mat), [0, 0, 0, 0, 0, 0]);
 
-        var from = create([1, 2, 3, 4, 5, 6]);
+        var from = mat3.create([1, 2, 3, 4, 5, 6]);
         assert.ok(from instanceof Float32Array);
         assert.deepEqual(toArray(from), [1, 2, 3, 4, 5, 6]);
     });
 
     QUnit.test("identity", (assert) => {
-        assert.deepEqual(toArray(identity()), [1, 0, 0, 1, 0, 0]);
+        assert.deepEqual(toArray(mat3.identity()), [1, 0, 0, 1, 0, 0]);
 
         var exist = mat3.create();
-        identity(exist);
+        mat3.identity(exist);
         assert.deepEqual(toArray(exist), [1, 0, 0, 1, 0, 0]);
     });
 
