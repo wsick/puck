@@ -11,36 +11,36 @@ namespace puck.vec2.tests {
     }
 
     QUnit.test("create", () => {
-        var vec = create(1, 2);
+        var vec = vec2.create(1, 2);
         ok(vec instanceof Float32Array);
         deepEqual(toArray(vec), [1, 2]);
     });
 
-    QUnit.test("identity", () => {
-        var vec = create(0, 0);
-        var exist = init(2, 3, vec);
+    QUnit.test("init", () => {
+        var vec = vec2.create(0, 0);
+        var exist = vec2.init(2, 3, vec);
         deepEqual(toArray(exist), [2, 3]);
     });
 
     QUnit.test("reverse", () => {
-        var v = vec2.reverse(create(3, 6));
+        var v = vec2.reverse(vec2.create(3, 6));
         deepEqual(toArray(v), [-3, -6]);
 
-        v = vec2.reverse(create(-3, -5));
+        v = vec2.reverse(vec2.create(-3, -5));
         deepEqual(toArray(v), [3, 5]);
     });
 
     QUnit.test("orthogonal", () => {
-        var v = vec2.orthogonal(create(1, 1));
+        var v = vec2.orthogonal(vec2.create(1, 1));
         deepEqual(toArray(v), [-1, 1]);
 
-        v = vec2.orthogonal(create(-1, 1));
+        v = vec2.orthogonal(vec2.create(-1, 1));
         deepEqual(toArray(v), [-1, -1]);
 
-        v = vec2.orthogonal(create(-1, -1));
+        v = vec2.orthogonal(vec2.create(-1, -1));
         deepEqual(toArray(v), [1, -1]);
 
-        v = vec2.orthogonal(create(1, -1));
+        v = vec2.orthogonal(vec2.create(1, -1));
         deepEqual(toArray(v), [1, 1]);
     });
 
@@ -55,10 +55,10 @@ namespace puck.vec2.tests {
     });
 
     QUnit.test("rotate", () => {
-        var v = vec2.rotate(create(3, 6), Math.PI / 2);
+        var v = vec2.rotate(vec2.create(3, 6), Math.PI / 2);
         deepEqual(toArray(v), [-6, 3]);
 
-        var v = vec2.rotate(create(3, 6), Math.PI);
+        var v = vec2.rotate(vec2.create(3, 6), Math.PI);
         deepEqual(toArray(v), [-3, -6]);
     });
 
