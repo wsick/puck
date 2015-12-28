@@ -110,4 +110,24 @@ namespace puck.mat3.tests {
         m = mat3.multiply(mat3.createSkew(angleRadX, angleRadY), mat3.createTranslate(1, 0), mat3.create());
         ok(mat3.equal(m, mat3.create([1, 0, 1, 1, 1, 0])));
     });
+
+    QUnit.test("apply", () => {
+        var cur = mat3.createTranslate(10, 20);
+        mat3.apply(cur, mat3.createScale(2, 4));
+        deepEqual(toArray(cur), [2, 0, 0, 4, 20, 80]);
+
+        cur = mat3.createScale(2, 4);
+        mat3.apply(cur, mat3.createTranslate(10, 20));
+        deepEqual(toArray(cur), [2, 0, 0, 4, 10, 20]);
+    });
+
+    QUnit.test("preapply", () => {
+        var cur = mat3.createTranslate(10, 20);
+        mat3.preapply(cur, mat3.createScale(2, 4));
+        deepEqual(toArray(cur), [2, 0, 0, 4, 10, 20]);
+
+        cur = mat3.createScale(2, 4);
+        mat3.preapply(cur, mat3.createTranslate(10, 20));
+        deepEqual(toArray(cur), [2, 0, 0, 4, 20, 80]);
+    });
 }
