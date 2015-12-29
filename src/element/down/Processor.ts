@@ -6,6 +6,8 @@ namespace puck.element.down {
     }
 
     export class Processor {
+        static instance = new Processor();
+
         isTainted(bag: IProcessorBag): boolean {
             return bag.composite.hasDirt(DirtyFlags.down);
         }
