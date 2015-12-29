@@ -1,3 +1,5 @@
+/// <reference path="../../element/down/Processor" />
+
 namespace puck.container.down {
     import DirtyFlags = puck.element.DirtyFlags;
 

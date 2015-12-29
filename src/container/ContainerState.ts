@@ -1,3 +1,5 @@
+/// <reference path="../element/ElementState" />
+
 namespace puck.container {
     export interface IContainerState extends element.IElementState {
     }
