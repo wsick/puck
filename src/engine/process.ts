@@ -3,7 +3,7 @@
 namespace puck.engine {
     import DirtyFlags = puck.element.DirtyFlags;
 
-    // Process walks entire layer
+    // Process walks entire tree
     // -> Down phase is processed pre-order
     // -> Up phase is processed post-order
     export function process(el: element.IElement, parent?: element.IElement) {
