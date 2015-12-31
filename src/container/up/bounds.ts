@@ -1,5 +1,8 @@
+/// <reference path="../../element/DirtyFlags" />
+
 namespace puck.container.up.bounds {
     import rect = la.rect;
+    import DirtyFlags = puck.element.DirtyFlags;
     var oldBounds = rect.init(0, 0, 0, 0);
 
     export function process(bag: IProcessorBag): boolean {

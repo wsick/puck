@@ -1,10 +1,14 @@
+/// <reference path="../element/DirtyFlags" />
+
 namespace puck.engine {
+    import DirtyFlags = puck.element.DirtyFlags;
+
     // Process walks entire layer
     // -> Down phase is processed pre-order
     // -> Up phase is processed post-order
     export function process(el: element.IElement, parent?: element.IElement) {
         doDown(el, parent);
-        var ccomposites: IElementComposite[] = [];
+        var ccomposites: element.IElementComposite[] = [];
         for (var walker = walk.getWalker(el), cur = walker.next(); !!cur; cur = walker.next()) {
             process(cur, el);
             ccomposites.push(cur.composite);
@@ -12,7 +16,7 @@ namespace puck.engine {
         doUp(el, parent, ccomposites);
     }
 
-    const EMPTY_DOWN_COMPOSITE = <IContainerComposite>{
+    const EMPTY_DOWN_COMPOSITE = <container.IContainerComposite>{
         opacity: 1.0,
         visible: true,
         transform: la.mat3.identity(),
@@ -42,7 +46,7 @@ namespace puck.engine {
         }
     }
 
-    function doUp(el: element.IElement, parent: element.IElement, ccomposites: IElementComposite[]) {
+    function doUp(el: element.IElement, parent: element.IElement, ccomposites: element.IElementComposite[]) {
         var processor = el.processor.up;
         var bag = <element.up.IProcessorBag>{
             state: el.state,
