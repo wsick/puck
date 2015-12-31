@@ -2,6 +2,7 @@ namespace puck.element.up {
     export interface IProcessorBag {
         state: IElementState;
         composite: IElementComposite;
+        ccomposites: IElementComposite[];
     }
 
     export class Processor {
@@ -15,7 +16,6 @@ namespace puck.element.up {
             var dirt = DirtyFlags.none;
             if (extents.process(bag))
                 dirt |= DirtyFlags.extents;
-            this.clear(bag);
             return dirt;
         }
 

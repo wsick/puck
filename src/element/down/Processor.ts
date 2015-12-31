@@ -20,7 +20,6 @@ namespace puck.element.down {
                 dirt |= DirtyFlags.visible;
             if (transform.process(bag))
                 dirt |= DirtyFlags.transform;
-            this.clear(bag);
             return dirt;
         }
 
