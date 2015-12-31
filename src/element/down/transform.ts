@@ -1,4 +1,5 @@
 namespace puck.element.down.transform {
+    import mat3 = la.mat3;
     var oldTransform = mat3.identity();
     export function process(bag: IProcessorBag): boolean {
         var comp = bag.composite;
@@ -6,7 +7,7 @@ namespace puck.element.down.transform {
             return false;
         mat3.copyTo(comp.transform, oldTransform);
         var state = bag.state;
-        var xo: IPoint = {
+        var xo: la.IPoint = {
             x: state.transformOrigin.x * state.size.width,
             y: state.transformOrigin.y * state.size.height
         };

@@ -13,7 +13,7 @@ namespace puck.element {
 
         opacity = 1.0;
         visible = true;
-        transform = mat3.identity();
+        transform = la.mat3.identity();
 
         hasDirt(match: DirtyFlags): boolean {
             return (this.$$dirt & match) > 0;
@@ -30,7 +30,7 @@ namespace puck.element {
         reset() {
             this.opacity = 1.0;
             this.visible = true;
-            mat3.identity(this.transform);
+            la.mat3.identity(this.transform);
         }
     }
 }

@@ -78,19 +78,19 @@ namespace puck {
         }
 
         resetTransform(): this {
-            mat3.identity(this.state.transform);
+            la.mat3.identity(this.state.transform);
             this.composite.taint(DirtyFlags.transform);
             return this;
         }
 
         setTransform(mat: Float32Array): this {
-            mat3.copyTo(mat, this.state.transform);
+            la.mat3.copyTo(mat, this.state.transform);
             this.composite.taint(DirtyFlags.transform);
             return this;
         }
 
         applyTransform(mat: Float32Array): this {
-            mat3.apply(this.state.transform, mat);
+            la.mat3.apply(this.state.transform, mat);
             return this;
         }
 

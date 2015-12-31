@@ -4,11 +4,11 @@ namespace puck.element {
         opacity: number;
         visible: boolean;
         //visual offset from parent
-        offset: IPoint;
-        size: ISize;
+        offset: la.IPoint;
+        size: la.ISize;
         transform: Float32Array;
         //origin of transform in relative coordinate space ([0.0,1.0], [0.0,1.0])
-        transformOrigin: IPoint;
+        transformOrigin: la.IPoint;
         reset();
     }
 
@@ -17,7 +17,7 @@ namespace puck.element {
         visible = true;
         offset = {x: 0, y: 0};
         size = {width: 0, height: 0};
-        transform = mat3.identity();
+        transform = la.mat3.identity();
         transformOrigin = {x: 0.5, y: 0.5};
 
         reset() {
@@ -27,7 +27,7 @@ namespace puck.element {
             this.offset.y = 0;
             this.size.width = 0;
             this.size.height = 0;
-            mat3.identity(this.transform);
+            la.mat3.identity(this.transform);
             this.transformOrigin.x = 0.5;
             this.transformOrigin.y = 0.5;
         }
