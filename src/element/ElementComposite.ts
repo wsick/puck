@@ -8,6 +8,7 @@ namespace puck.element {
         visible: boolean;
         transform: Float32Array;
         extents: la.IRect;
+        bounds: la.IRect;
     }
     export class ElementComposite implements IElementComposite {
         private $$dirt = DirtyFlags.none;
@@ -16,6 +17,12 @@ namespace puck.element {
         visible = true;
         transform = la.mat3.identity();
         extents = la.rect.init(0, 0, 0, 0);
+        bounds: la.IRect;
+
+        constructor() {
+            //NOTE: Elements have the same extents as bounds
+            this.bounds = this.extents;
+        }
 
         hasDirt(match: DirtyFlags): boolean {
             return (this.$$dirt & match) > 0;
