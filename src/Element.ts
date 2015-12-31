@@ -9,7 +9,7 @@ namespace puck {
     export class Element implements IElement {
         state: IElementState;
         composite: IElementComposite;
-        processor: {down: element.down.Processor};//, up: up.Processor};
+        processor: {down: element.down.Processor, up: element.up.Processor};
 
         get opacity(): number { return this.state.opacity; }
         set opacity(value: number) {
@@ -103,8 +103,8 @@ namespace puck {
             this.state = state || new container.ContainerState();
             this.composite = composite || new container.ContainerComposite();
             this.processor = {
-                down: container.down.Processor.instance
-                //,up: container.up.Processor.instance
+                down: element.down.Processor.instance,
+                up: element.up.Processor.instance
             };
         }
     }
