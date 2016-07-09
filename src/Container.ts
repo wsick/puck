@@ -19,8 +19,8 @@ namespace puck {
 
         init(state?: IContainerState, composite?: IContainerComposite) {
             this.elements = [];
-            this.state = state || new container.ContainerState();
-            this.composite = composite || new container.ContainerComposite();
+            this.state = (state || new container.ContainerState()).reset();
+            this.composite = (composite || new container.ContainerComposite()).reset();
             this.processor = {
                 down: container.down.Processor.instance,
                 up: container.up.Processor.instance

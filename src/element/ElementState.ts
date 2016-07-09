@@ -13,14 +13,14 @@ namespace puck.element {
     }
 
     export class ElementState implements IElementState {
-        opacity = 1.0;
-        visible = true;
+        opacity: number;
+        visible: boolean;
         offset = {x: 0, y: 0};
         size = {width: 0, height: 0};
         transform = la.mat3.identity();
         transformOrigin = {x: 0.5, y: 0.5};
 
-        reset() {
+        reset(): this {
             this.opacity = 1.0;
             this.visible = true;
             this.offset.x = 0;
@@ -30,6 +30,7 @@ namespace puck.element {
             la.mat3.identity(this.transform);
             this.transformOrigin.x = 0.5;
             this.transformOrigin.y = 0.5;
+            return this;
         }
     }
 }

@@ -13,8 +13,8 @@ namespace puck.element {
     export class ElementComposite implements IElementComposite {
         private $$dirt = DirtyFlags.none;
 
-        opacity = 1.0;
-        visible = true;
+        opacity: number;
+        visible: boolean;
         // NOTE: transform, extents, bounds are relative to owner top-left
         transform = la.mat3.identity();
         extents = la.rect.init(0, 0, 0, 0);
@@ -38,12 +38,13 @@ namespace puck.element {
             this.$$dirt &= ~oldDirt;
         }
 
-        reset() {
+        reset(): this {
             this.opacity = 1.0;
             this.visible = true;
             la.mat3.identity(this.transform);
             la.rect.init(0, 0, 0, 0, this.extents);
             //TODO: Should up+down be tainted?
+            return this;
         }
     }
 }

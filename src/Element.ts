@@ -98,8 +98,8 @@ namespace puck {
         }
 
         init(state?: IElementState, composite?: IElementComposite) {
-            this.state = state || new element.ElementState();
-            this.composite = composite || new element.ElementComposite();
+            this.state = (state || new element.ElementState()).reset();
+            this.composite = (composite || new element.ElementComposite()).reset();
             this.processor = {
                 down: element.down.Processor.instance,
                 up: element.up.Processor.instance
