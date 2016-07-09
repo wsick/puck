@@ -15,13 +15,14 @@ namespace puck.element {
 
         opacity = 1.0;
         visible = true;
+        // NOTE: transform, extents, bounds are relative to owner top-left
         transform = la.mat3.identity();
-        // NOTE: extends and bounds are relative to owner top-left
         extents = la.rect.init(0, 0, 0, 0);
         bounds: la.IRect;
 
         constructor() {
-            //NOTE: Elements have the same extents as bounds
+            // NOTE: Elements have the same extents as bounds
+            //       Used by container processor to aggregate without choosing between bounds/extents
             this.bounds = this.extents;
         }
 
@@ -42,6 +43,7 @@ namespace puck.element {
             this.visible = true;
             la.mat3.identity(this.transform);
             la.rect.init(0, 0, 0, 0, this.extents);
+            //TODO: Should up+down be tainted?
         }
     }
 }

@@ -8,6 +8,7 @@ namespace puck.container {
         bounds = la.rect.init(0, 0, 0, 0);
 
         reset() {
+            super.reset();
             la.rect.init(0, 0, 0, 0, this.bounds);
         }
     }

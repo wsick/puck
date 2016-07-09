@@ -9,6 +9,7 @@ namespace puck.container.up {
         composite: IContainerComposite;
     }
 
+    // A container processor additionally processes bounds
     export class Processor extends element.up.Processor {
         static instance = new Processor();
 

@@ -5,6 +5,10 @@ namespace puck.container.up.bounds {
     import DirtyFlags = puck.element.DirtyFlags;
     var oldBounds = rect.init(0, 0, 0, 0);
 
+    // Computes container's bounds
+    // Bounds
+    //   - union of all child bounds
+    //   - owner's coordinate system
     export function process(bag: IProcessorBag): boolean {
         var comp = bag.composite;
         if (!comp.hasDirt(DirtyFlags.extents))
