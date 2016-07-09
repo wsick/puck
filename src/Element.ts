@@ -31,7 +31,7 @@ namespace puck {
         set x(value: number) {
             if (this.state.offset.x !== value) {
                 this.state.offset.x = value;
-                this.composite.taint(DirtyFlags.transform);
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
             }
         }
 
@@ -39,7 +39,7 @@ namespace puck {
         set y(value: number) {
             if (this.state.offset.y !== value) {
                 this.state.offset.y = value;
-                this.composite.taint(DirtyFlags.transform);
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
             }
         }
 
@@ -47,8 +47,7 @@ namespace puck {
         set width(value: number) {
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
-                this.composite.taint(DirtyFlags.transform);
-                //TODO: Taint extents
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
             }
         }
 
@@ -56,8 +55,7 @@ namespace puck {
         set height(value: number) {
             if (this.state.size.height !== value) {
                 this.state.size.height = value;
-                this.composite.taint(DirtyFlags.transform);
-                //TODO: Taint extents
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
             }
         }
 

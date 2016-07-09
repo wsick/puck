@@ -16,6 +16,7 @@ namespace puck.element {
         opacity = 1.0;
         visible = true;
         transform = la.mat3.identity();
+        // NOTE: extends and bounds are relative to owner top-left
         extents = la.rect.init(0, 0, 0, 0);
         bounds: la.IRect;
 
