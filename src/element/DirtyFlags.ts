@@ -7,8 +7,9 @@ namespace puck.element {
 
         extents = 1 << 3, //single element's paint extents
         bounds = 1 << 4, //container's aggregation of all child (recursive) extents
+        invalidate = 1 << 5,
 
         down = DirtyFlags.opacity | DirtyFlags.visible | DirtyFlags.transform,
-        up = DirtyFlags.extents | DirtyFlags.bounds
+        up = DirtyFlags.extents | DirtyFlags.bounds | DirtyFlags.invalidate
     }
 }

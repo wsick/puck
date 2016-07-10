@@ -9,6 +9,7 @@ namespace puck.element {
         transform: Float32Array;
         extents: la.IRect;
         bounds: la.IRect;
+        paint: la.IRect;
     }
     export class ElementComposite implements IElementComposite {
         private $$dirt = DirtyFlags.none;
@@ -19,6 +20,8 @@ namespace puck.element {
         transform = la.mat3.identity();
         extents = la.rect.init(0, 0, 0, 0);
         bounds: la.IRect;
+        // NOTE: paint is used to carry invalidated region up the tree
+        paint = la.rect.init(0, 0, 0, 0);
 
         constructor() {
             // NOTE: Elements have the same extents as bounds
@@ -43,6 +46,7 @@ namespace puck.element {
             this.visible = true;
             la.mat3.identity(this.transform);
             la.rect.init(0, 0, 0, 0, this.extents);
+            la.rect.init(0, 0, 0, 0, this.paint);
             //TODO: Should up+down be tainted?
             return this;
         }

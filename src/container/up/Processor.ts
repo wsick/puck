@@ -3,6 +3,7 @@
 
 namespace puck.container.up {
     import DirtyFlags = puck.element.DirtyFlags;
+    import extents = puck.element.up.extents;
 
     export interface IProcessorBag extends element.up.IProcessorBag {
         state: IContainerState;
@@ -13,10 +14,19 @@ namespace puck.container.up {
     export class Processor extends element.up.Processor {
         static instance = new Processor();
 
+        // We are pushing dirty flags up to parent
+        // If extents changed, parent's bounds changed
+        // If bounds changed, parent should be invalidated
+        // If there was an invalidation from below without changing bounds
+        //   => parent should be invalidated
         process(bag: IProcessorBag): DirtyFlags {
-            var dirt = super.process(bag);
-            if (bounds.process(bag))
+            var dirt = DirtyFlags.none;
+            if (extents.process(bag))
                 dirt |= DirtyFlags.bounds;
+            if (bounds.process(bag))
+                dirt |= DirtyFlags.invalidate;
+            if (invalidate.process(bag))
+                dirt |= DirtyFlags.invalidate;
             return dirt;
         }
     }

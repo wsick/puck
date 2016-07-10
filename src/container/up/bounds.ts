@@ -23,6 +23,13 @@ namespace puck.container.up.bounds {
         rect.transform(comp.bounds, comp.transform);
         rect.union(comp.bounds, comp.extents);
 
-        return !rect.equal(comp.bounds, oldBounds);
+        if (rect.equal(comp.bounds, oldBounds))
+            return false;
+
+        if (!comp.visible || (comp.opacity * 255) < 0.5)
+            return false;
+        comp.taint(DirtyFlags.invalidate);
+        la.rect.union(comp.paint, comp.bounds);
+        return true;
     }
 }
