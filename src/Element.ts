@@ -9,7 +9,21 @@ namespace puck {
     export class Element implements IElement {
         state: IElementState;
         composite: IElementComposite;
-        processor: {down: element.down.Processor};//, up: up.Processor};
+        processor: {down: element.down.Processor, up: element.up.Processor};
+
+        constructor(state?: IElementState, composite?: IElementComposite) {
+            this.init(state, composite);
+            Object.freeze(this);
+        }
+
+        init(state?: IElementState, composite?: IElementComposite) {
+            this.state = (state || new element.ElementState()).reset();
+            this.composite = (composite || new element.ElementComposite()).reset();
+            this.processor = {
+                down: element.down.Processor.instance,
+                up: element.up.Processor.instance
+            };
+        }
 
         get opacity(): number { return this.state.opacity; }
         set opacity(value: number) {
@@ -48,7 +62,6 @@ namespace puck {
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
                 this.composite.taint(DirtyFlags.transform);
-                //TODO: Taint extents
             }
         }
 
@@ -57,7 +70,6 @@ namespace puck {
             if (this.state.size.height !== value) {
                 this.state.size.height = value;
                 this.composite.taint(DirtyFlags.transform);
-                //TODO: Taint extents
             }
         }
 
@@ -91,21 +103,8 @@ namespace puck {
 
         applyTransform(mat: Float32Array): this {
             la.mat3.apply(this.state.transform, mat);
+            this.composite.taint(DirtyFlags.transform);
             return this;
-        }
-
-        constructor(state?: IElementState, composite?: IElementComposite) {
-            this.init(state, composite);
-            Object.freeze(this);
-        }
-
-        init(state?: IElementState, composite?: IElementComposite) {
-            this.state = state || new container.ContainerState();
-            this.composite = composite || new container.ContainerComposite();
-            this.processor = {
-                down: container.down.Processor.instance
-                //,up: container.up.Processor.instance
-            };
         }
     }
 }

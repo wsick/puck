@@ -4,12 +4,10 @@ namespace puck.element.down.visible {
         if (!comp.hasDirt(DirtyFlags.visible))
             return false;
         var newVisible = bag.pcomposite.visible && (bag.state.visible === true);
-        var changed = comp.visible !== newVisible;
-        if (changed) {
-            //TODO: taint `NewBounds`
-
-        }
+        if (comp.visible === newVisible)
+            return false;
+        comp.taint(DirtyFlags.newbounds);
         comp.visible = newVisible;
-        return changed;
+        return true;
     }
 }

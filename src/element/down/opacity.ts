@@ -4,8 +4,10 @@ namespace puck.element.down.opacity {
         if (!comp.hasDirt(DirtyFlags.opacity))
             return false;
         var newOpacity = bag.pcomposite.opacity * bag.state.opacity;
-        var changed = comp.opacity === newOpacity;
+        if (comp.opacity === newOpacity)
+            return false;
+        comp.taint(DirtyFlags.newbounds);
         comp.opacity = newOpacity;
-        return changed;
+        return true;
     }
 }

@@ -1,6 +1,7 @@
 namespace puck.element.down.transform {
     import mat3 = la.mat3;
     var oldTransform = mat3.identity();
+    
     export function process(bag: IProcessorBag): boolean {
         var comp = bag.composite;
         if (!comp.hasDirt(DirtyFlags.transform))
@@ -15,7 +16,7 @@ namespace puck.element.down.transform {
         mat3.apply(comp.transform, state.transform);
         mat3.translate(comp.transform, xo.x, xo.y); //Shift back out of transformOrigin coordinate space
         if (!mat3.equal(comp.transform, oldTransform)) {
-            //TODO: Taint extents
+            comp.taint(DirtyFlags.extents);
         }
         return true;
     }

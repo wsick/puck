@@ -1,30 +1,27 @@
-namespace puck.element.down {
+namespace puck.element.up {
     export interface IProcessorBag {
         state: IElementState;
         composite: IElementComposite;
-        pcomposite: IElementComposite; //parent composite
+        ccomposites: IElementComposite[];
     }
 
     export class Processor {
         static instance = new Processor();
 
         isTainted(bag: IProcessorBag): boolean {
-            return bag.composite.hasDirt(DirtyFlags.down);
+            return bag.composite.hasDirt(DirtyFlags.up);
         }
 
         process(bag: IProcessorBag): DirtyFlags {
             var dirt = DirtyFlags.none;
-            if (opacity.process(bag))
-                dirt |= DirtyFlags.opacity;
-            if (visible.process(bag))
-                dirt |= DirtyFlags.visible;
-            if (transform.process(bag))
-                dirt |= DirtyFlags.transform;
+            if (extents.process(bag))
+                dirt |= DirtyFlags.extents;
+            newbounds.process(bag);
             return dirt;
         }
 
         clear(bag: IProcessorBag): this {
-            bag.composite.untaint(DirtyFlags.down);
+            bag.composite.untaint(DirtyFlags.up);
             return this;
         }
     }

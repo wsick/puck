@@ -12,10 +12,18 @@ Underlying this initiative is a desire to build a graphics engine that is built 
 Among the obvious benefits of microservices, we hope to tease apart a 2D UI engine into bounded contexts that can be heavily optimized.
 
 ## Composition
-A scene graph is composed of 3 classes of `Element`: `Layer`, `Container`, or [`Visual`](docs/visual.md).  
-* Layer represents an isolated drawing space that can operate independently. (NOTE: Layer is a special version of a Container)
-* Container represents a renderless object that contains child Layers/Containers/Visuals.
-* [Visual](docs/visual.md) represents a renderful object that contains no children.
+Our scene graph is organized into 2 types:
+- [Element](docs/element/md)
+  - renderful
+  - no children
+  - has size
+- [Container](docs/container.md)
+  - renderless
+  - has children
+  - has no size
+
+A [Visual](docs/visual.md) is derived from an [Element](docs/element.md) to provide filling/stroking.
+A [Layer](docs/layer.md) is derived from a [Container](docs/container.md) to isolate processing/drawing.
 
 ## Additional Information
 Here is a list of extended documentation to describe engine.

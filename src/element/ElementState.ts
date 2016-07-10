@@ -3,24 +3,27 @@ namespace puck.element {
         //range: [0.0, 1.0]
         opacity: number;
         visible: boolean;
+
         //visual offset from parent
         offset: la.IPoint;
         size: la.ISize;
-        transform: Float32Array;
+
         //origin of transform in relative coordinate space ([0.0,1.0], [0.0,1.0])
+        transform: Float32Array;
         transformOrigin: la.IPoint;
+        
         reset();
     }
 
     export class ElementState implements IElementState {
-        opacity = 1.0;
-        visible = true;
+        opacity: number;
+        visible: boolean;
         offset = {x: 0, y: 0};
         size = {width: 0, height: 0};
         transform = la.mat3.identity();
         transformOrigin = {x: 0.5, y: 0.5};
 
-        reset() {
+        reset(): this {
             this.opacity = 1.0;
             this.visible = true;
             this.offset.x = 0;
@@ -30,6 +33,7 @@ namespace puck.element {
             la.mat3.identity(this.transform);
             this.transformOrigin.x = 0.5;
             this.transformOrigin.y = 0.5;
+            return this;
         }
     }
 }
