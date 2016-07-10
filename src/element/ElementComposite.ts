@@ -47,7 +47,7 @@ namespace puck.element {
             la.mat3.identity(this.transform);
             la.rect.init(0, 0, 0, 0, this.extents);
             la.rect.init(0, 0, 0, 0, this.paint);
-            //TODO: Should up+down be tainted?
+            this.$$dirt = DirtyFlags.none;
             return this;
         }
     }
