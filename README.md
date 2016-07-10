@@ -13,7 +13,7 @@ Among the obvious benefits of microservices, we hope to tease apart a 2D UI engi
 
 ## Composition
 Our scene graph is organized into 2 types:
-- [Element](docs/element/md)
+- [Element](docs/element.md)
   - renderful
   - no children
   - has size
@@ -23,6 +23,7 @@ Our scene graph is organized into 2 types:
   - has no size
 
 A [Visual](docs/visual.md) is derived from an [Element](docs/element.md) to provide filling/stroking.
+
 A [Layer](docs/layer.md) is derived from a [Container](docs/container.md) to isolate processing/drawing.
 
 ## Additional Information
