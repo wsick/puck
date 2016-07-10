@@ -11,9 +11,8 @@ namespace puck.container.up.bounds {
     //   - owner's coordinate system
     export function process(bag: IProcessorBag): boolean {
         var comp = bag.composite;
-        if (!comp.hasDirt(DirtyFlags.extents))
+        if (!comp.hasDirt(DirtyFlags.bounds))
             return false;
-        var state = bag.state;
         rect.copyTo(comp.bounds, oldBounds);
 
         rect.init(0, 0, 0, 0, comp.bounds);
@@ -21,15 +20,10 @@ namespace puck.container.up.bounds {
             rect.union(comp.bounds, ccomps[i].bounds);
         }
         rect.transform(comp.bounds, comp.transform);
-        rect.union(comp.bounds, comp.extents);
 
         if (rect.equal(comp.bounds, oldBounds))
             return false;
 
-        if (!comp.visible || (comp.opacity * 255) < 0.5)
-            return false;
-        comp.taint(DirtyFlags.invalidate);
-        la.rect.union(comp.paint, comp.bounds);
-        return true;
+        return puck.element.up.bounds(bag);
     }
 }

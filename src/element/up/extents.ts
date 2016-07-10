@@ -1,4 +1,4 @@
-namespace puck.element.up.extents {
+namespace puck.element.up.bounds {
     import rect = la.rect;
     var oldExtents = rect.init(0, 0, 0, 0);
 

@@ -3,7 +3,6 @@
 
 namespace puck.container.up {
     import DirtyFlags = puck.element.DirtyFlags;
-    import extents = puck.element.up.extents;
 
     export interface IProcessorBag extends element.up.IProcessorBag {
         state: IContainerState;
@@ -21,8 +20,6 @@ namespace puck.container.up {
         //   => parent should be invalidated
         process(bag: IProcessorBag): DirtyFlags {
             var dirt = DirtyFlags.none;
-            if (extents.process(bag))
-                dirt |= DirtyFlags.bounds;
             if (bounds.process(bag))
                 dirt |= DirtyFlags.invalidate;
             if (invalidate.process(bag))
