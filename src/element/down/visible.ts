@@ -6,7 +6,7 @@ namespace puck.element.down.visible {
         var newVisible = bag.pcomposite.visible && (bag.state.visible === true);
         if (comp.visible === newVisible)
             return false;
-        comp.taint(DirtyFlags.invalidate);
+        comp.taint(DirtyFlags.newbounds);
         comp.visible = newVisible;
         return true;
     }

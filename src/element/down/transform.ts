@@ -17,7 +17,6 @@ namespace puck.element.down.transform {
         mat3.translate(comp.transform, xo.x, xo.y); //Shift back out of transformOrigin coordinate space
         if (!mat3.equal(comp.transform, oldTransform)) {
             comp.taint(DirtyFlags.extents);
-            comp.taint(DirtyFlags.bounds);
         }
         return true;
     }

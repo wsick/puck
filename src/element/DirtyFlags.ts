@@ -5,11 +5,11 @@ namespace puck.element {
         visible = 1 << 1,
         transform = 1 << 2,
 
-        extents = 1 << 3, //single element's paint extents
-        bounds = 1 << 4, //container's aggregation of all child (recursive) extents
+        extents = 1 << 3,
+        newbounds = 1 << 4,
         invalidate = 1 << 5,
 
         down = DirtyFlags.opacity | DirtyFlags.visible | DirtyFlags.transform,
-        up = DirtyFlags.extents | DirtyFlags.bounds | DirtyFlags.invalidate
+        up = DirtyFlags.extents | DirtyFlags.newbounds | DirtyFlags.invalidate
     }
 }

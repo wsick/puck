@@ -8,7 +8,6 @@ namespace puck.element {
         visible: boolean;
         transform: Float32Array;
         extents: la.IRect;
-        bounds: la.IRect;
         paint: la.IRect;
     }
     export class ElementComposite implements IElementComposite {
@@ -19,15 +18,8 @@ namespace puck.element {
         // NOTE: transform, extents, bounds are relative to owner top-left
         transform = la.mat3.identity();
         extents = la.rect.init(0, 0, 0, 0);
-        bounds: la.IRect;
         // NOTE: paint is used to carry invalidated region up the tree
         paint = la.rect.init(0, 0, 0, 0);
-
-        constructor() {
-            // NOTE: Elements have the same extents as bounds
-            //       Used by container processor to aggregate without choosing between bounds/extents
-            this.bounds = this.extents;
-        }
 
         hasDirt(match: DirtyFlags): boolean {
             return (this.$$dirt & match) > 0;

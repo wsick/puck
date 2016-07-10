@@ -5,10 +5,9 @@ The process up phase focuses on paint extents gained from aggregating children.
 
 ## Process
 
-- Calculate extents based on offset, size, transform
-- [element] bounds = extents
-- [container] bounds = union of all child bounds
-- If bounds change, include bounds in invalidated paint
+- [element] Calculate extents based on offset, size, transform
+- [container] Calculate extents by unioning child extents
+- If extents change, include extents in invalidated paint
 - A node can force dirty changes up the tree
 
 * NOTE: Paint can be invalidated from opacity/visible changing (from self or children)
@@ -20,7 +19,6 @@ The process up phase focuses on paint extents gained from aggregating children.
 
 ## Outputs
 - extents
-- bounds
 - paint
 
 

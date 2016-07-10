@@ -6,7 +6,7 @@ namespace puck.element.down.opacity {
         var newOpacity = bag.pcomposite.opacity * bag.state.opacity;
         if (comp.opacity === newOpacity)
             return false;
-        comp.taint(DirtyFlags.invalidate);
+        comp.taint(DirtyFlags.newbounds);
         comp.opacity = newOpacity;
         return true;
     }

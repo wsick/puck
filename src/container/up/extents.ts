@@ -1,9 +1,9 @@
 /// <reference path="../../element/DirtyFlags" />
 
-namespace puck.container.up.bounds {
+namespace puck.container.up.extents {
     import rect = la.rect;
     import DirtyFlags = puck.element.DirtyFlags;
-    var oldBounds = rect.init(0, 0, 0, 0);
+    var oldExtents = rect.init(0, 0, 0, 0);
 
     // Computes container's bounds
     // Bounds
@@ -11,19 +11,19 @@ namespace puck.container.up.bounds {
     //   - owner's coordinate system
     export function process(bag: IProcessorBag): boolean {
         var comp = bag.composite;
-        if (!comp.hasDirt(DirtyFlags.bounds))
+        if (!comp.hasDirt(DirtyFlags.extents))
             return false;
-        rect.copyTo(comp.bounds, oldBounds);
+        rect.copyTo(comp.extents, oldExtents);
 
-        rect.init(0, 0, 0, 0, comp.bounds);
+        rect.init(0, 0, 0, 0, comp.extents);
         for (var ccomps = bag.ccomposites, i = 0; i < ccomps.length; i++) {
-            rect.union(comp.bounds, ccomps[i].bounds);
+            rect.union(comp.extents, ccomps[i].extents);
         }
-        rect.transform(comp.bounds, comp.transform);
+        rect.transform(comp.extents, comp.transform);
 
-        if (rect.equal(comp.bounds, oldBounds))
+        if (rect.equal(comp.extents, oldExtents))
             return false;
-
-        return puck.element.up.bounds(bag);
+        comp.taint(DirtyFlags.newbounds);
+        return true;
     }
 }

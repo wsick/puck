@@ -1,4 +1,4 @@
-namespace puck.element.up.bounds {
+namespace puck.element.up.extents {
     import rect = la.rect;
     var oldExtents = rect.init(0, 0, 0, 0);
 
@@ -10,9 +10,10 @@ namespace puck.element.up.bounds {
         rect.copyTo(comp.extents, oldExtents);
         rect.init(0, 0, state.size.width, state.size.height, comp.extents);
         rect.transform(comp.extents, comp.transform);
+
         if (rect.equal(comp.extents, oldExtents))
             return false;
-        bag.composite.taint(DirtyFlags.bounds);
+        comp.taint(DirtyFlags.newbounds);
         return true;
     }
 }
