@@ -3,12 +3,15 @@ namespace puck.element {
         //range: [0.0, 1.0]
         opacity: number;
         visible: boolean;
+
         //visual offset from parent
         offset: la.IPoint;
         size: la.ISize;
-        transform: Float32Array;
+
         //origin of transform in relative coordinate space ([0.0,1.0], [0.0,1.0])
+        transform: Float32Array;
         transformOrigin: la.IPoint;
+        
         reset();
     }
 

@@ -11,6 +11,20 @@ namespace puck {
         composite: IElementComposite;
         processor: {down: element.down.Processor, up: element.up.Processor};
 
+        constructor(state?: IElementState, composite?: IElementComposite) {
+            this.init(state, composite);
+            Object.freeze(this);
+        }
+
+        init(state?: IElementState, composite?: IElementComposite) {
+            this.state = (state || new element.ElementState()).reset();
+            this.composite = (composite || new element.ElementComposite()).reset();
+            this.processor = {
+                down: element.down.Processor.instance,
+                up: element.up.Processor.instance
+            };
+        }
+
         get opacity(): number { return this.state.opacity; }
         set opacity(value: number) {
             if (this.state.opacity !== value) {
@@ -90,20 +104,6 @@ namespace puck {
         applyTransform(mat: Float32Array): this {
             la.mat3.apply(this.state.transform, mat);
             return this;
-        }
-
-        constructor(state?: IElementState, composite?: IElementComposite) {
-            this.init(state, composite);
-            Object.freeze(this);
-        }
-
-        init(state?: IElementState, composite?: IElementComposite) {
-            this.state = (state || new element.ElementState()).reset();
-            this.composite = (composite || new element.ElementComposite()).reset();
-            this.processor = {
-                down: element.down.Processor.instance,
-                up: element.up.Processor.instance
-            };
         }
     }
 }
