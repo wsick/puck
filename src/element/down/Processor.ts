@@ -24,7 +24,7 @@ namespace puck.element.down {
         }
 
         clear(bag: IProcessorBag): this {
-            bag.composite.untaint(DirtyFlags.opacity | DirtyFlags.visible | DirtyFlags.transform);
+            bag.composite.untaint(DirtyFlags.down);
             return this;
         }
     }
