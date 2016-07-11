@@ -9,7 +9,7 @@ namespace puck {
     export class Element implements IElement {
         state: IElementState;
         composite: IElementComposite;
-        processor: {down: element.down.Processor, up: element.up.Processor};
+        processor: {down: element.down.Processor, up: element.up.Processor, render: element.render.Processor};
 
         constructor(state?: IElementState, composite?: IElementComposite) {
             this.init(state, composite);
@@ -21,7 +21,8 @@ namespace puck {
             this.composite = (composite || new element.ElementComposite()).reset();
             this.processor = {
                 down: element.down.Processor.instance,
-                up: element.up.Processor.instance
+                up: element.up.Processor.instance,
+                render: element.render.Processor.instance,
             };
         }
 
