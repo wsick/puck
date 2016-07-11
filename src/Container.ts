@@ -11,10 +11,11 @@ namespace puck {
         state: IContainerState;
         composite: IContainerComposite;
         elements: IElement[];
-        processor: {down: container.down.Processor, up: container.up.Processor};
+        processor: {down: container.down.Processor, up: container.up.Processor, render: container.render.Processor};
 
         constructor(state?: IContainerState, composite?: IContainerComposite) {
-            super(state, composite);
+            this.init(state, composite);
+            Object.freeze(this);
         }
 
         init(state?: IContainerState, composite?: IContainerComposite) {
@@ -23,7 +24,8 @@ namespace puck {
             this.composite = (composite || new container.ContainerComposite()).reset();
             this.processor = {
                 down: container.down.Processor.instance,
-                up: container.up.Processor.instance
+                up: container.up.Processor.instance,
+                render: container.render.Processor.instance,
             };
         }
 
