@@ -9,7 +9,7 @@ namespace puck {
     export class Element implements IElement {
         state: IElementState;
         composite: IElementComposite;
-        processor: {down: element.down.Processor, up: element.up.Processor};
+        processor: {down: element.down.Processor, up: element.up.Processor, render: element.render.Processor};
 
         constructor(state?: IElementState, composite?: IElementComposite) {
             this.init(state, composite);
@@ -21,7 +21,8 @@ namespace puck {
             this.composite = (composite || new element.ElementComposite()).reset();
             this.processor = {
                 down: element.down.Processor.instance,
-                up: element.up.Processor.instance
+                up: element.up.Processor.instance,
+                render: element.render.Processor.instance,
             };
         }
 
@@ -38,38 +39,6 @@ namespace puck {
             if (this.state.visible !== value) {
                 this.state.visible = value;
                 this.composite.taint(DirtyFlags.visible);
-            }
-        }
-
-        get x(): number { return this.state.offset.x; }
-        set x(value: number) {
-            if (this.state.offset.x !== value) {
-                this.state.offset.x = value;
-                this.composite.taint(DirtyFlags.transform);
-            }
-        }
-
-        get y(): number { return this.state.offset.y; }
-        set y(value: number) {
-            if (this.state.offset.y !== value) {
-                this.state.offset.y = value;
-                this.composite.taint(DirtyFlags.transform);
-            }
-        }
-
-        get width(): number { return this.state.size.width; }
-        set width(value: number) {
-            if (this.state.size.width !== value) {
-                this.state.size.width = value;
-                this.composite.taint(DirtyFlags.transform);
-            }
-        }
-
-        get height(): number { return this.state.size.height; }
-        set height(value: number) {
-            if (this.state.size.height !== value) {
-                this.state.size.height = value;
-                this.composite.taint(DirtyFlags.transform);
             }
         }
 
