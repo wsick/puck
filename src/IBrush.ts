@@ -5,6 +5,7 @@ namespace puck {
         toHtml5Object(): any;
     }
     export interface IBrushWatcher {
+        change();
         unwatch();
     }
 }
