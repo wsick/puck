@@ -4,6 +4,7 @@ namespace puck.element.render {
     import RenderContext = puck.render.RenderContext;
 
     export interface IProcessorBag {
+        state: IElementState;
         composite: IElementComposite;
         ctx: RenderContext;
         inregion: la.IRect;
@@ -48,7 +49,7 @@ namespace puck.element.render {
             if (!should.process(bag))
                 return SkipResult.render;
             narrow.process(bag);
-            //TODO: Apply clip
+            //TODO: Apply overpaint clip
             //TODO: Prerender effect
             return SkipResult.none;
         }

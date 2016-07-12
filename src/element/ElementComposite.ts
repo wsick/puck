@@ -7,6 +7,7 @@ namespace puck.element {
         opacity: number;
         visible: boolean;
         transform: Float32Array;
+        padding: la.IPadding;
         extents: la.IRect;
         paint: la.IRect;
     }
@@ -17,6 +18,7 @@ namespace puck.element {
         visible: boolean;
         // NOTE: transform, extents, bounds are relative to owner top-left
         transform = la.mat3.identity();
+        padding = la.padding.init(0, 0, 0, 0);
         extents = la.rect.init(0, 0, 0, 0);
         // NOTE: paint is used to carry invalidated region up the tree
         paint = la.rect.init(0, 0, 0, 0);
@@ -37,6 +39,7 @@ namespace puck.element {
             this.opacity = 1.0;
             this.visible = true;
             la.mat3.identity(this.transform);
+            la.padding.init(0, 0, 0, 0, this.padding);
             la.rect.init(0, 0, 0, 0, this.extents);
             la.rect.init(0, 0, 0, 0, this.paint);
             this.$$dirt = DirtyFlags.none;

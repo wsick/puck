@@ -106,7 +106,7 @@ namespace puck.render {
             raw.clip();
         }
 
-        fillEx(brush: IBrush, region: la.IRect, fillRule?: FillRule) {
+        fillEx(region: la.IRect, brush: IBrush, fillRule?: FillRule) {
             var raw = this.raw;
             brush.setup(raw, region);
             raw.fillStyle = brush.toHtml5Object();
@@ -120,12 +120,20 @@ namespace puck.render {
             }
         }
 
-        isPointInStrokeEx(strokePars: IStrokeParameters, x: number, y: number): boolean {
+        strokeEx(region: la.IRect, brush: IBrush, thickness: number) {
             var raw = this.raw;
-            raw.lineWidth = strokePars.strokeThickness;
-            raw.lineCap = caps[strokePars.strokeStartLineCap || strokePars.strokeEndLineCap || 0] || caps[0];
-            raw.lineJoin = joins[strokePars.strokeLineJoin || 0] || joins[0];
-            raw.miterLimit = strokePars.strokeMiterLimit;
+            brush.setup(raw, region);
+            raw.strokeStyle = brush.toHtml5Object();
+            raw.lineWidth = thickness;
+            raw.stroke();
+        }
+
+        isPointInStrokeEx(pars: IStrokeParameters, x: number, y: number): boolean {
+            var raw = this.raw;
+            raw.lineWidth = pars.strokeThickness;
+            raw.lineCap = caps[pars.strokeStartLineCap || pars.strokeEndLineCap || 0] || caps[0];
+            raw.lineJoin = joins[pars.strokeLineJoin || 0] || joins[0];
+            raw.miterLimit = pars.strokeMiterLimit;
             return raw.isPointInStroke(x, y);
         }
     }
