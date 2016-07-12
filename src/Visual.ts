@@ -33,7 +33,7 @@ namespace puck {
             }
             if ((!value) === (!this.state.fill)) {
                 // toggling fill on/off can disturb extents
-                this.composite.taint(DirtyFlags.extents);
+                this.composite.taint(DirtyFlags.extents | DirtyFlags.invalidate);
             }
             if (value !== this.state.fill) {
                 this.state.fill = value;
@@ -51,8 +51,8 @@ namespace puck {
                 this.$strokewatch = null;
             }
             if ((!value) === (!this.state.stroke)) {
-                // toggling stroke on/off can disturb extents
-                this.composite.taint(DirtyFlags.extents);
+                // toggling stroke on/off can disturb padding
+                this.composite.taint(DirtyFlags.padding | DirtyFlags.invalidate);
             }
             if (value !== this.state.stroke) {
                 this.state.stroke = value;
@@ -67,7 +67,7 @@ namespace puck {
         set strokeThickness(value: number) {
             if (value !== this.state.strokeThickness) {
                 this.state.strokeThickness = value;
-                this.composite.taint(DirtyFlags.extents);
+                this.composite.taint(DirtyFlags.padding);
             }
         }
     }
