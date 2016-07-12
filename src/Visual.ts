@@ -9,7 +9,8 @@ namespace puck {
 
         state: IVisualState;
         composite: IVisualComposite;
-        processor: {down: element.down.Processor, up: element.up.Processor, render: element.render.Processor};
+        processor: {down: element.down.Processor, up: element.up.Processor, render: visual.render.Processor};
+        stencil: stencil.IStencil;
 
         constructor(state?: IVisualState, composite?: IVisualComposite) {
             super(state, composite);
@@ -21,8 +22,9 @@ namespace puck {
             this.processor = {
                 down: element.down.Processor.instance,
                 up: element.up.Processor.instance,
-                render: element.render.Processor.instance,
+                render: visual.render.Processor.instance,
             };
+            this.stencil = stencil.empty;
         }
 
         get fill(): IBrush { return this.state.fill; }
