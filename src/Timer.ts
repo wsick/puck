@@ -26,18 +26,25 @@ namespace puck {
     }
 
     namespace animate {
-        export var request = window.requestAnimationFrame
+        var req = window.requestAnimationFrame
             || (<any>window).webkitRequestAnimationFrame
             || (<any>window).mozRequestAnimationFrame
             || (<any>window).oRequestAnimationFrame
             || (<any>window).msRequestAnimationFrame
             || ((callback) => window.setTimeout(callback, 1000 / 200));
-
-        export var cancel = window.cancelAnimationFrame
+        var can = window.cancelAnimationFrame
             || (<any>window).webkitCancelAnimationFrame
             || (<any>window).mozCancelAnimationFrame
             || (<any>window).oCancelAnimationFrame
             || (<any>window).msCancelAnimationFrame
             || ((handle: number) => window.clearTimeout(handle));
+
+        export function request(callback: FrameRequestCallback) {
+            return req(callback);
+        }
+
+        export function cancel(handle: number) {
+            return can(handle);
+        }
     }
 }

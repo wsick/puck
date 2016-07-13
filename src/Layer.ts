@@ -1,14 +1,23 @@
 /// <reference path="Container" />
 
 namespace puck {
-    export class Layer extends Container {
-        private $ctx: render.RenderContext = null;
-        private $timer = new Timer((now) => this.onFrame(now));
-        private $collector = new Element();
+    import IContainerState = puck.container.IContainerState;
+    import IContainerComposite = puck.container.IContainerComposite;
 
-        attachTo(ctx: CanvasRenderingContext2D): this {
+    export class Layer extends Container {
+        private $ctx: render.RenderContext;
+        private $timer: Timer;
+        private $collector: element.IElement;
+
+        constructor(ctx: CanvasRenderingContext2D) {
             this.$ctx = new render.RenderContext(ctx);
-            return this;
+            super();
+        }
+
+        init(state?: IContainerState, composite?: IContainerComposite) {
+            super.init(state, composite);
+            this.$timer = new Timer((now) => this.onFrame(now));
+            this.$collector = new Element();
         }
 
         activate(): this {
