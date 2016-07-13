@@ -19,6 +19,8 @@ namespace puck.stencil {
             }
         },
         draw(ctx: RenderContext, bag: IStencilBag) {
+            ctx.raw.beginPath();
+            ctx.raw.closePath();
         },
     };
 }

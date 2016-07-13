@@ -56,7 +56,10 @@ namespace puck {
             }
             var rx = fr.width / 2,
                 ry = fr.height / 2;
-            ctx.raw.ellipse(fr.x + rx, fr.y + ry, rx, ry, 0, 0, PI2, false);
+            var raw = ctx.raw;
+            raw.beginPath();
+            raw.ellipse(fr.x + rx, fr.y + ry, rx, ry, 0, 0, PI2, false);
+            raw.closePath();
         }
     };
 }

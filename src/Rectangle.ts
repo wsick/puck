@@ -53,7 +53,10 @@ namespace puck {
                 // degenerate
                 return;
             }
-            ctx.raw.rect(fr.x, fr.y, fr.width, fr.height);
+            var raw = ctx.raw;
+            raw.beginPath();
+            raw.rect(fr.x, fr.y, fr.width, fr.height);
+            raw.closePath();
         }
     };
 }
