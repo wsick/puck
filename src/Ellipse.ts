@@ -1,4 +1,5 @@
 /// <reference path="Visual" />
+/// <reference path="stencil/contained" />
 
 namespace puck {
     import DirtyFlags = puck.element.DirtyFlags;
