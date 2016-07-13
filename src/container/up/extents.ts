@@ -19,7 +19,7 @@ namespace puck.container.up.extents {
         for (var ccomps = bag.ccomposites, i = 0; i < ccomps.length; i++) {
             rect.union(comp.extents, ccomps[i].extents);
         }
-        rect.transform(comp.extents, comp.transform);
+        rect.transform(comp.extents, comp.transform, comp.extents);
 
         if (rect.equal(comp.extents, oldExtents))
             return false;
