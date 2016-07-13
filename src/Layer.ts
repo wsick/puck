@@ -33,7 +33,14 @@ namespace puck {
 
         protected onFrame(now: number) {
             engine.process(this);
-            engine.render(this, this.$ctx, this.composite.paint);
+
+            var ctx = this.$ctx,
+                paint = this.composite.paint,
+                raw = ctx.raw;
+
+            raw.fillStyle = "#ffffff";
+            raw.fillRect(paint.x, paint.y, paint.width, paint.height);
+            engine.render(this, ctx, paint);
         }
     }
 }
