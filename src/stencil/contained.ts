@@ -7,11 +7,10 @@ namespace puck.stencil {
     export var contained = <IStencil>{
         draft(bag: IStencilBag) {
             var state = bag.state,
-                offset = state.offset,
                 size = state.size;
 
-            la.rect.init(offset.x, offset.y, size.width, size.height, bag.fillRect);
-            la.rect.init(offset.x, offset.y, size.width, size.height, bag.strokeRect);
+            la.rect.init(0, 0, size.width, size.height, bag.fillRect);
+            la.rect.init(0, 0, size.width, size.height, bag.strokeRect);
             if (state.stroke && state.strokeThickness > 0) {
                 // visual gets contained only if stroke exists and stroke thickness is non-zero
                 var ht = state.strokeThickness / 2;
