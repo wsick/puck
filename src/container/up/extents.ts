@@ -23,6 +23,7 @@ namespace puck.container.up.extents {
 
         if (rect.equal(comp.extents, oldExtents))
             return false;
+        rect.union(comp.paint, oldExtents);
         comp.taint(DirtyFlags.newbounds);
         return true;
     }
