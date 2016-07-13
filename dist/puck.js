@@ -684,16 +684,50 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var FrameDebug = (function () {
+        function FrameDebug() {
+            this.$onBegin = null;
+            this.$onEnd = null;
+        }
+        FrameDebug.prototype.onBegin = function (cb) {
+            this.$onBegin = cb;
+        };
+        FrameDebug.prototype.onEnd = function (cb) {
+            this.$onEnd = cb;
+        };
+        FrameDebug.prototype.begin = function () {
+            this.$onBegin && this.$onBegin();
+        };
+        FrameDebug.prototype.end = function () {
+            this.$onEnd && this.$onEnd();
+        };
+        return FrameDebug;
+    })();
+    puck.FrameDebug = FrameDebug;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var Layer = (function (_super) {
         __extends(Layer, _super);
         function Layer(ctx) {
             this.$ctx = new puck.render.RenderContext(ctx);
             _super.call(this);
         }
+        Object.defineProperty(Layer.prototype, "width", {
+            get: function () { return this.$ctx.raw.canvas.width; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Layer.prototype, "height", {
+            get: function () { return this.$ctx.raw.canvas.height; },
+            enumerable: true,
+            configurable: true
+        });
         Layer.prototype.init = function (state, composite) {
             var _this = this;
             _super.prototype.init.call(this, state, composite);
-            this.$timer = new puck.Timer(function (now) { return _this.onFrame(now); });
+            this.frameDebug = new puck.FrameDebug();
+            this.$timer = new puck.Timer(function (now) { return _this.onTick(now); });
             this.$collector = new puck.Element();
         };
         Layer.prototype.activate = function () {
@@ -704,12 +738,14 @@ var puck;
             this.$timer.disable();
             return this;
         };
-        Layer.prototype.onFrame = function (now) {
+        Layer.prototype.onTick = function (now) {
+            this.frameDebug.begin();
             puck.engine.process(this);
             var ctx = this.$ctx, paint = this.composite.paint, raw = ctx.raw;
             raw.fillStyle = "#ffffff";
             raw.fillRect(paint.x, paint.y, paint.width, paint.height);
             puck.engine.render(this, ctx, paint);
+            this.frameDebug.end();
         };
         return Layer;
     })(puck.Container);

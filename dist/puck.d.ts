@@ -281,6 +281,16 @@ declare namespace puck {
     }
 }
 declare namespace puck {
+    class FrameDebug {
+        private $onBegin;
+        private $onEnd;
+        onBegin(cb: Function): void;
+        onEnd(cb: Function): void;
+        begin(): void;
+        end(): void;
+    }
+}
+declare namespace puck {
     interface IBrush {
         watch(onChanged: () => void): IBrushWatcher;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): any;
@@ -298,11 +308,14 @@ declare namespace puck {
         private $ctx;
         private $timer;
         private $collector;
+        frameDebug: FrameDebug;
         constructor(ctx: CanvasRenderingContext2D);
+        width: number;
+        height: number;
         init(state?: IContainerState, composite?: IContainerComposite): void;
         activate(): this;
         deactivate(): this;
-        protected onFrame(now: number): void;
+        protected onTick(now: number): void;
     }
 }
 declare namespace puck {

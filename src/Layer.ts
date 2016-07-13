@@ -9,15 +9,20 @@ namespace puck {
         private $ctx: render.RenderContext;
         private $timer: Timer;
         private $collector: element.IElement;
+        frameDebug: FrameDebug;
 
         constructor(ctx: CanvasRenderingContext2D) {
             this.$ctx = new render.RenderContext(ctx);
             super();
         }
 
+        get width(): number { return this.$ctx.raw.canvas.width; }
+        get height(): number { return this.$ctx.raw.canvas.height; }
+
         init(state?: IContainerState, composite?: IContainerComposite) {
             super.init(state, composite);
-            this.$timer = new Timer((now) => this.onFrame(now));
+            this.frameDebug = new FrameDebug();
+            this.$timer = new Timer((now) => this.onTick(now));
             this.$collector = new Element();
         }
 
@@ -31,7 +36,9 @@ namespace puck {
             return this;
         }
 
-        protected onFrame(now: number) {
+        protected onTick(now: number) {
+            this.frameDebug.begin();
+
             engine.process(this);
 
             var ctx = this.$ctx,
@@ -41,6 +48,8 @@ namespace puck {
             raw.fillStyle = "#ffffff";
             raw.fillRect(paint.x, paint.y, paint.width, paint.height);
             engine.render(this, ctx, paint);
+
+            this.frameDebug.end();
         }
     }
 }
