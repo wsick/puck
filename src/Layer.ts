@@ -3,6 +3,7 @@
 namespace puck {
     import IContainerState = puck.container.IContainerState;
     import IContainerComposite = puck.container.IContainerComposite;
+    import DirtyFlags = puck.element.DirtyFlags;
 
     export class Layer extends Container {
         private $ctx: render.RenderContext;
@@ -31,10 +32,8 @@ namespace puck {
         }
 
         protected onFrame(now: number) {
-            var collector = this.$collector,
-                paint = la.rect.init(0, 0, 0, 0, collector.composite.paint);
-            engine.process(this, collector);
-            engine.render(this, this.$ctx, paint);
+            engine.process(this);
+            engine.render(this, this.$ctx, this.composite.paint);
         }
     }
 }

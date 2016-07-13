@@ -1,5 +1,6 @@
 /// <reference path="../../element/DirtyFlags" />
 /// <reference path="../../element/up/Processor" />
+/// <reference path="../../element/up/newbounds" />
 
 namespace puck.container.up {
     import DirtyFlags = puck.element.DirtyFlags;
