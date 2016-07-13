@@ -45,11 +45,10 @@ namespace puck.element.render {
         protected prerender(bag: IProcessorBag): SkipResult {
             if (!validate.process(bag))
                 return SkipResult.all;
-            prepare.process(bag);
             if (!should.process(bag))
-                return SkipResult.render;
+                return SkipResult.all;
+            prepare.process(bag);
             narrow.process(bag);
-            //TODO: Apply overpaint clip
             //TODO: Prerender effect
             return SkipResult.none;
         }
