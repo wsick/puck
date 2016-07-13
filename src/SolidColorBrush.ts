@@ -3,6 +3,10 @@ namespace puck {
         private $color: Color = null;
         private $watchers: IBrushWatcher[] = [];
 
+        constructor(color?: Color|string) {
+            this.color = new Color(color);
+        }
+
         get color(): Color { return this.$color; }
         set color(value: Color) {
             if (!Color.equals(this.$color, value)) {

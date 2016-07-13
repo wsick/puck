@@ -22,10 +22,6 @@ namespace puck.element.render {
     export class Processor {
         static instance = new Processor();
 
-        isTainted(bag: IProcessorBag): boolean {
-            return bag.composite.hasDirt(DirtyFlags.invalidate);
-        }
-
         process(bag: IProcessorBag) {
             var result = this.prerender(bag);
             if ((result & SkipResult.render) === 0) {
@@ -45,11 +41,10 @@ namespace puck.element.render {
         protected prerender(bag: IProcessorBag): SkipResult {
             if (!validate.process(bag))
                 return SkipResult.all;
-            prepare.process(bag);
             if (!should.process(bag))
-                return SkipResult.render;
+                return SkipResult.all;
+            prepare.process(bag);
             narrow.process(bag);
-            //TODO: Apply overpaint clip
             //TODO: Prerender effect
             return SkipResult.none;
         }

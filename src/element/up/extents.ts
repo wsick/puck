@@ -10,10 +10,11 @@ namespace puck.element.up.extents {
         rect.copyTo(comp.extents, oldExtents);
         rect.init(0, 0, state.size.width, state.size.height, comp.extents);
         rect.grow(comp.extents, comp.padding);
-        rect.transform(comp.extents, comp.transform);
+        rect.transform(comp.extents, comp.transform, comp.extents);
 
         if (rect.equal(comp.extents, oldExtents))
             return false;
+        rect.union(comp.paint, oldExtents);
         comp.taint(DirtyFlags.newbounds);
         return true;
     }

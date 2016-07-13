@@ -1,4 +1,5 @@
 /// <reference path="Visual" />
+/// <reference path="stencil/contained" />
 
 namespace puck {
     import DirtyFlags = puck.element.DirtyFlags;
@@ -31,7 +32,7 @@ namespace puck {
         set width(value: number) {
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
-                this.composite.taint(DirtyFlags.transform);
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
             }
         }
 
@@ -39,7 +40,7 @@ namespace puck {
         set height(value: number) {
             if (this.state.size.height !== value) {
                 this.state.size.height = value;
-                this.composite.taint(DirtyFlags.transform);
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
             }
         }
     }
@@ -52,7 +53,10 @@ namespace puck {
                 // degenerate
                 return;
             }
-            ctx.raw.rect(fr.x, fr.y, fr.width, fr.height);
+            var raw = ctx.raw;
+            raw.beginPath();
+            raw.rect(fr.x, fr.y, fr.width, fr.height);
+            raw.closePath();
         }
     };
 }
