@@ -12,11 +12,23 @@ var fs = require('fs'),
         scaffolds: [
             {
                 name: 'test',
-                symdirs: ['dist', 'src', 'themes'],
+                symdirs: ['dist', 'src'],
                 src: [
                     'typings/*.d.ts',
                     'test/**/*.ts',
                     '!test/lib/**/*.ts',
+                    'dist/' + name + '.d.ts'
+                ].concat(allTypings)
+            },
+            {
+                name: 'demo',
+                ignore: 'lib/qunit',
+                port: 8003,
+                symdirs: ['dist', 'src'],
+                src: [
+                    'typings/*.d.ts',
+                    'demo/**/*.ts',
+                    '!demo/lib/**/*.ts',
                     'dist/' + name + '.d.ts'
                 ].concat(allTypings)
             }
