@@ -22,10 +22,6 @@ namespace puck.element.render {
     export class Processor {
         static instance = new Processor();
 
-        isTainted(bag: IProcessorBag): boolean {
-            return bag.composite.hasDirt(DirtyFlags.invalidate);
-        }
-
         process(bag: IProcessorBag) {
             var result = this.prerender(bag);
             if ((result & SkipResult.render) === 0) {
