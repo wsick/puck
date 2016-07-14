@@ -5,7 +5,8 @@ namespace demo {
         private $canvas: HTMLCanvasElement = null;
         private $meter: any;
         private $hasNew = false;
-        private $addmeter: any;
+        private $procbegin = 0;
+        private $rendbegin = 0;
         root: puck.Layer;
 
         init(canvas: HTMLCanvasElement): this {
@@ -17,20 +18,13 @@ namespace demo {
                 'graph': 1,
             });
 
-            this.$addmeter = new FPSMeter({
-                'left': 'auto',
-                'right': '5px',
-                'top': '50px',
-                'show': 'ms',
-                'heat': 1,
-                'graph': 1,
-            });
-
             this.$canvas = canvas;
             var root = this.root = new puck.Layer(canvas.getContext('2d'));
             root.frameDebug
-                .onBegin(() => this.onBeginFrame())
-                .onEnd(() => this.onEndFrame());
+                .onBeginProcess(() => this.onBeginProcess())
+                .onEndProcess(() => this.onEndProcess())
+                .onBeginRender(() => this.onBeginRender())
+                .onEndRender(() => this.onEndRender());
             return this;
         }
 
@@ -45,7 +39,6 @@ namespace demo {
             console.profileEnd();
 
             this.$hasNew = true;
-            this.$addmeter.resume();
             return this;
         }
 
@@ -53,22 +46,31 @@ namespace demo {
             this.root.activate();
         }
 
-        protected onBeginFrame() {
+        protected onBeginProcess() {
             this.$meter.tickStart();
             if (this.$hasNew) {
-                this.$addmeter.tickStart();
-                console.profile("new process");
+                this.$procbegin = performance.now();
             }
         }
 
-        protected onEndFrame() {
+        protected onEndProcess() {
             if (this.$hasNew) {
-                console.profileEnd();
-                this.$hasNew = false;
-                this.$addmeter.tick();
-                window.setTimeout(() => this.$addmeter.pause(), 1);
+                console.log("proc", performance.now() - this.$procbegin);
             }
             this.$meter.tick();
+        }
+
+        protected onBeginRender() {
+            if (this.$hasNew) {
+                this.$rendbegin = performance.now();
+            }
+        }
+
+        protected onEndRender() {
+            if (this.$hasNew) {
+                this.$hasNew = false;
+                console.log("rend", performance.now() - this.$rendbegin);
+            }
         }
     }
 
