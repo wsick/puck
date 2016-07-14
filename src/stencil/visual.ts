@@ -4,9 +4,9 @@ namespace puck.stencil {
     import RenderContext = puck.render.RenderContext;
     import IRect = la.IRect;
 
-    export var contained = <IStencil>{
+    export var visual = <IStencil>{
         draft(bag: IStencilBag) {
-            var state = bag.state,
+            var state = <IVisualState>bag.state,
                 size = state.size;
 
             la.rect.init(0, 0, size.width, size.height, bag.fillRect);

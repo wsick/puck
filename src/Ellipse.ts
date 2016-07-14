@@ -1,5 +1,5 @@
 /// <reference path="Visual" />
-/// <reference path="stencil/contained" />
+/// <reference path="stencil/visual" />
 
 namespace puck {
     import DirtyFlags = puck.element.DirtyFlags;
@@ -47,7 +47,7 @@ namespace puck {
     }
 
     var ellipseStencil = <stencil.IStencil>{
-        draft: stencil.contained.draft,
+        draft: stencil.visual.draft,
         draw(ctx: render.RenderContext, bag: stencil.IStencilBag) {
             var fr = bag.fillRect;
             if (fr.width <= 0 || fr.height <= 0) {
