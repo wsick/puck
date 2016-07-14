@@ -10,6 +10,7 @@ namespace puck {
         state: IElementState;
         composite: IElementComposite;
         processor: {down: element.down.Processor, up: element.up.Processor, render: element.render.Processor};
+        stencil: stencil.IStencil;
 
         constructor(state?: IElementState, composite?: IElementComposite) {
             this.init(state, composite);
@@ -24,6 +25,7 @@ namespace puck {
                 up: element.up.Processor.instance,
                 render: element.render.Processor.instance,
             };
+            this.stencil = stencil.empty;
         }
 
         get opacity(): number { return this.state.opacity; }
