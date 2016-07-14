@@ -15,7 +15,7 @@ namespace puck.visual.render {
 
             var ctx = bag.ctx;
             ctx.save();
-            var sbag = stencil.createBag(state, bag.composite);
+            var sbag = this.createStencilBag(bag);
             bag.stencil.draft(sbag);
             bag.stencil.draw(ctx, sbag);
             this.fill(ctx, state, sbag);

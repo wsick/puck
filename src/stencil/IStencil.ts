@@ -1,23 +1,14 @@
 namespace puck.stencil {
-    import IVisualState = puck.visual.IVisualState;
-    import IVisualComposite = puck.visual.IVisualComposite;
     import IRect = la.IRect;
     import RenderContext = puck.render.RenderContext;
+    import IElementState = puck.element.IElementState;
+    import IElementComposite = puck.element.IElementComposite;
 
     export interface IStencilBag {
-        state: IVisualState;
-        composite: IVisualComposite;
+        state: IElementState;
+        composite: IElementComposite;
         fillRect: IRect;
         strokeRect: IRect;
-    }
-
-    export function createBag(state: IVisualState, composite: IVisualComposite) {
-        return <IStencilBag>{
-            state: state,
-            composite: composite,
-            fillRect: la.rect.init(0, 0, 0, 0),
-            strokeRect: la.rect.init(0, 0, 0, 0),
-        };
     }
 
     export interface IStencil {

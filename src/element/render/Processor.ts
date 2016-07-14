@@ -9,6 +9,7 @@ namespace puck.element.render {
         ctx: RenderContext;
         inregion: la.IRect;
         curregion: la.IRect;
+        stencil: stencil.IStencil;
     }
 
     export enum SkipResult {
@@ -50,12 +51,23 @@ namespace puck.element.render {
         }
 
         protected render(bag: IProcessorBag) {
-            // no-op: will be implemented by Container and Visual
+            var sbag = this.createStencilBag(bag);
+            bag.stencil.draft(sbag);
+            bag.stencil.draw(bag.ctx, sbag);
         }
 
         protected postrender(bag: IProcessorBag) {
             //TODO: Postrender effect
             bag.ctx.restore();
+        }
+
+        protected createStencilBag(bag: IProcessorBag): stencil.IStencilBag {
+            return {
+                state: bag.state,
+                composite: bag.composite,
+                fillRect: la.rect.init(0, 0, 0, 0),
+                strokeRect: la.rect.init(0, 0, 0, 0),
+            };
         }
     }
 }
