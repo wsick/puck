@@ -276,13 +276,14 @@ var puck;
             DirtyFlags[DirtyFlags["none"] = 0] = "none";
             DirtyFlags[DirtyFlags["opacity"] = 1] = "opacity";
             DirtyFlags[DirtyFlags["visible"] = 2] = "visible";
-            DirtyFlags[DirtyFlags["transform"] = 4] = "transform";
-            DirtyFlags[DirtyFlags["padding"] = 8] = "padding";
-            DirtyFlags[DirtyFlags["extents"] = 16] = "extents";
-            DirtyFlags[DirtyFlags["newbounds"] = 32] = "newbounds";
-            DirtyFlags[DirtyFlags["invalidate"] = 64] = "invalidate";
-            DirtyFlags[DirtyFlags["down"] = 7] = "down";
-            DirtyFlags[DirtyFlags["up"] = 56] = "up";
+            DirtyFlags[DirtyFlags["stretch"] = 4] = "stretch";
+            DirtyFlags[DirtyFlags["transform"] = 8] = "transform";
+            DirtyFlags[DirtyFlags["padding"] = 16] = "padding";
+            DirtyFlags[DirtyFlags["extents"] = 32] = "extents";
+            DirtyFlags[DirtyFlags["newbounds"] = 64] = "newbounds";
+            DirtyFlags[DirtyFlags["invalidate"] = 128] = "invalidate";
+            DirtyFlags[DirtyFlags["down"] = 15] = "down";
+            DirtyFlags[DirtyFlags["up"] = 112] = "up";
         })(element.DirtyFlags || (element.DirtyFlags = {}));
         var DirtyFlags = element.DirtyFlags;
     })(element = puck.element || (puck.element = {}));
@@ -303,6 +304,7 @@ var puck;
                 up: puck.element.up.Processor.instance,
                 render: puck.element.render.Processor.instance,
             };
+            this.stencil = puck.stencil.empty;
         };
         Object.defineProperty(Element.prototype, "opacity", {
             get: function () { return this.state.opacity; },
@@ -512,7 +514,7 @@ var puck;
                 up: puck.element.up.Processor.instance,
                 render: puck.visual.render.Processor.instance,
             };
-            this.stencil = puck.stencil.empty;
+            this.stencil = puck.stencil.visual;
         };
         Object.defineProperty(Visual.prototype, "fill", {
             get: function () { return this.state.fill; },
@@ -577,7 +579,7 @@ var puck;
 (function (puck) {
     var stencil;
     (function (stencil) {
-        stencil.contained = {
+        stencil.visual = {
             draft: function (bag) {
                 var state = bag.state, size = state.size;
                 la.rect.init(0, 0, size.width, size.height, bag.fillRect);
@@ -655,7 +657,7 @@ var puck;
     })(puck.Visual);
     puck.Ellipse = Ellipse;
     var ellipseStencil = {
-        draft: puck.stencil.contained.draft,
+        draft: puck.stencil.visual.draft,
         draw: function (ctx, bag) {
             var fr = bag.fillRect;
             if (fr.width <= 0 || fr.height <= 0) {
@@ -712,6 +714,115 @@ var puck;
         return FrameDebug;
     })();
     puck.FrameDebug = FrameDebug;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var DirtyFlags = puck.element.DirtyFlags;
+    var Image = (function (_super) {
+        __extends(Image, _super);
+        function Image() {
+            _super.apply(this, arguments);
+        }
+        Image.prototype.init = function (state, composite) {
+            var _this = this;
+            this.state = (state || new puck.image.ImageState()).reset();
+            this.composite = (composite || new puck.image.ImageComposite()).reset();
+            this.processor = {
+                down: puck.image.down.Processor.instance,
+                up: puck.image.up.Processor.instance,
+                render: puck.element.render.Processor.instance,
+            };
+            this.stencil = imageStencil;
+            this.state.source.watch(function () { return _this.onSourceChanged(); }, function (e) { return _this.onSourceErrored(e); }, function () { return _this.onSourceLoaded(); });
+        };
+        Object.defineProperty(Image.prototype, "sourceUri", {
+            get: function () { return this.state.source.uri; },
+            set: function (value) { this.state.source.uri = value; },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Image.prototype, "stretch", {
+            get: function () { return this.state.stretch; },
+            set: function (value) {
+                if (this.state.stretch !== value) {
+                    this.state.stretch = value;
+                    this.composite.taint(DirtyFlags.stretch);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Image.prototype, "x", {
+            get: function () { return this.state.offset.x; },
+            set: function (value) {
+                if (this.state.offset.x !== value) {
+                    this.state.offset.x = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Image.prototype, "y", {
+            get: function () { return this.state.offset.y; },
+            set: function (value) {
+                if (this.state.offset.y !== value) {
+                    this.state.offset.y = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Image.prototype, "width", {
+            get: function () { return this.state.size.width; },
+            set: function (value) {
+                if (this.state.size.width !== value) {
+                    this.state.size.width = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Image.prototype, "height", {
+            get: function () { return this.state.size.height; },
+            set: function (value) {
+                if (this.state.size.height !== value) {
+                    this.state.size.height = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Image.prototype.onSourceChanged = function () {
+            this.setNaturalSize(0, 0);
+        };
+        Image.prototype.onSourceErrored = function (err) {
+            console.error("error loading image", err);
+        };
+        Image.prototype.onSourceLoaded = function () {
+            var source = this.state.source;
+            this.setNaturalSize(source.naturalWidth, source.naturalHeight);
+        };
+        Image.prototype.setNaturalSize = function (width, height) {
+            var naturalSize = this.state.naturalSize;
+            naturalSize.width = width;
+            naturalSize.height = height;
+            this.composite.taint(DirtyFlags.stretch | DirtyFlags.invalidate);
+        };
+        return Image;
+    })(puck.Element);
+    puck.Image = Image;
+    var imageStencil = {
+        draft: function (bag) { },
+        draw: function (ctx, bag) {
+            var state = bag.state, comp = bag.composite;
+            ctx.preapply(comp.stretchTransform);
+            state.source.draw(ctx.raw);
+        },
+    };
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -819,7 +930,7 @@ var puck;
     })(puck.Visual);
     puck.Rectangle = Rectangle;
     var rectangleStencil = {
-        draft: puck.stencil.contained.draft,
+        draft: puck.stencil.visual.draft,
         draw: function (ctx, bag) {
             var fr = bag.fillRect;
             if (fr.width <= 0 || fr.height <= 0) {
@@ -877,6 +988,16 @@ var puck;
         return SolidColorBrush;
     })();
     puck.SolidColorBrush = SolidColorBrush;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    (function (Stretch) {
+        Stretch[Stretch["none"] = 0] = "none";
+        Stretch[Stretch["fill"] = 1] = "fill";
+        Stretch[Stretch["uniform"] = 2] = "uniform";
+        Stretch[Stretch["uniformToFill"] = 3] = "uniformToFill";
+    })(puck.Stretch || (puck.Stretch = {}));
+    var Stretch = puck.Stretch;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -1241,6 +1362,138 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var image;
+    (function (image) {
+        var ImageComposite = (function (_super) {
+            __extends(ImageComposite, _super);
+            function ImageComposite() {
+                _super.apply(this, arguments);
+                this.stretchTransform = la.mat3.identity();
+            }
+            ImageComposite.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                la.mat3.identity(this.stretchTransform);
+                return this;
+            };
+            return ImageComposite;
+        })(puck.element.ElementComposite);
+        image.ImageComposite = ImageComposite;
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var ImageSource = (function () {
+            function ImageSource() {
+                var _this = this;
+                this.$el = document.createElement("img");
+                this.$watchers = [];
+                this.$el.onerror = function (e) { return _this.onErrored(e); };
+                this.$el.onload = function (e) { return _this.onLoaded(); };
+            }
+            ImageSource.prototype.reset = function () {
+                this.uri = "";
+            };
+            Object.defineProperty(ImageSource.prototype, "uri", {
+                get: function () { return this.$el.src; },
+                set: function (value) {
+                    if (this.$el.src !== value) {
+                        this.$el.src = value;
+                        this.onChanged();
+                    }
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(ImageSource.prototype, "naturalWidth", {
+                get: function () {
+                    return this.$el.naturalWidth;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(ImageSource.prototype, "naturalHeight", {
+                get: function () {
+                    return this.$el.naturalHeight;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            ImageSource.prototype.draw = function (ctx) {
+                ctx.drawImage(this.$el, 0, 0);
+            };
+            ImageSource.prototype.watch = function (onChanged, onErrored, onLoaded) {
+                var _this = this;
+                var watcher = {
+                    change: onChanged,
+                    error: onErrored,
+                    load: onLoaded,
+                    unwatch: function () {
+                        var ind = _this.$watchers.indexOf(watcher);
+                        if (ind > -1)
+                            _this.$watchers.splice(ind, 1);
+                    }
+                };
+                this.$watchers.push(watcher);
+                return watcher;
+            };
+            ImageSource.prototype.onChanged = function () {
+                for (var watchers = this.$watchers, i = 0; i < watchers.length; i++) {
+                    watchers[i].change();
+                }
+            };
+            ImageSource.prototype.onErrored = function (e) {
+                for (var watchers = this.$watchers, i = 0; i < watchers.length; i++) {
+                    watchers[i].error(e.error);
+                }
+            };
+            ImageSource.prototype.onLoaded = function () {
+                for (var watchers = this.$watchers, i = 0; i < watchers.length; i++) {
+                    watchers[i].load();
+                }
+            };
+            return ImageSource;
+        })();
+        image.ImageSource = ImageSource;
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var ImageState = (function (_super) {
+            __extends(ImageState, _super);
+            function ImageState() {
+                _super.apply(this, arguments);
+                this.source = new image.ImageSource();
+                this.stretch = puck.Stretch.none;
+                this.naturalSize = { width: 0, height: 0 };
+            }
+            ImageState.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                this.source.reset();
+                this.stretch = puck.Stretch.none;
+                this.naturalSize.width = this.naturalSize.height = 0;
+                return this;
+            };
+            ImageState.prototype.getEffectiveStretch = function () {
+                var size = this.size, natural = this.naturalSize;
+                if (size.width <= 0 || size.height <= 0) {
+                    return puck.Stretch.none;
+                }
+                if (natural.width <= 0 || natural.height <= 0) {
+                    return puck.Stretch.none;
+                }
+                return this.stretch;
+            };
+            return ImageState;
+        })(puck.element.ElementState);
+        image.ImageState = ImageState;
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var render;
     (function (render) {
         function getNaturalCanvasSize(canvas) {
@@ -1403,15 +1656,6 @@ var puck;
 (function (puck) {
     var stencil;
     (function (stencil) {
-        function createBag(state, composite) {
-            return {
-                state: state,
-                composite: composite,
-                fillRect: la.rect.init(0, 0, 0, 0),
-                strokeRect: la.rect.init(0, 0, 0, 0),
-            };
-        }
-        stencil.createBag = createBag;
         stencil.empty = {
             draft: function (bag) {
             },
@@ -1572,9 +1816,20 @@ var puck;
                     return SkipResult.none;
                 };
                 Processor.prototype.render = function (bag) {
+                    var sbag = this.createStencilBag(bag);
+                    bag.stencil.draft(sbag);
+                    bag.stencil.draw(bag.ctx, sbag);
                 };
                 Processor.prototype.postrender = function (bag) {
                     bag.ctx.restore();
+                };
+                Processor.prototype.createStencilBag = function (bag) {
+                    return {
+                        state: bag.state,
+                        composite: bag.composite,
+                        fillRect: la.rect.init(0, 0, 0, 0),
+                        strokeRect: la.rect.init(0, 0, 0, 0),
+                    };
                 };
                 Processor.instance = new Processor();
                 return Processor;
@@ -1925,6 +2180,161 @@ var puck;
         })(up = element.up || (element.up = {}));
     })(element = puck.element || (puck.element = {}));
 })(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var down;
+        (function (down) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.process = function (bag) {
+                    down.stretch.process(bag);
+                    return _super.prototype.process.call(this, bag);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.down.Processor);
+            down.Processor = Processor;
+        })(down = image.down || (image.down = {}));
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var down;
+        (function (down) {
+            var stretch;
+            (function (stretch_1) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                var mat3 = la.mat3;
+                var oldStretchTransform = mat3.identity();
+                function process(bag) {
+                    var state = bag.state, comp = bag.composite;
+                    if (!comp.hasDirt(DirtyFlags.stretch))
+                        return false;
+                    mat3.copyTo(comp.stretchTransform, oldStretchTransform);
+                    var fitter = fits[state.getEffectiveStretch()];
+                    fitter && fitter(comp.stretchTransform, state.naturalSize, state.size);
+                    if (mat3.equal(comp.stretchTransform, oldStretchTransform))
+                        return false;
+                    comp.taint(DirtyFlags.extents);
+                    return true;
+                }
+                stretch_1.process = process;
+                var fits = {};
+                fits[puck.Stretch.none] = function (mat, natural, size) {
+                    mat3.identity(mat);
+                };
+                fits[puck.Stretch.fill] = function (mat, natural, size) {
+                    mat3.createScale(size.width / natural.width, size.height / natural.height, mat);
+                };
+                fits[puck.Stretch.uniform] = function (mat, natural, size) {
+                    var smin = Math.min(size.width / natural.width, size.height / natural.height);
+                    mat3.createScale(smin, smin, mat);
+                };
+                fits[puck.Stretch.uniformToFill] = function (mat, natural, size) {
+                    var smax = Math.max(size.width / natural.width, size.height / natural.height);
+                    mat3.createScale(smax, smax, mat);
+                };
+            })(stretch = down.stretch || (down.stretch = {}));
+        })(down = image.down || (image.down = {}));
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var up;
+        (function (up) {
+            var extents;
+            (function (extents) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                var rect = la.rect;
+                var oldExtents = rect.init(0, 0, 0, 0);
+                function process(bag) {
+                    var comp = bag.composite;
+                    if (!comp.hasDirt(DirtyFlags.extents))
+                        return false;
+                    var state = bag.state;
+                    rect.copyTo(comp.extents, oldExtents);
+                    rect.init(0, 0, 0, 0, comp.extents);
+                    var fitter = fits[state.getEffectiveStretch()];
+                    fitter && fitter(comp.extents, state.naturalSize, state.size);
+                    rect.transform(comp.extents, comp.transform, comp.extents);
+                    if (rect.equal(comp.extents, oldExtents))
+                        return false;
+                    rect.union(comp.paint, oldExtents);
+                    comp.taint(DirtyFlags.newbounds);
+                    return true;
+                }
+                extents.process = process;
+                var fits = {};
+                fits[puck.Stretch.none] = function (final, natural, size) {
+                    final.width = natural.width;
+                    final.height = natural.height;
+                };
+                fits[puck.Stretch.fill] = function (final, natural, size) {
+                    final.width = size.width;
+                    final.height = size.height;
+                };
+                fits[puck.Stretch.uniform] = function (final, natural, size) {
+                    var sx = size.width / natural.width, sy = size.height / natural.height;
+                    final.width = size.width;
+                    final.height = size.height;
+                    if (sx < sy) {
+                        final.height = natural.height * sx;
+                    }
+                    else {
+                        final.width = natural.width * sy;
+                    }
+                };
+                fits[puck.Stretch.uniformToFill] = function (final, natural, size) {
+                    var sx = size.width / natural.width, sy = size.height / natural.height;
+                    final.width = size.width;
+                    final.height = size.height;
+                    if (sx > sy) {
+                        final.height = natural.height * sx;
+                    }
+                    else {
+                        final.width = natural.width * sy;
+                    }
+                };
+            })(extents = up.extents || (up.extents = {}));
+        })(up = image.up || (image.up = {}));
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var up;
+        (function (up) {
+            var DirtyFlags = puck.element.DirtyFlags;
+            var newbounds = puck.element.up.newbounds;
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.process = function (bag) {
+                    var dirt = DirtyFlags.none;
+                    if (up.extents.process(bag))
+                        dirt |= DirtyFlags.extents;
+                    newbounds.process(bag);
+                    return dirt;
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.up.Processor);
+            up.Processor = Processor;
+        })(up = image.up || (image.up = {}));
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
 if (!CanvasRenderingContext2D.prototype.hasOwnProperty("backingStorePixelRatio")) {
     Object.defineProperty(CanvasRenderingContext2D.prototype, "backingStorePixelRatio", {
         get: function () {
@@ -1969,7 +2379,7 @@ var puck;
                         return false;
                     var ctx = bag.ctx;
                     ctx.save();
-                    var sbag = puck.stencil.createBag(state, bag.composite);
+                    var sbag = this.createStencilBag(bag);
                     bag.stencil.draft(sbag);
                     bag.stencil.draw(ctx, sbag);
                     this.fill(ctx, state, sbag);

@@ -1,7 +1,6 @@
 namespace puck.image {
     export interface IImageSource {
         uri: string;
-        isEmpty: boolean;
         naturalWidth: number;
         naturalHeight: number;
         draw(ctx: CanvasRenderingContext2D);

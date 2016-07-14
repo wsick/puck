@@ -168,13 +168,14 @@ declare namespace puck.element {
         none = 0,
         opacity = 1,
         visible = 2,
-        transform = 4,
-        padding = 8,
-        extents = 16,
-        newbounds = 32,
-        invalidate = 64,
-        down = 7,
-        up = 56,
+        stretch = 4,
+        transform = 8,
+        padding = 16,
+        extents = 32,
+        newbounds = 64,
+        invalidate = 128,
+        down = 15,
+        up = 112,
     }
 }
 declare namespace puck {
@@ -189,6 +190,7 @@ declare namespace puck {
             up: element.up.Processor;
             render: element.render.Processor;
         };
+        stencil: stencil.IStencil;
         constructor(state?: IElementState, composite?: IElementComposite);
         init(state?: IElementState, composite?: IElementComposite): void;
         opacity: number;
@@ -241,7 +243,6 @@ declare namespace puck {
             up: element.up.Processor;
             render: visual.render.Processor;
         };
-        stencil: stencil.IStencil;
         constructor(state?: IVisualState, composite?: IVisualComposite);
         init(state?: IVisualState, composite?: IVisualComposite): void;
         fill: IBrush;
@@ -250,7 +251,7 @@ declare namespace puck {
     }
 }
 declare namespace puck.stencil {
-    var contained: IStencil;
+    var visual: IStencil;
 }
 declare namespace puck {
     import IVisualState = puck.visual.IVisualState;
@@ -302,6 +303,26 @@ declare namespace puck {
     }
 }
 declare namespace puck {
+    import IImageState = puck.image.IImageState;
+    import IImageComposite = puck.image.IImageComposite;
+    class Image extends Element {
+        state: IImageState;
+        composite: IImageComposite;
+        stencil: stencil.IStencil;
+        init(state?: IImageState, composite?: IImageComposite): void;
+        sourceUri: string;
+        stretch: Stretch;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        protected onSourceChanged(): void;
+        protected onSourceErrored(err: any): void;
+        protected onSourceLoaded(): void;
+        protected setNaturalSize(width: number, height: number): void;
+    }
+}
+declare namespace puck {
     import IContainerState = puck.container.IContainerState;
     import IContainerComposite = puck.container.IContainerComposite;
     class Layer extends Container {
@@ -339,6 +360,14 @@ declare namespace puck {
         protected onChanged(): void;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): void;
         toHtml5Object(): any;
+    }
+}
+declare namespace puck {
+    enum Stretch {
+        none = 0,
+        fill = 1,
+        uniform = 2,
+        uniformToFill = 3,
     }
 }
 declare namespace puck {
@@ -477,6 +506,62 @@ declare namespace puck.engine {
     import RenderContext = puck.render.RenderContext;
     function render(el: element.IElement, ctx: RenderContext, region: la.IRect): void;
 }
+declare namespace puck.image {
+    interface IImageSource {
+        uri: string;
+        naturalWidth: number;
+        naturalHeight: number;
+        draw(ctx: CanvasRenderingContext2D): any;
+        watch(onChanged: Function, onErrored: Function, onLoaded: Function): IImageWatcher;
+        reset(): any;
+    }
+    interface IImageWatcher {
+        change(): any;
+        error(err: any): any;
+        load(): any;
+        unwatch(): any;
+    }
+}
+declare namespace puck.image {
+    interface IImageComposite extends element.IElementComposite {
+        stretchTransform: Float32Array;
+    }
+    class ImageComposite extends element.ElementComposite implements IImageComposite {
+        stretchTransform: Float32Array;
+        reset(): this;
+    }
+}
+declare namespace puck.image {
+    class ImageSource implements IImageSource {
+        private $el;
+        private $watchers;
+        constructor();
+        reset(): void;
+        uri: string;
+        naturalWidth: number;
+        naturalHeight: number;
+        draw(ctx: CanvasRenderingContext2D): void;
+        watch(onChanged: () => any, onErrored: () => any, onLoaded: () => any): IImageWatcher;
+        protected onChanged(): void;
+        protected onErrored(e: ErrorEvent): void;
+        protected onLoaded(): void;
+    }
+}
+declare namespace puck.image {
+    interface IImageState extends element.IElementState {
+        source: IImageSource;
+        stretch: Stretch;
+        naturalSize: la.ISize;
+        getEffectiveStretch(): Stretch;
+    }
+    class ImageState extends element.ElementState implements IImageState {
+        source: IImageSource;
+        stretch: Stretch;
+        naturalSize: la.ISize;
+        reset(): this;
+        getEffectiveStretch(): Stretch;
+    }
+}
 declare namespace puck.render {
     interface IStrokeParameters {
         stroke: IBrush;
@@ -513,17 +598,16 @@ declare namespace puck.render.zoom {
     var calc: () => number;
 }
 declare namespace puck.stencil {
-    import IVisualState = puck.visual.IVisualState;
-    import IVisualComposite = puck.visual.IVisualComposite;
     import IRect = la.IRect;
     import RenderContext = puck.render.RenderContext;
+    import IElementState = puck.element.IElementState;
+    import IElementComposite = puck.element.IElementComposite;
     interface IStencilBag {
-        state: IVisualState;
-        composite: IVisualComposite;
+        state: IElementState;
+        composite: IElementComposite;
         fillRect: IRect;
         strokeRect: IRect;
     }
-    function createBag(state: IVisualState, composite: IVisualComposite): IStencilBag;
     interface IStencil {
         draft(bag: IStencilBag): any;
         draw(ctx: RenderContext, bag: IStencilBag): any;
@@ -603,6 +687,7 @@ declare namespace puck.element.render {
         ctx: RenderContext;
         inregion: la.IRect;
         curregion: la.IRect;
+        stencil: stencil.IStencil;
     }
     enum SkipResult {
         none = 0,
@@ -617,6 +702,7 @@ declare namespace puck.element.render {
         protected prerender(bag: IProcessorBag): SkipResult;
         protected render(bag: IProcessorBag): void;
         protected postrender(bag: IProcessorBag): void;
+        protected createStencilBag(bag: IProcessorBag): stencil.IStencilBag;
     }
 }
 declare namespace puck.container.render {
@@ -685,6 +771,30 @@ declare namespace puck.element.render.validate {
 }
 declare namespace puck.element.up.extents {
     function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.image.down {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    import DirtyFlags = puck.element.DirtyFlags;
+    class Processor extends element.down.Processor {
+        static instance: Processor;
+        process(bag: IProcessorBag): DirtyFlags;
+    }
+}
+declare namespace puck.image.down.stretch {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.image.up.extents {
+    import IProcessorBag = puck.element.up.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.image.up {
+    import DirtyFlags = puck.element.DirtyFlags;
+    import IProcessorBag = puck.element.up.IProcessorBag;
+    class Processor extends element.up.Processor {
+        static instance: Processor;
+        process(bag: IProcessorBag): DirtyFlags;
+    }
 }
 interface CanvasRenderingContext2D {
     backingStorePixelRatio: number;

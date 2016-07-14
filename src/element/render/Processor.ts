@@ -51,11 +51,9 @@ namespace puck.element.render {
         }
 
         protected render(bag: IProcessorBag) {
-            var ctx = bag.ctx;
             var sbag = this.createStencilBag(bag);
             bag.stencil.draft(sbag);
-            bag.stencil.draw(ctx, sbag);
-            ctx.restore();
+            bag.stencil.draw(bag.ctx, sbag);
         }
 
         protected postrender(bag: IProcessorBag) {

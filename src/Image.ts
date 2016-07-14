@@ -1,14 +1,27 @@
 namespace puck {
     import IImageState = puck.image.IImageState;
-    import IElementComposite = puck.element.IElementComposite;
+    import IImageComposite = puck.image.IImageComposite;
     import DirtyFlags = puck.element.DirtyFlags;
+
+    /*
+     * Represents an Image object to render
+     * By default, stretch is set to none which will use the image's natural size as extents
+     * If another stretch is represented, image will transform into width/height specified.
+     */
 
     export class Image extends Element {
         state: IImageState;
+        composite: IImageComposite;
         stencil: stencil.IStencil;
 
-        init(state?: IImageState, composite?: IElementComposite) {
-            super.init(state, composite);
+        init(state?: IImageState, composite?: IImageComposite) {
+            this.state = (state || new image.ImageState()).reset();
+            this.composite = (composite || new image.ImageComposite()).reset();
+            this.processor = {
+                down: image.down.Processor.instance,
+                up: image.up.Processor.instance,
+                render: element.render.Processor.instance,
+            };
             this.stencil = imageStencil;
             this.state.source.watch(
                 () => this.onSourceChanged(),
@@ -19,6 +32,14 @@ namespace puck {
         get sourceUri(): string { return this.state.source.uri; }
         // invalidations come through watcher
         set sourceUri(value: string) { this.state.source.uri = value; }
+
+        get stretch(): Stretch { return this.state.stretch; }
+        set stretch(value: Stretch) {
+            if (this.state.stretch !== value) {
+                this.state.stretch = value;
+                this.composite.taint(DirtyFlags.stretch);
+            }
+        }
 
         get x(): number { return this.state.offset.x; }
         set x(value: number) {
@@ -40,7 +61,7 @@ namespace puck {
         set width(value: number) {
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
-                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
             }
         }
 
@@ -48,12 +69,12 @@ namespace puck {
         set height(value: number) {
             if (this.state.size.height !== value) {
                 this.state.size.height = value;
-                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
             }
         }
 
         protected onSourceChanged() {
-            this.composite.taint(DirtyFlags.invalidate);
+            this.setNaturalSize(0, 0);
         }
 
         protected onSourceErrored(err: any) {
@@ -61,15 +82,24 @@ namespace puck {
         }
 
         protected onSourceLoaded() {
-            this.composite.taint(DirtyFlags.invalidate);
+            var source = this.state.source;
+            this.setNaturalSize(source.naturalWidth, source.naturalHeight);
+        }
+
+        protected setNaturalSize(width: number, height: number) {
+            var naturalSize = this.state.naturalSize;
+            naturalSize.width = width;
+            naturalSize.height = height;
+            this.composite.taint(DirtyFlags.stretch | DirtyFlags.invalidate);
         }
     }
 
     var imageStencil = <stencil.IStencil>{
-        draft: stencil.media,
+        draft(bag: stencil.IStencilBag) {},
         draw(ctx: render.RenderContext, bag: stencil.IStencilBag) {
-            var state = <IImageState>bag.state;
-
+            var state = <IImageState>bag.state,
+                comp = <IImageComposite>bag.composite;
+            ctx.preapply(comp.stretchTransform);
             state.source.draw(ctx.raw);
         },
     };

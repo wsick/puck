@@ -8,6 +8,7 @@ namespace puck.element.up.extents {
             return false;
         var state = bag.state;
         rect.copyTo(comp.extents, oldExtents);
+        
         rect.init(0, 0, state.size.width, state.size.height, comp.extents);
         rect.grow(comp.extents, comp.padding);
         rect.transform(comp.extents, comp.transform, comp.extents);

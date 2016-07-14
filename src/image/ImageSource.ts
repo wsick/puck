@@ -5,10 +5,7 @@ namespace puck.image {
 
         constructor() {
             this.$el.onerror = (e: ErrorEvent) => this.onErrored(e);
-            this.$el.onload = (e) => {
-                this.onLoaded();
-                this.onChanged();
-            };
+            this.$el.onload = (e) => this.onLoaded();
         }
 
         reset() {
@@ -23,13 +20,6 @@ namespace puck.image {
             }
         }
 
-        get isEmpty(): boolean {
-            var el = this.$el;
-            return !el
-                || el.naturalWidth <= 0
-                || el.naturalHeight <= 0;
-        }
-
         get naturalWidth(): number {
             return this.$el.naturalWidth;
         }
@@ -42,7 +32,7 @@ namespace puck.image {
             ctx.drawImage(this.$el, 0, 0);
         }
 
-        watch(onChanged: Function, onErrored: Function, onLoaded: Function): IImageWatcher {
+        watch(onChanged: () => any, onErrored: () => any, onLoaded: () => any): IImageWatcher {
             var watcher: IImageWatcher = {
                 change: onChanged,
                 error: onErrored,
