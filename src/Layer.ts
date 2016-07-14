@@ -37,19 +37,21 @@ namespace puck {
         }
 
         protected onTick(now: number) {
-            this.frameDebug.begin();
+            var debug = this.frameDebug;
 
+            debug.beginProcess();
             engine.process(this);
+            debug.endProcess();
 
             var ctx = this.$ctx,
                 paint = this.composite.paint,
                 raw = ctx.raw;
 
+            debug.beginRender();
             raw.fillStyle = "#ffffff";
             raw.fillRect(paint.x, paint.y, paint.width, paint.height);
             engine.render(this, ctx, paint);
-
-            this.frameDebug.end();
+            debug.endRender();
         }
     }
 }

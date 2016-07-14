@@ -1,24 +1,44 @@
 namespace puck {
     export class FrameDebug {
-        private $onBegin: Function = null;
-        private $onEnd: Function = null;
+        private $onBeginProcess: Function = null;
+        private $onEndProcess: Function = null;
+        private $onBeginRender: Function = null;
+        private $onEndRender: Function = null;
 
-        onBegin(cb: Function): this {
-            this.$onBegin = cb;
+        onBeginProcess(cb: Function): this {
+            this.$onBeginProcess = cb;
             return this;
         }
 
-        onEnd(cb: Function): this {
-            this.$onEnd = cb;
+        onEndProcess(cb: Function): this {
+            this.$onEndProcess = cb;
             return this;
         }
 
-        begin() {
-            this.$onBegin && this.$onBegin();
+        onBeginRender(cb: Function): this {
+            this.$onBeginRender = cb;
+            return this;
         }
 
-        end() {
-            this.$onEnd && this.$onEnd();
+        onEndRender(cb: Function): this {
+            this.$onEndRender = cb;
+            return this;
+        }
+
+        beginProcess() {
+            this.$onBeginProcess && this.$onBeginProcess();
+        }
+
+        endProcess() {
+            this.$onEndProcess && this.$onEndProcess();
+        }
+
+        beginRender() {
+            this.$onBeginRender && this.$onBeginRender();
+        }
+
+        endRender() {
+            this.$onEndRender && this.$onEndRender();
         }
     }
 }

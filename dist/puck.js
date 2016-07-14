@@ -696,22 +696,38 @@ var puck;
 (function (puck) {
     var FrameDebug = (function () {
         function FrameDebug() {
-            this.$onBegin = null;
-            this.$onEnd = null;
+            this.$onBeginProcess = null;
+            this.$onEndProcess = null;
+            this.$onBeginRender = null;
+            this.$onEndRender = null;
         }
-        FrameDebug.prototype.onBegin = function (cb) {
-            this.$onBegin = cb;
+        FrameDebug.prototype.onBeginProcess = function (cb) {
+            this.$onBeginProcess = cb;
             return this;
         };
-        FrameDebug.prototype.onEnd = function (cb) {
-            this.$onEnd = cb;
+        FrameDebug.prototype.onEndProcess = function (cb) {
+            this.$onEndProcess = cb;
             return this;
         };
-        FrameDebug.prototype.begin = function () {
-            this.$onBegin && this.$onBegin();
+        FrameDebug.prototype.onBeginRender = function (cb) {
+            this.$onBeginRender = cb;
+            return this;
         };
-        FrameDebug.prototype.end = function () {
-            this.$onEnd && this.$onEnd();
+        FrameDebug.prototype.onEndRender = function (cb) {
+            this.$onEndRender = cb;
+            return this;
+        };
+        FrameDebug.prototype.beginProcess = function () {
+            this.$onBeginProcess && this.$onBeginProcess();
+        };
+        FrameDebug.prototype.endProcess = function () {
+            this.$onEndProcess && this.$onEndProcess();
+        };
+        FrameDebug.prototype.beginRender = function () {
+            this.$onBeginRender && this.$onBeginRender();
+        };
+        FrameDebug.prototype.endRender = function () {
+            this.$onEndRender && this.$onEndRender();
         };
         return FrameDebug;
     })();
@@ -860,13 +876,16 @@ var puck;
             return this;
         };
         Layer.prototype.onTick = function (now) {
-            this.frameDebug.begin();
+            var debug = this.frameDebug;
+            debug.beginProcess();
             puck.engine.process(this);
+            debug.endProcess();
             var ctx = this.$ctx, paint = this.composite.paint, raw = ctx.raw;
+            debug.beginRender();
             raw.fillStyle = "#ffffff";
             raw.fillRect(paint.x, paint.y, paint.width, paint.height);
             puck.engine.render(this, ctx, paint);
-            this.frameDebug.end();
+            debug.endRender();
         };
         return Layer;
     })(puck.Container);

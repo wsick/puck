@@ -283,12 +283,18 @@ declare namespace puck {
 }
 declare namespace puck {
     class FrameDebug {
-        private $onBegin;
-        private $onEnd;
-        onBegin(cb: Function): this;
-        onEnd(cb: Function): this;
-        begin(): void;
-        end(): void;
+        private $onBeginProcess;
+        private $onEndProcess;
+        private $onBeginRender;
+        private $onEndRender;
+        onBeginProcess(cb: Function): this;
+        onEndProcess(cb: Function): this;
+        onBeginRender(cb: Function): this;
+        onEndRender(cb: Function): this;
+        beginProcess(): void;
+        endProcess(): void;
+        beginRender(): void;
+        endRender(): void;
     }
 }
 declare namespace puck {
