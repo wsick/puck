@@ -810,7 +810,7 @@ var puck;
             var naturalSize = this.state.naturalSize;
             naturalSize.width = width;
             naturalSize.height = height;
-            this.composite.taint(DirtyFlags.stretch | DirtyFlags.invalidate);
+            this.composite.taint(DirtyFlags.stretch | DirtyFlags.extents | DirtyFlags.invalidate);
         };
         return Image;
     })(puck.Element);
