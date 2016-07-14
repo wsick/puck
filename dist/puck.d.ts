@@ -216,7 +216,7 @@ declare namespace puck {
         };
         constructor(state?: IContainerState, composite?: IContainerComposite);
         init(state?: IContainerState, composite?: IContainerComposite): void;
-        walk(): walk.IWalker<element.IElement>;
+        walk(reverse?: boolean): walk.IWalker<element.IElement>;
         opacity: number;
         visible: boolean;
         x: number;
@@ -430,7 +430,7 @@ declare namespace puck.container {
             up: up.Processor;
             render: render.Processor;
         };
-        walk(): walk.IWalker<element.IElement>;
+        walk(reverse?: boolean): walk.IWalker<element.IElement>;
     }
 }
 declare namespace puck.element {
@@ -567,7 +567,7 @@ declare namespace puck.walk {
     interface IWalker<T> {
         next(): T;
     }
-    function getWalker(el: element.IElement): IWalker<element.IElement>;
+    function getWalker(el: element.IElement, reverse?: boolean): IWalker<element.IElement>;
 }
 declare namespace puck.element.down {
     interface IProcessorBag {

@@ -385,16 +385,24 @@ var puck;
                 render: puck.container.render.Processor.instance,
             };
         };
-        Container.prototype.walk = function () {
-            var i = -1;
+        Container.prototype.walk = function (reverse) {
             var els = this.elements;
-            var walker = {
+            var i = -1;
+            if (!reverse) {
+                return {
+                    next: function () {
+                        i++;
+                        return els[i];
+                    }
+                };
+            }
+            i = els.length;
+            return {
                 next: function () {
-                    i++;
+                    i--;
                     return els[i];
                 }
             };
-            return walker;
         };
         Object.defineProperty(Container.prototype, "opacity", {
             get: function () { return this.state.opacity; },
@@ -1217,7 +1225,7 @@ var puck;
         function render(el, ctx, region) {
             var processor = el.processor.render;
             var bag = {
-                walker: puck.walk.getWalker(el),
+                walker: puck.walk.getWalker(el, true),
                 state: el.state,
                 composite: el.composite,
                 stencil: el.stencil,
@@ -1458,9 +1466,9 @@ var puck;
                 return undefined;
             }
         };
-        function getWalker(el) {
+        function getWalker(el, reverse) {
             if (typeof el.walk === "function")
-                return el.walk();
+                return el.walk(reverse);
             return EMPTY_WALKER;
         }
         walk.getWalker = getWalker;
