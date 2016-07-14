@@ -4,6 +4,6 @@ namespace puck.container {
         composite: IContainerComposite;
         elements: element.IElement[];
         processor: {down: down.Processor, up: up.Processor, render: render.Processor};
-        walk(): walk.IWalker<element.IElement>;
+        walk(reverse?: boolean): walk.IWalker<element.IElement>;
     }
 }

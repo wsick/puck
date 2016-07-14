@@ -29,16 +29,25 @@ namespace puck {
             };
         }
 
-        walk(): walk.IWalker<element.IElement> {
-            var i = -1;
+        walk(reverse?: boolean): walk.IWalker<element.IElement> {
             var els = this.elements;
-            var walker = {
+            var i = -1;
+            if (!reverse) {
+                return <walk.IWalker<element.IElement>>{
+                    next(): element.IElement {
+                        i++;
+                        return els[i];
+                    }
+                };
+            }
+
+            i = els.length;
+            return <walk.IWalker<element.IElement>>{
                 next(): element.IElement {
-                    i++;
+                    i--;
                     return els[i];
                 }
             };
-            return walker;
         }
 
         get opacity(): number { return this.state.opacity; }

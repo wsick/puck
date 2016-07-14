@@ -9,9 +9,9 @@ namespace puck.walk {
         }
     };
 
-    export function getWalker(el: element.IElement): IWalker<element.IElement> {
+    export function getWalker(el: element.IElement, reverse?: boolean): IWalker<element.IElement> {
         if (typeof (<container.IContainer>el).walk === "function")
-            return (<container.IContainer>el).walk();
+            return (<container.IContainer>el).walk(reverse);
         return EMPTY_WALKER;
     }
 }

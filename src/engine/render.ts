@@ -6,7 +6,7 @@ namespace puck.engine {
     export function render(el: element.IElement, ctx: RenderContext, region: la.IRect) {
         var processor = el.processor.render;
         var bag = <puck.element.render.IProcessorBag>{
-            walker: walk.getWalker(el),
+            walker: walk.getWalker(el, true),
             state: el.state,
             composite: el.composite,
             stencil: (<visual.IVisual>el).stencil,
