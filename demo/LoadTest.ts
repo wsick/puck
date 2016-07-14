@@ -4,41 +4,48 @@ namespace demo {
     export class LoadTest {
         private $canvas: HTMLCanvasElement = null;
         private $meter: any;
-        private $hasTicked = false;
-        private $firstmeter: any;
+        private $hasNew = false;
+        private $addmeter: any;
         root: puck.Layer;
 
-        constructor() {
+        init(canvas: HTMLCanvasElement): this {
             this.$meter = new FPSMeter({
                 'left': 'auto',
                 'right': '5px',
-                'top': '5px'
+                'top': '5px',
+                'heat': 1,
+                'graph': 1,
             });
 
-            this.$firstmeter = new FPSMeter({
+            this.$addmeter = new FPSMeter({
                 'left': 'auto',
                 'right': '5px',
                 'top': '50px',
-                'show': 'ms'
+                'show': 'ms',
+                'heat': 1,
+                'graph': 1,
             });
-        }
 
-        setCanvas(canvas: HTMLCanvasElement): this {
             this.$canvas = canvas;
+            var root = this.root = new puck.Layer(canvas.getContext('2d'));
+            root.frameDebug
+                .onBegin(() => this.onBeginFrame())
+                .onEnd(() => this.onEndFrame());
             return this;
         }
 
-        build(count: number): this {
-            var root = this.root = new puck.Layer(this.$canvas.getContext('2d'));
+        addElements(count: number): this {
+            console.profile("add elements");
 
-            root.frameDebug.onBegin(() => this.onBeginFrame());
-            root.frameDebug.onEnd(() => this.onEndFrame());
-
+            var root = this.root;
             var constraint = la.rect.init(0, 0, root.width, root.height);
             for (var i = 0; i < count; i++) {
                 root.elements.push(random.element(constraint));
             }
+            console.profileEnd();
 
+            this.$hasNew = true;
+            this.$addmeter.resume();
             return this;
         }
 
@@ -48,18 +55,18 @@ namespace demo {
 
         protected onBeginFrame() {
             this.$meter.tickStart();
-            this.$firstmeter.tickStart();
-            if (!this.$hasTicked) {
-                console.profile("first frame");
+            if (this.$hasNew) {
+                this.$addmeter.tickStart();
+                console.profile("new process");
             }
         }
 
         protected onEndFrame() {
-            if (!this.$hasTicked) {
+            if (this.$hasNew) {
                 console.profileEnd();
-                this.$hasTicked = true;
-                this.$firstmeter.tick();
-                window.setTimeout(() => this.$firstmeter.pause(), 1);
+                this.$hasNew = false;
+                this.$addmeter.tick();
+                window.setTimeout(() => this.$addmeter.pause(), 1);
             }
             this.$meter.tick();
         }

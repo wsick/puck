@@ -8,16 +8,19 @@
     <script src="lib/puck/dist/puck.js"></script>
     <script src=".build/LoadTest.js"></script>
     <script type="text/javascript">
+        var test = new demo.LoadTest();
         window.onload = (e) => {
-            var test = new demo.LoadTest()
-                    .setCanvas(document.getElementById('canvas'))
-                    .build(1000)
+            test.init(document.getElementById('canvas'))
+                    .addElements(1000)
                     .start();
         };
+        function addMore() {
+            test.addElements(1000);
+        }
     </script>
 </head>
 <body>
-<canvas id="canvas" width="800" height="600" style="border: solid 1px gray;">
+<canvas id="canvas" width="800" height="600" style="border: solid 1px gray;" onclick="addMore()">
 </canvas>
 </body>
 </html>

@@ -701,9 +701,11 @@ var puck;
         }
         FrameDebug.prototype.onBegin = function (cb) {
             this.$onBegin = cb;
+            return this;
         };
         FrameDebug.prototype.onEnd = function (cb) {
             this.$onEnd = cb;
+            return this;
         };
         FrameDebug.prototype.begin = function () {
             this.$onBegin && this.$onBegin();

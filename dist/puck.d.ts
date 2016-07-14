@@ -285,8 +285,8 @@ declare namespace puck {
     class FrameDebug {
         private $onBegin;
         private $onEnd;
-        onBegin(cb: Function): void;
-        onEnd(cb: Function): void;
+        onBegin(cb: Function): this;
+        onEnd(cb: Function): this;
         begin(): void;
         end(): void;
     }
