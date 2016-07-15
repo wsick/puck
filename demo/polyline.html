@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Puck Demo</title>
+    <script src="lib/la/dist/la.js"></script>
+    <script src="lib/curve/dist/curve.js"></script>
+    <script src="lib/puck/dist/puck.js"></script>
+    <script type="text/javascript">
+        var root;
+        window.onload = (e) => {
+            var c = document.getElementById('canvas');
+            root = new puck.Layer(c.getContext('2d'))
+                    .activate();
+
+            var poly1 = new puck.Polyline();
+            poly1.x = 50;
+            poly1.y = 50;
+            poly1.width = 200;
+            poly1.height = 200;
+            poly1.fill = new puck.SolidColorBrush("Yellow");
+            poly1.stroke = new puck.SolidColorBrush("Black");
+            poly1.strokeThickness = 10;
+            poly1.points.addMany([
+                {x: 0, y: 0},
+                {x: 10, y: 10},
+                {x: 10, y: 50},
+                {x: 60, y: 10},
+            ]);
+            root.elements.push(poly1);
+        };
+    </script>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600">
+</canvas>
+</body>
+</html>

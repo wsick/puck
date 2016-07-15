@@ -349,13 +349,13 @@ declare namespace puck {
         protected $changer: internal.WatchChanger;
         length: number;
         clear(): this;
-        add(stop: T): this;
-        addMany(stops: T[]): this;
-        insert(index: number, stop: T): this;
-        insertMany(index: number, stops: T[]): this;
-        edit(oldStop: T, newStop: T): this;
-        editAt(index: number, newStop: T): this;
-        remove(stop: T): this;
+        add(item: T): this;
+        addMany(items: T[]): this;
+        insert(index: number, item: T): this;
+        insertMany(index: number, items: T[]): this;
+        edit(oldItem: T, newItem: T): this;
+        editAt(index: number, newItem: T): this;
+        remove(item: T): this;
         removeAt(index: number): this;
         watch(onChanged: () => void): puck.internal.IWatcher;
         iter(): Iterator<T>;
@@ -443,6 +443,36 @@ declare namespace puck {
         height: number;
         stretch: Stretch;
         path: curve.Path;
+        fillRule: FillRule;
+        strokeLineCap: PenLineCap;
+        strokeLineJoin: PenLineJoin;
+        strokeMiterLimit: number;
+    }
+}
+declare namespace puck {
+    class Points extends PuckArray<la.IPoint> {
+    }
+}
+declare namespace puck {
+    import IPolylineState = puck.polyline.IPolylineState;
+    import IPathComposite = puck.path.IPathComposite;
+    class Polyline extends Visual implements polyline.IPolyline {
+        state: polyline.IPolylineState;
+        composite: path.IPathComposite;
+        processor: {
+            down: polyline.down.Processor;
+            up: path.up.Processor;
+            render: path.render.Processor;
+        };
+        constructor(state?: IPolylineState, composite?: IPathComposite);
+        init(state?: IPolylineState, composite?: IPathComposite): void;
+        points: Points;
+        closed: boolean;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        stretch: Stretch;
         fillRule: FillRule;
         strokeLineCap: PenLineCap;
         strokeLineJoin: PenLineJoin;
@@ -811,6 +841,29 @@ interface Iterator<T> {
     return?(value?: any): IteratorResult<T>;
     throw?(e?: any): IteratorResult<T>;
 }
+declare namespace puck.polyline {
+    interface IPolyline extends visual.IVisual {
+        state: IPolylineState;
+        composite: path.IPathComposite;
+        processor: {
+            down: polyline.down.Processor;
+            up: path.up.Processor;
+            render: path.render.Processor;
+        };
+        stencil: stencil.IStencil;
+    }
+}
+declare namespace puck.polyline {
+    interface IPolylineState extends path.IPathState {
+        points: Points;
+        closed: boolean;
+    }
+    class PolylineState extends path.PathState implements IPolylineState {
+        points: Points;
+        closed: boolean;
+        reset(): this;
+    }
+}
 declare namespace puck.radialGradient {
     interface IExtender {
         x0: number;
@@ -1102,4 +1155,16 @@ interface CanvasRenderingContext2D {
 }
 interface CanvasRenderingContext2D {
     isPointInStroke(x: number, y: number): boolean;
+}
+declare namespace puck.polyline.down.points {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.polyline.down {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    import DirtyFlags = puck.element.DirtyFlags;
+    class Processor extends path.down.Processor {
+        static instance: Processor;
+        process(bag: IProcessorBag): DirtyFlags;
+    }
 }
