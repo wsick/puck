@@ -77,5 +77,43 @@ namespace puck {
         watch(onChanged: () => void): puck.internal.IWatcher {
             return this.$changer.watch(onChanged);
         }
+
+        iter(): Iterator<GradientStop> {
+            return arrayIter(this.$backing);
+        }
+
+        paddedIter(): Iterator<IGradientStop> {
+            var min: IGradientStop = null;
+            var max: IGradientStop = null;
+
+            var tmp: IGradientStop[] = this.$backing.slice(0);
+            for (var i = 0; i < tmp.length; i++) {
+                let cur = tmp[i];
+                tmp.push(cur);
+                if (!min || cur.offset < min.offset)
+                    min = cur;
+                if (!max || cur.offset > max.offset)
+                    max = cur;
+            }
+
+            if (!!min)
+                tmp.unshift({offset: 0, color: min.color});
+            if (!!max)
+                tmp.push({offset: 1, color: max.color});
+
+            return arrayIter(tmp);
+        }
+    }
+
+    function arrayIter<T>(arr: T[]): Iterator<T> {
+        var i = -1;
+        return {
+            next(): IteratorResult<T> {
+                i++;
+                if (i >= arr.length)
+                    return {done: true};
+                return {done: false, value: arr[i]};
+            }
+        }
     }
 }
