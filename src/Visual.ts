@@ -34,14 +34,14 @@ namespace puck {
             }
             if ((!value) === (!this.state.fill)) {
                 // toggling fill on/off can disturb extents
-                this.composite.taint(DirtyFlags.extents | DirtyFlags.invalidate);
+                this.composite.taint(DirtyFlags.extents).invalidate();
             }
             if (value !== this.state.fill) {
                 this.state.fill = value;
-                this.composite.taint(DirtyFlags.invalidate);
+                this.composite.invalidate();
             }
             if (value) {
-                this.$fillwatch = value.watch(() => this.composite.taint(DirtyFlags.invalidate));
+                this.$fillwatch = value.watch(() => this.composite.invalidate());
             }
         }
 
@@ -53,14 +53,14 @@ namespace puck {
             }
             if ((!value) === (!this.state.stroke)) {
                 // toggling stroke on/off can disturb padding
-                this.composite.taint(DirtyFlags.padding | DirtyFlags.invalidate);
+                this.composite.taint(DirtyFlags.padding).invalidate();
             }
             if (value !== this.state.stroke) {
                 this.state.stroke = value;
-                this.composite.taint(DirtyFlags.invalidate);
+                this.composite.invalidate();
             }
             if (value) {
-                this.$strokewatch = value.watch(() => this.composite.taint(DirtyFlags.invalidate));
+                this.$strokewatch = value.watch(() => this.composite.invalidate());
             }
         }
 

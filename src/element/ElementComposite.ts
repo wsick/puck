@@ -1,9 +1,10 @@
 namespace puck.element {
     export interface IElementComposite {
         hasDirt(match: DirtyFlags): boolean;
-        taint(newDirt: DirtyFlags);
-        untaint(oldDirt: DirtyFlags);
-        reset();
+        taint(newDirt: DirtyFlags): this;
+        untaint(oldDirt: DirtyFlags): this;
+        reset(): this;
+        invalidate(): this;
         opacity: number;
         visible: boolean;
         transform: Float32Array;
@@ -27,12 +28,14 @@ namespace puck.element {
             return (this.$$dirt & match) > 0;
         }
 
-        taint(newDirt: DirtyFlags) {
+        taint(newDirt: DirtyFlags): this {
             this.$$dirt |= newDirt;
+            return this;
         }
 
-        untaint(oldDirt: DirtyFlags) {
+        untaint(oldDirt: DirtyFlags): this {
             this.$$dirt &= ~oldDirt;
+            return this;
         }
 
         reset(): this {
@@ -43,6 +46,12 @@ namespace puck.element {
             la.rect.init(0, 0, 0, 0, this.extents);
             la.rect.init(0, 0, 0, 0, this.paint);
             this.$$dirt = DirtyFlags.none;
+            return this;
+        }
+
+        invalidate(): this {
+            this.taint(DirtyFlags.invalidate);
+            la.rect.union(this.paint, this.extents);
             return this;
         }
     }

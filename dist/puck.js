@@ -533,14 +533,14 @@ var puck;
                     this.$fillwatch = null;
                 }
                 if ((!value) === (!this.state.fill)) {
-                    this.composite.taint(DirtyFlags.extents | DirtyFlags.invalidate);
+                    this.composite.taint(DirtyFlags.extents).invalidate();
                 }
                 if (value !== this.state.fill) {
                     this.state.fill = value;
-                    this.composite.taint(DirtyFlags.invalidate);
+                    this.composite.invalidate();
                 }
                 if (value) {
-                    this.$fillwatch = value.watch(function () { return _this.composite.taint(DirtyFlags.invalidate); });
+                    this.$fillwatch = value.watch(function () { return _this.composite.invalidate(); });
                 }
             },
             enumerable: true,
@@ -555,14 +555,14 @@ var puck;
                     this.$strokewatch = null;
                 }
                 if ((!value) === (!this.state.stroke)) {
-                    this.composite.taint(DirtyFlags.padding | DirtyFlags.invalidate);
+                    this.composite.taint(DirtyFlags.padding).invalidate();
                 }
                 if (value !== this.state.stroke) {
                     this.state.stroke = value;
-                    this.composite.taint(DirtyFlags.invalidate);
+                    this.composite.invalidate();
                 }
                 if (value) {
-                    this.$strokewatch = value.watch(function () { return _this.composite.taint(DirtyFlags.invalidate); });
+                    this.$strokewatch = value.watch(function () { return _this.composite.invalidate(); });
                 }
             },
             enumerable: true,
@@ -1059,7 +1059,7 @@ var puck;
             var naturalSize = this.state.naturalSize;
             naturalSize.width = width;
             naturalSize.height = height;
-            this.composite.taint(DirtyFlags.stretch | DirtyFlags.extents | DirtyFlags.invalidate);
+            this.composite.taint(DirtyFlags.stretch | DirtyFlags.extents).invalidate();
         };
         return Image;
     })(puck.Element);
@@ -1202,44 +1202,6 @@ var puck;
         var color = stop.color.toString();
         grd.addColorStop(offset, color);
     }
-})(puck || (puck = {}));
-var puck;
-(function (puck) {
-    var Points = (function (_super) {
-        __extends(Points, _super);
-        function Points() {
-            _super.apply(this, arguments);
-        }
-        return Points;
-    })(puck.PuckArray);
-    puck.Points = Points;
-})(puck || (puck = {}));
-var puck;
-(function (puck) {
-    var Polyline = (function (_super) {
-        __extends(Polyline, _super);
-        function Polyline() {
-            _super.apply(this, arguments);
-        }
-        Polyline.prototype.init = function (state, composite) {
-            _super.prototype.init.call(this, state, composite);
-            this.stencil = polygonStencil;
-        };
-        return Polyline;
-    })(puck.Visual);
-    puck.Polyline = Polyline;
-    var polygonStencil = {
-        draft: puck.stencil.visual.draft,
-        draw: function (ctx, bag) {
-            var fr = bag.fillRect;
-            if (fr.width <= 0 || fr.height <= 0) {
-                return;
-            }
-            var raw = ctx.raw;
-            raw.beginPath();
-            raw.closePath();
-        }
-    };
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -1576,9 +1538,11 @@ var puck;
             };
             ElementComposite.prototype.taint = function (newDirt) {
                 this.$$dirt |= newDirt;
+                return this;
             };
             ElementComposite.prototype.untaint = function (oldDirt) {
                 this.$$dirt &= ~oldDirt;
+                return this;
             };
             ElementComposite.prototype.reset = function () {
                 this.opacity = 1.0;
@@ -1588,6 +1552,11 @@ var puck;
                 la.rect.init(0, 0, 0, 0, this.extents);
                 la.rect.init(0, 0, 0, 0, this.paint);
                 this.$$dirt = element.DirtyFlags.none;
+                return this;
+            };
+            ElementComposite.prototype.invalidate = function () {
+                this.taint(element.DirtyFlags.invalidate);
+                la.rect.union(this.paint, this.extents);
                 return this;
             };
             return ElementComposite;
@@ -2718,8 +2687,7 @@ var puck;
                     var comp = bag.composite;
                     if (!comp.hasDirt(element.DirtyFlags.newbounds) || !comp.visible || (comp.opacity * 255) < 0.5)
                         return false;
-                    comp.taint(element.DirtyFlags.invalidate);
-                    la.rect.union(comp.paint, comp.extents);
+                    comp.invalidate();
                     return true;
                 }
                 newbounds.process = process;

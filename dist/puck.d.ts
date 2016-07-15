@@ -423,17 +423,6 @@ declare namespace puck {
     }
 }
 declare namespace puck {
-    class Points extends PuckArray<la.IPoint> {
-    }
-}
-declare namespace puck {
-    import IVisualState = puck.visual.IVisualState;
-    import IVisualComposite = puck.visual.IVisualComposite;
-    class Polyline extends Visual {
-        init(state?: IVisualState, composite?: IVisualComposite): void;
-    }
-}
-declare namespace puck {
     class RadialGradientBrush extends GradientBrush {
         private $center;
         private $origin;
@@ -494,9 +483,10 @@ declare namespace puck {
 declare namespace puck.element {
     interface IElementComposite {
         hasDirt(match: DirtyFlags): boolean;
-        taint(newDirt: DirtyFlags): any;
-        untaint(oldDirt: DirtyFlags): any;
-        reset(): any;
+        taint(newDirt: DirtyFlags): this;
+        untaint(oldDirt: DirtyFlags): this;
+        reset(): this;
+        invalidate(): this;
         opacity: number;
         visible: boolean;
         transform: Float32Array;
@@ -513,9 +503,10 @@ declare namespace puck.element {
         extents: la.IRect;
         paint: la.IRect;
         hasDirt(match: DirtyFlags): boolean;
-        taint(newDirt: DirtyFlags): void;
-        untaint(oldDirt: DirtyFlags): void;
+        taint(newDirt: DirtyFlags): this;
+        untaint(oldDirt: DirtyFlags): this;
         reset(): this;
+        invalidate(): this;
     }
 }
 declare namespace puck.container {
@@ -698,15 +689,6 @@ declare namespace puck.linearGradient {
 declare namespace puck.linearGradient {
     function calcMetrics(dir: la.IPoint, first: la.IPoint, last: la.IPoint, bounds: la.IRect): void;
 }
-interface IteratorResult<T> {
-    done: boolean;
-    value?: T;
-}
-interface Iterator<T> {
-    next(value?: any): IteratorResult<T>;
-    return?(value?: any): IteratorResult<T>;
-    throw?(e?: any): IteratorResult<T>;
-}
 declare namespace puck.radialGradient {
     interface IExtender {
         x0: number;
@@ -730,6 +712,15 @@ declare namespace puck.radialGradient {
         balanced: boolean;
     }
     function createExtender(data: IRadialPointData, bounds: la.IRect): IExtender;
+}
+interface IteratorResult<T> {
+    done: boolean;
+    value?: T;
+}
+interface Iterator<T> {
+    next(value?: any): IteratorResult<T>;
+    return?(value?: any): IteratorResult<T>;
+    throw?(e?: any): IteratorResult<T>;
 }
 declare namespace puck.render {
     interface IStrokeParameters {
