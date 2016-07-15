@@ -9,7 +9,7 @@ namespace puck.image.down.stretch.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.none;
         comp.untaint(DirtyFlags.down | DirtyFlags.up);
@@ -33,7 +33,7 @@ namespace puck.image.down.stretch.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.fill;
         comp.untaint(DirtyFlags.down | DirtyFlags.up);
@@ -53,7 +53,7 @@ namespace puck.image.down.stretch.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.uniform;
         comp.untaint(DirtyFlags.down | DirtyFlags.up);
@@ -73,7 +73,7 @@ namespace puck.image.down.stretch.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.uniformToFill;
         comp.untaint(DirtyFlags.down | DirtyFlags.up);

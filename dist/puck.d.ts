@@ -181,7 +181,7 @@ declare namespace puck.element {
         newbounds = 64,
         invalidate = 128,
         down = 15,
-        up = 112,
+        up = 240,
     }
 }
 declare namespace puck {
@@ -272,19 +272,19 @@ declare namespace puck {
 }
 declare namespace puck {
     enum FillRule {
-        EvenOdd = 0,
-        NonZero = 1,
+        evenodd = 0,
+        nonzero = 1,
     }
     enum PenLineJoin {
-        Miter = 0,
-        Bevel = 1,
-        Round = 2,
+        miter = 0,
+        bevel = 1,
+        round = 2,
     }
     enum PenLineCap {
-        Flat = 0,
-        Square = 1,
-        Round = 2,
-        Triangle = 3,
+        flat = 0,
+        square = 1,
+        round = 2,
+        triangle = 3,
     }
 }
 declare namespace puck {
@@ -348,6 +348,7 @@ declare namespace puck {
         protected $backing: T[];
         protected $changer: internal.WatchChanger;
         length: number;
+        clear(): this;
         add(stop: T): this;
         addMany(stops: T[]): this;
         insert(index: number, stop: T): this;
@@ -380,6 +381,7 @@ declare namespace puck {
         state: IImageState;
         composite: IImageComposite;
         stencil: stencil.IStencil;
+        constructor(state?: IImageState, composite?: IImageComposite);
         init(state?: IImageState, composite?: IImageComposite): void;
         sourceUri: string;
         stretch: Stretch;
@@ -420,6 +422,27 @@ declare namespace puck {
         protected createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
         protected createRepeat(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
         private createInterpolated(ctx, interpolator);
+    }
+}
+declare namespace puck {
+    import IPathState = puck.path.IPathState;
+    import IPathComposite = puck.path.IPathComposite;
+    class Path extends Visual implements path.IPath {
+        state: IPathState;
+        composite: IPathComposite;
+        processor: {
+            down: path.down.Processor;
+            up: path.up.Processor;
+            render: path.render.Processor;
+        };
+        constructor(state?: IPathState, composite?: IPathComposite);
+        init(state?: IPathState, composite?: IPathComposite): void;
+        stretch: Stretch;
+        path: curve.Path;
+        fillRule: FillRule;
+        strokeLineCap: PenLineCap;
+        strokeLineJoin: PenLineJoin;
+        strokeMiterLimit: number;
     }
 }
 declare namespace puck {
@@ -600,12 +623,19 @@ declare namespace puck.render {
         clipRect(rect: la.IRect): void;
         fillEx(region: la.IRect, brush: IBrush, fillRule?: FillRule): void;
         strokeEx(region: la.IRect, brush: IBrush, thickness: number): void;
-        isPointInStrokeEx(pars: IStrokeParameters, x: number, y: number): boolean;
+        isPointInStrokeEx(x: number, y: number, thickness: number): boolean;
+        setStrokeExtras(lineCap: PenLineCap, lineJoin: PenLineJoin, miterLimit: number): void;
     }
 }
 declare namespace puck.engine {
     import RenderContext = puck.render.RenderContext;
     function render(el: element.IElement, ctx: RenderContext, region: la.IRect): void;
+}
+declare namespace puck.fit.extents {
+    function calc(extents: la.IRect, stretch: Stretch, natural: la.IRect, size: la.ISize): void;
+}
+declare namespace puck.fit.transform {
+    function calc(transform: Float32Array, stretch: Stretch, natural: la.IRect, size: la.ISize): void;
 }
 declare namespace puck.image {
     interface IImageSource {
@@ -652,13 +682,13 @@ declare namespace puck.image {
     interface IImageState extends element.IElementState {
         source: IImageSource;
         stretch: Stretch;
-        naturalSize: la.ISize;
+        natural: la.IRect;
         getEffectiveStretch(): Stretch;
     }
     class ImageState extends element.ElementState implements IImageState {
         source: IImageSource;
         stretch: Stretch;
-        naturalSize: la.ISize;
+        natural: la.IRect;
         reset(): this;
         getEffectiveStretch(): Stretch;
     }
@@ -689,6 +719,91 @@ declare namespace puck.linearGradient {
 declare namespace puck.linearGradient {
     function calcMetrics(dir: la.IPoint, first: la.IPoint, last: la.IPoint, bounds: la.IRect): void;
 }
+declare namespace puck.path {
+    class Bounder {
+        private $path;
+        private $filled;
+        private $stroked;
+        private $pars;
+        constructor();
+        getPath(): curve.Path;
+        setPath(path: curve.Path): void;
+        reset(): void;
+        getFillRect(dest: la.IRect): this;
+        getStrokeRect(dest: la.IRect): this;
+        calc(state: IPathState): this;
+        protected setStroke(state: IPathState): void;
+    }
+}
+declare namespace puck.path {
+    interface IPath extends visual.IVisual {
+        state: IPathState;
+        composite: visual.IVisualComposite;
+        processor: {
+            down: path.down.Processor;
+            up: path.up.Processor;
+            render: path.render.Processor;
+        };
+        stencil: stencil.IStencil;
+    }
+}
+declare namespace puck.path {
+    interface IPathComposite extends element.IElementComposite {
+        stretchTransform: Float32Array;
+        natural: la.IRect;
+        bounder: Bounder;
+    }
+    class PathComposite extends element.ElementComposite implements IPathComposite {
+        stretchTransform: Float32Array;
+        natural: la.IRect;
+        bounder: Bounder;
+        reset(): this;
+    }
+}
+declare namespace puck.visual {
+    import ElementState = puck.element.ElementState;
+    interface IVisualState extends element.IElementState {
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
+    }
+    class VisualState extends ElementState implements IVisualState {
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
+        reset(): this;
+    }
+}
+declare namespace puck.path {
+    interface IPathState extends visual.IVisualState {
+        path: curve.Path;
+        stretch: Stretch;
+        fillRule: FillRule;
+        strokeLineCap: PenLineCap;
+        strokeLineJoin: PenLineJoin;
+        strokeMiterLimit: number;
+        getEffectiveStretch(comp: IPathComposite): Stretch;
+    }
+    class PathState extends visual.VisualState implements IPathState {
+        path: curve.Path;
+        stretch: Stretch;
+        fillRule: FillRule;
+        strokeLineCap: PenLineCap;
+        strokeLineJoin: PenLineJoin;
+        strokeMiterLimit: number;
+        reset(): this;
+        getEffectiveStretch(comp: IPathComposite): Stretch;
+    }
+}
+interface IteratorResult<T> {
+    done: boolean;
+    value?: T;
+}
+interface Iterator<T> {
+    next(value?: any): IteratorResult<T>;
+    return?(value?: any): IteratorResult<T>;
+    throw?(e?: any): IteratorResult<T>;
+}
 declare namespace puck.radialGradient {
     interface IExtender {
         x0: number;
@@ -712,25 +827,6 @@ declare namespace puck.radialGradient {
         balanced: boolean;
     }
     function createExtender(data: IRadialPointData, bounds: la.IRect): IExtender;
-}
-interface IteratorResult<T> {
-    done: boolean;
-    value?: T;
-}
-interface Iterator<T> {
-    next(value?: any): IteratorResult<T>;
-    return?(value?: any): IteratorResult<T>;
-    throw?(e?: any): IteratorResult<T>;
-}
-declare namespace puck.render {
-    interface IStrokeParameters {
-        stroke: IBrush;
-        strokeThickness: number;
-        strokeLineJoin: PenLineJoin;
-        strokeStartLineCap: PenLineCap;
-        strokeEndLineCap: PenLineCap;
-        strokeMiterLimit: number;
-    }
 }
 declare namespace puck.render {
     function getNaturalCanvasSize(canvas: HTMLCanvasElement): la.ISize;
@@ -767,6 +863,7 @@ declare namespace puck.stencil {
         composite: IElementComposite;
         fillRect: IRect;
         strokeRect: IRect;
+        path: curve.Path;
     }
     interface IStencil {
         draft(bag: IStencilBag): any;
@@ -791,20 +888,6 @@ declare namespace puck.visual {
     interface IVisualComposite extends element.IElementComposite {
     }
     class VisualComposite extends ElementComposite implements IVisualComposite {
-    }
-}
-declare namespace puck.visual {
-    import ElementState = puck.element.ElementState;
-    interface IVisualState extends element.IElementState {
-        fill: IBrush;
-        stroke: IBrush;
-        strokeThickness: number;
-    }
-    class VisualState extends ElementState implements IVisualState {
-        fill: IBrush;
-        stroke: IBrush;
-        strokeThickness: number;
-        reset(): this;
     }
 }
 declare namespace puck.walk {
@@ -949,8 +1032,54 @@ declare namespace puck.image.up.extents {
     function process(bag: IProcessorBag): boolean;
 }
 declare namespace puck.image.up {
-    import DirtyFlags = puck.element.DirtyFlags;
     import IProcessorBag = puck.element.up.IProcessorBag;
+    import DirtyFlags = puck.element.DirtyFlags;
+    class Processor extends element.up.Processor {
+        static instance: Processor;
+        process(bag: IProcessorBag): DirtyFlags;
+    }
+}
+declare namespace puck.path.down.natural {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.path.down {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    import DirtyFlags = puck.element.DirtyFlags;
+    class Processor extends element.down.Processor {
+        static instance: Processor;
+        process(bag: IProcessorBag): DirtyFlags;
+    }
+}
+declare namespace puck.path.down.stretch {
+    import IProcessorBag = puck.element.down.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.visual.render {
+    interface IProcessorBag extends puck.element.render.IProcessorBag {
+        stencil: stencil.IStencil;
+    }
+    class Processor extends element.render.Processor {
+        static instance: Processor;
+        protected render(bag: IProcessorBag): boolean;
+        protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
+        protected stroke(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
+    }
+}
+declare namespace puck.path.render {
+    class Processor extends visual.render.Processor {
+        static instance: Processor;
+        protected fill(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
+        protected stroke(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
+    }
+}
+declare namespace puck.path.up.extents {
+    import IProcessorBag = puck.element.up.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.path.up {
+    import IProcessorBag = puck.element.up.IProcessorBag;
+    import DirtyFlags = puck.element.DirtyFlags;
     class Processor extends element.up.Processor {
         static instance: Processor;
         process(bag: IProcessorBag): DirtyFlags;
@@ -964,15 +1093,4 @@ interface CanvasRenderingContext2D {
 }
 interface CanvasRenderingContext2D {
     isPointInStroke(x: number, y: number): boolean;
-}
-declare namespace puck.visual.render {
-    interface IProcessorBag extends puck.element.render.IProcessorBag {
-        stencil: stencil.IStencil;
-    }
-    class Processor extends element.render.Processor {
-        static instance: Processor;
-        protected render(bag: IProcessorBag): boolean;
-        protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
-        protected stroke(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
-    }
 }

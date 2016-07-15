@@ -7,6 +7,12 @@ namespace puck {
             return this.$backing.length;
         }
 
+        clear(): this {
+            this.$backing.length = 0;
+            this.$changer.on();
+            return this;
+        }
+
         add(stop: T): this {
             this.$backing.push(stop);
             Object.freeze(stop);

@@ -67,6 +67,7 @@ namespace puck.element.render {
                 composite: bag.composite,
                 fillRect: la.rect.init(0, 0, 0, 0),
                 strokeRect: la.rect.init(0, 0, 0, 0),
+                path: null,
             };
         }
     }

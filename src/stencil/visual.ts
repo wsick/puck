@@ -4,7 +4,7 @@ namespace puck.stencil {
     import RenderContext = puck.render.RenderContext;
     import IRect = la.IRect;
 
-    export var visual = <IStencil>{
+    export var visual: IStencil = {
         draft(bag: IStencilBag) {
             var state = <IVisualState>bag.state,
                 size = state.size;

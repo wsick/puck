@@ -114,7 +114,7 @@ namespace puck.render {
                 (<any>raw).fillRule = raw.msFillRule = "nonzero";
                 raw.fill();
             } else {
-                var fr = fillRule === FillRule.EvenOdd ? "evenodd" : "nonzero";
+                var fr = fillRule === FillRule.evenodd ? "evenodd" : "nonzero";
                 (<any>raw).fillRule = raw.msFillRule = fr;
                 raw.fill(fr);
             }
@@ -128,13 +128,17 @@ namespace puck.render {
             raw.stroke();
         }
 
-        isPointInStrokeEx(pars: IStrokeParameters, x: number, y: number): boolean {
+        isPointInStrokeEx(x: number, y: number, thickness: number): boolean {
             var raw = this.raw;
-            raw.lineWidth = pars.strokeThickness;
-            raw.lineCap = caps[pars.strokeStartLineCap || pars.strokeEndLineCap || 0] || caps[0];
-            raw.lineJoin = joins[pars.strokeLineJoin || 0] || joins[0];
-            raw.miterLimit = pars.strokeMiterLimit;
+            raw.lineWidth = thickness;
             return raw.isPointInStroke(x, y);
+        }
+
+        setStrokeExtras(lineCap: PenLineCap, lineJoin: PenLineJoin, miterLimit: number) {
+            var raw = this.raw;
+            raw.lineCap = caps[lineCap || 0] || caps[0];
+            raw.lineJoin = joins[lineJoin || 0] || joins[0];
+            raw.miterLimit = miterLimit;
         }
     }
 

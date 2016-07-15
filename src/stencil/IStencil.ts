@@ -9,6 +9,7 @@ namespace puck.stencil {
         composite: IElementComposite;
         fillRect: IRect;
         strokeRect: IRect;
+        path: curve.Path;
     }
 
     export interface IStencil {
@@ -16,7 +17,7 @@ namespace puck.stencil {
         draw(ctx: RenderContext, bag: IStencilBag);
     }
 
-    export var empty = <IStencil>{
+    export var empty: IStencil = {
         draft(bag: IStencilBag) {
         },
         draw(ctx: RenderContext, bag: IStencilBag) {

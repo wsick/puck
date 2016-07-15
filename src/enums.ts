@@ -1,19 +1,19 @@
 namespace puck {
     export enum FillRule {
-        EvenOdd = 0,
-        NonZero = 1,
+        evenodd = 0,
+        nonzero = 1,
     }
 
     export enum PenLineJoin {
-        Miter = 0,
-        Bevel = 1,
-        Round = 2,
+        miter = 0,
+        bevel = 1,
+        round = 2,
     }
 
     export enum PenLineCap {
-        Flat = 0,
-        Square = 1,
-        Round = 2,
-        Triangle = 3,
+        flat = 0,
+        square = 1,
+        round = 2,
+        triangle = 3,
     }
 }
