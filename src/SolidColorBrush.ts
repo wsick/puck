@@ -1,7 +1,7 @@
 namespace puck {
     export class SolidColorBrush implements IBrush {
         private $color: Color = null;
-        private $watchers: IBrushWatcher[] = [];
+        private $changer = new puck.internal.WatchChanger();
 
         constructor(color?: Color|string) {
             this.color = new Color(color);
@@ -10,28 +10,13 @@ namespace puck {
         get color(): Color { return this.$color; }
         set color(value: Color) {
             if (!Color.equals(this.$color, value)) {
-                this.onChanged();
+                this.$changer.on();
             }
             this.$color = value; // always set in case ref changes
         }
 
-        watch(onChanged: () => void): puck.IBrushWatcher {
-            var watcher = <IBrushWatcher>{
-                change: onChanged,
-                unwatch: () => {
-                    var ind = this.$watchers.indexOf(watcher);
-                    if (ind > -1)
-                        this.$watchers.splice(ind, 1);
-                }
-            };
-            this.$watchers.push(watcher);
-            return watcher;
-        }
-
-        protected onChanged() {
-            for (var watchers = this.$watchers, i = 0; i < watchers.length; i++) {
-                watchers[i].change();
-            }
+        watch(onChanged: () => void): puck.internal.IWatcher {
+            return this.$changer.watch(onChanged);
         }
 
         setup(ctx: CanvasRenderingContext2D, region: la.IRect) {
