@@ -4,6 +4,14 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    (function (BrushMappingMode) {
+        BrushMappingMode[BrushMappingMode["relativeToBounds"] = 0] = "relativeToBounds";
+        BrushMappingMode[BrushMappingMode["absolute"] = 1] = "absolute";
+    })(puck.BrushMappingMode || (puck.BrushMappingMode = {}));
+    var BrushMappingMode = puck.BrushMappingMode;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var NoAlphaRegex = /#([0-9a-fA-F][0-9a-fA-F]){1}([0-9a-fA-F][0-9a-fA-F]){1}([0-9a-fA-F][0-9a-fA-F]){1}/;
     var AlphaRegex = /#([0-9a-fA-F][0-9a-fA-F]){1}([0-9a-fA-F][0-9a-fA-F]){1}([0-9a-fA-F][0-9a-fA-F]){1}([0-9a-fA-F][0-9a-fA-F]){1}/;
     var Color = (function () {
@@ -735,6 +743,229 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var GradientBrush = (function () {
+        function GradientBrush() {
+            var _this = this;
+            this.$cachedBrush = null;
+            this.$cachedBounds = la.rect.init(0, 0, 0, 0);
+            this.$changer = new puck.internal.WatchChanger();
+            this.$stops = new puck.GradientStops();
+            this.$spreadMethod = puck.GradientSpreadMethod.pad;
+            this.$mappingMode = puck.BrushMappingMode.relativeToBounds;
+            this.$stops.watch(function () { return _this.$changer.on(); });
+        }
+        Object.defineProperty(GradientBrush.prototype, "spreadMethod", {
+            get: function () {
+                return this.$spreadMethod;
+            },
+            set: function (value) {
+                if (this.$spreadMethod !== value) {
+                    this.$spreadMethod = value;
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GradientBrush.prototype, "mappingMode", {
+            get: function () {
+                return this.$mappingMode;
+            },
+            set: function (value) {
+                if (this.$mappingMode !== value) {
+                    this.$mappingMode = value;
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GradientBrush.prototype, "stops", {
+            get: function () {
+                return this.$stops;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        GradientBrush.prototype.watch = function (onChanged) {
+            return this.$changer.watch(onChanged);
+        };
+        GradientBrush.prototype.setup = function (ctx, region) {
+            if (this.$cachedBrush && la.rect.equal(this.$cachedBounds, region))
+                return;
+            la.rect.copyTo(region, this.$cachedBounds);
+            this.createBrush(ctx, region);
+        };
+        GradientBrush.prototype.toHtml5Object = function () {
+            return this.$cachedBrush;
+        };
+        GradientBrush.prototype.createBrush = function (ctx, region) {
+            switch (this.spreadMethod) {
+                case puck.GradientSpreadMethod.pad:
+                    return this.createPad(ctx, region);
+                default:
+                case puck.GradientSpreadMethod.reflect:
+                    return this.createReflect(ctx, region);
+                case puck.GradientSpreadMethod.repeat:
+                    return this.createRepeat(ctx, region);
+            }
+        };
+        GradientBrush.prototype.mapPoint = function (region, point) {
+            var mapped = { x: point.x, y: point.y };
+            if (this.mappingMode === puck.BrushMappingMode.relativeToBounds) {
+                mapped.x *= region.width;
+                mapped.y *= region.height;
+            }
+            mapped.x += region.x;
+            mapped.y += region.y;
+            return mapped;
+        };
+        return GradientBrush;
+    })();
+    puck.GradientBrush = GradientBrush;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    (function (GradientSpreadMethod) {
+        GradientSpreadMethod[GradientSpreadMethod["pad"] = 0] = "pad";
+        GradientSpreadMethod[GradientSpreadMethod["reflect"] = 1] = "reflect";
+        GradientSpreadMethod[GradientSpreadMethod["repeat"] = 2] = "repeat";
+    })(puck.GradientSpreadMethod || (puck.GradientSpreadMethod = {}));
+    var GradientSpreadMethod = puck.GradientSpreadMethod;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var GradientStop = (function () {
+        function GradientStop(color, offset) {
+            this.color = color;
+            this.offset = offset;
+            Object.freeze(this);
+        }
+        return GradientStop;
+    })();
+    puck.GradientStop = GradientStop;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var PuckArray = (function () {
+        function PuckArray() {
+            this.$backing = [];
+            this.$changer = new puck.internal.WatchChanger();
+        }
+        Object.defineProperty(PuckArray.prototype, "length", {
+            get: function () {
+                return this.$backing.length;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        PuckArray.prototype.add = function (stop) {
+            this.$backing.push(stop);
+            Object.freeze(stop);
+            this.$changer.on();
+            return this;
+        };
+        PuckArray.prototype.addMany = function (stops) {
+            var backing = this.$backing;
+            for (var i = 0; i < stops.length; i++) {
+                Object.freeze(stops[i]);
+            }
+            backing.push.apply(backing, stops);
+            this.$changer.on();
+            return this;
+        };
+        PuckArray.prototype.insert = function (index, stop) {
+            this.$backing.splice(index, 0, stop);
+            Object.freeze(stop);
+            this.$changer.on();
+            return this;
+        };
+        PuckArray.prototype.insertMany = function (index, stops) {
+            for (var i = 0; i < stops.length; i++) {
+                Object.freeze(stops[i]);
+            }
+            var backing = this.$backing;
+            for (var i = stops.length - 1; i >= 0; i--) {
+                backing.splice(index, 0, stops[i]);
+            }
+            this.$changer.on();
+            return this;
+        };
+        PuckArray.prototype.edit = function (oldStop, newStop) {
+            return this.editAt(this.$backing.indexOf(oldStop), newStop);
+        };
+        PuckArray.prototype.editAt = function (index, newStop) {
+            var backing = this.$backing;
+            if (index < 0 && index >= backing.length)
+                return this;
+            backing[index] = newStop;
+            Object.freeze(newStop);
+            this.$changer.on();
+            return this;
+        };
+        PuckArray.prototype.remove = function (stop) {
+            return this.removeAt(this.$backing.indexOf(stop));
+        };
+        PuckArray.prototype.removeAt = function (index) {
+            var backing = this.$backing;
+            if (index < 0 && index >= backing.length)
+                return this;
+            backing.splice(index, 1);
+            this.$changer.on();
+            return this;
+        };
+        PuckArray.prototype.watch = function (onChanged) {
+            return this.$changer.watch(onChanged);
+        };
+        PuckArray.prototype.iter = function () {
+            return PuckArray.arrayIter(this.$backing);
+        };
+        PuckArray.arrayIter = function (arr) {
+            var i = -1;
+            return {
+                next: function () {
+                    i++;
+                    if (i >= arr.length)
+                        return { done: true };
+                    return { done: false, value: arr[i] };
+                }
+            };
+        };
+        return PuckArray;
+    })();
+    puck.PuckArray = PuckArray;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var GradientStops = (function (_super) {
+        __extends(GradientStops, _super);
+        function GradientStops() {
+            _super.apply(this, arguments);
+        }
+        GradientStops.prototype.paddedIter = function () {
+            var min = null;
+            var max = null;
+            var tmp = this.$backing.slice(0);
+            for (var i = 0; i < tmp.length; i++) {
+                var cur = tmp[i];
+                tmp.push(cur);
+                if (!min || cur.offset < min.offset)
+                    min = cur;
+                if (!max || cur.offset > max.offset)
+                    max = cur;
+            }
+            if (!!min)
+                tmp.unshift({ offset: 0, color: min.color });
+            if (!!max)
+                tmp.push({ offset: 1, color: max.color });
+            return puck.PuckArray.arrayIter(tmp);
+        };
+        return GradientStops;
+    })(puck.PuckArray);
+    puck.GradientStops = GradientStops;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var DirtyFlags = puck.element.DirtyFlags;
     var Image = (function (_super) {
         __extends(Image, _super);
@@ -893,6 +1124,277 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var LinearGradientBrush = (function (_super) {
+        __extends(LinearGradientBrush, _super);
+        function LinearGradientBrush() {
+            _super.apply(this, arguments);
+            this.$start = { x: 0, y: 0 };
+            this.$end = { x: 0, y: 0 };
+        }
+        Object.defineProperty(LinearGradientBrush.prototype, "start", {
+            get: function () {
+                return this.$start;
+            },
+            set: function (value) {
+                if (this.$start !== value) {
+                    this.$start = value;
+                    Object.freeze(value);
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(LinearGradientBrush.prototype, "end", {
+            get: function () {
+                return this.$end;
+            },
+            set: function (value) {
+                if (this.$end !== value) {
+                    this.$end = value;
+                    Object.freeze(value);
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        LinearGradientBrush.prototype.createPad = function (ctx, region) {
+            var mstart = this.mapPoint(region, this.start);
+            var mend = this.mapPoint(region, this.end);
+            var grd = ctx.createLinearGradient(mstart.x, mstart.y, mend.x, mend.y);
+            for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
+                addColorStop(grd, result.value);
+            }
+            return undefined;
+        };
+        LinearGradientBrush.prototype.createReflect = function (ctx, region) {
+            var mstart = this.mapPoint(region, this.start);
+            var mend = this.mapPoint(region, this.end);
+            return this.createInterpolated(ctx, puck.linearGradient.createRepeatInterpolator(mstart, mend, region));
+        };
+        LinearGradientBrush.prototype.createRepeat = function (ctx, region) {
+            var mstart = this.mapPoint(region, this.start);
+            var mend = this.mapPoint(region, this.end);
+            return this.createInterpolated(ctx, puck.linearGradient.createReflectInterpolator(mstart, mend, region));
+        };
+        LinearGradientBrush.prototype.createInterpolated = function (ctx, interpolator) {
+            var grd = ctx.createLinearGradient(interpolator.x0, interpolator.y0, interpolator.x1, interpolator.y1);
+            var allStops = this.stops.paddedIter();
+            for (; interpolator.step();) {
+                for (var result = allStops.next(); !result.done; result = allStops.next()) {
+                    var cur = result.value;
+                    var inter = {
+                        color: cur.color,
+                        offset: interpolator.interpolate(cur.offset)
+                    };
+                    if (inter.offset >= 0 && inter.offset <= 1)
+                        addColorStop(grd, inter);
+                }
+            }
+            return grd;
+        };
+        return LinearGradientBrush;
+    })(puck.GradientBrush);
+    puck.LinearGradientBrush = LinearGradientBrush;
+    function addColorStop(grd, stop) {
+        var offset = Math.min(1.0, Math.max(0.0, stop.offset));
+        var color = stop.color.toString();
+        grd.addColorStop(offset, color);
+    }
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var Points = (function (_super) {
+        __extends(Points, _super);
+        function Points() {
+            _super.apply(this, arguments);
+        }
+        return Points;
+    })(puck.PuckArray);
+    puck.Points = Points;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var Polyline = (function (_super) {
+        __extends(Polyline, _super);
+        function Polyline() {
+            _super.apply(this, arguments);
+        }
+        Polyline.prototype.init = function (state, composite) {
+            _super.prototype.init.call(this, state, composite);
+            this.stencil = polygonStencil;
+        };
+        return Polyline;
+    })(puck.Visual);
+    puck.Polyline = Polyline;
+    var polygonStencil = {
+        draft: puck.stencil.visual.draft,
+        draw: function (ctx, bag) {
+            var fr = bag.fillRect;
+            if (fr.width <= 0 || fr.height <= 0) {
+                return;
+            }
+            var raw = ctx.raw;
+            raw.beginPath();
+            raw.closePath();
+        }
+    };
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var tmpCanvas = document.createElement('canvas');
+    var tmpCtx = tmpCanvas.getContext('2d');
+    var epsilon = 1E-10;
+    var RadialGradientBrush = (function (_super) {
+        __extends(RadialGradientBrush, _super);
+        function RadialGradientBrush() {
+            _super.apply(this, arguments);
+            this.$center = { x: 0.5, y: 0.5 };
+            this.$origin = { x: 0.5, y: 0.5 };
+            this.$radius = { x: 0.5, y: 0.5 };
+        }
+        Object.defineProperty(RadialGradientBrush.prototype, "center", {
+            get: function () {
+                return this.$center;
+            },
+            set: function (value) {
+                if (this.$center !== value) {
+                    this.$center = value;
+                    Object.freeze(value);
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(RadialGradientBrush.prototype, "origin", {
+            get: function () {
+                return this.$origin;
+            },
+            set: function (value) {
+                if (this.$origin !== value) {
+                    this.$origin = value;
+                    Object.freeze(value);
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(RadialGradientBrush.prototype, "radiusX", {
+            get: function () {
+                return this.$radius.x;
+            },
+            set: function (value) {
+                if (this.$radius.x !== value) {
+                    this.$radius.x = value;
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(RadialGradientBrush.prototype, "radiusY", {
+            get: function () {
+                return this.$radius.y;
+            },
+            set: function (value) {
+                if (this.$radius.y !== value) {
+                    this.$radius.y = value;
+                    this.$changer.on();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        RadialGradientBrush.prototype.createPad = function (ctx, region) {
+            var data = this.getPointData(region);
+            var grd = (!data.balanced ? tmpCtx : ctx).createRadialGradient(data.x0, data.y0, 0, data.x1, data.y1, data.r1);
+            for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
+                addColorStop(grd, result.value);
+            }
+            return this.fit(ctx, grd, data, region);
+        };
+        RadialGradientBrush.prototype.createReflect = function (ctx, region) {
+            var data = this.getPointData(region);
+            return this.createInterpolated(data, region, false);
+        };
+        RadialGradientBrush.prototype.createRepeat = function (ctx, region) {
+            var data = this.getPointData(region);
+            return this.createInterpolated(data, region, true);
+        };
+        RadialGradientBrush.prototype.createInterpolated = function (data, bounds, reflect) {
+            tmpCanvas.width = bounds.width;
+            tmpCanvas.height = bounds.height;
+            tmpCtx.save();
+            if (!data.balanced)
+                tmpCtx.scale(data.sx, data.sy);
+            tmpCtx.globalCompositeOperation = "destination-over";
+            var inverted = false;
+            var allStops = this.stops.paddedIter();
+            for (var extender = puck.radialGradient.createExtender(data, bounds); extender.step(); inverted = !inverted) {
+                var grd = extender.createGradient(tmpCtx);
+                for (var result = allStops.next(); !result.done; result = allStops.next()) {
+                    var cur = result.value;
+                    var inter = {
+                        color: cur.color,
+                        offset: (reflect && inverted) ? 1 - cur.offset : cur.offset,
+                    };
+                    addColorStop(grd, inter);
+                }
+                tmpCtx.fillStyle = grd;
+                tmpCtx.beginPath();
+                tmpCtx.arc(extender.x1, extender.y1, extender.r1, 0, 2 * Math.PI, false);
+                tmpCtx.closePath();
+                tmpCtx.fill();
+            }
+            var pattern = tmpCtx.createPattern(tmpCanvas, "no-repeat");
+            tmpCtx.restore();
+            return pattern;
+        };
+        RadialGradientBrush.prototype.getPointData = function (bounds) {
+            var mcenter = this.mapPoint(bounds, this.center);
+            var morigin = this.mapPoint(bounds, this.origin);
+            var mradius = this.mapPoint(bounds, this.$radius);
+            var rad = Math.max(mradius.x, mradius.y);
+            var side = Math.max(bounds.width, bounds.height), sx = bounds.width / side, sy = bounds.height / side;
+            return {
+                x0: morigin.x / sx,
+                y0: morigin.y / sy,
+                x1: mcenter.x / sx,
+                y1: mcenter.y / sy,
+                r1: rad,
+                side: side,
+                sx: bounds.width / side,
+                sy: bounds.height / side,
+                balanced: Math.abs(mradius.x - mradius.y) < epsilon
+            };
+        };
+        RadialGradientBrush.prototype.fit = function (ctx, fill, data, bounds) {
+            if (data.balanced)
+                return fill;
+            tmpCanvas.width = bounds.width;
+            tmpCanvas.height = bounds.height;
+            tmpCtx.save();
+            tmpCtx.scale(data.sx, data.sy);
+            tmpCtx.fillStyle = fill;
+            tmpCtx.fillRect(0, 0, data.side, data.side);
+            var pattern = ctx.createPattern(tmpCanvas, "no-repeat");
+            tmpCtx.restore();
+            return pattern;
+        };
+        return RadialGradientBrush;
+    })(puck.GradientBrush);
+    puck.RadialGradientBrush = RadialGradientBrush;
+    function addColorStop(grd, stop) {
+        var offset = Math.min(1.0, Math.max(0.0, stop.offset));
+        var color = stop.color.toString();
+        grd.addColorStop(offset, color);
+    }
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var DirtyFlags = puck.element.DirtyFlags;
     var Rectangle = (function (_super) {
         __extends(Rectangle, _super);
@@ -969,14 +1471,14 @@ var puck;
     var SolidColorBrush = (function () {
         function SolidColorBrush(color) {
             this.$color = null;
-            this.$watchers = [];
+            this.$changer = new puck.internal.WatchChanger();
             this.color = new puck.Color(color);
         }
         Object.defineProperty(SolidColorBrush.prototype, "color", {
             get: function () { return this.$color; },
             set: function (value) {
                 if (!puck.Color.equals(this.$color, value)) {
-                    this.onChanged();
+                    this.$changer.on();
                 }
                 this.$color = value;
             },
@@ -984,22 +1486,7 @@ var puck;
             configurable: true
         });
         SolidColorBrush.prototype.watch = function (onChanged) {
-            var _this = this;
-            var watcher = {
-                change: onChanged,
-                unwatch: function () {
-                    var ind = _this.$watchers.indexOf(watcher);
-                    if (ind > -1)
-                        _this.$watchers.splice(ind, 1);
-                }
-            };
-            this.$watchers.push(watcher);
-            return watcher;
-        };
-        SolidColorBrush.prototype.onChanged = function () {
-            for (var watchers = this.$watchers, i = 0; i < watchers.length; i++) {
-                watchers[i].change();
-            }
+            return this.$changer.watch(onChanged);
         };
         SolidColorBrush.prototype.setup = function (ctx, region) {
         };
@@ -1512,6 +1999,255 @@ var puck;
         })(puck.element.ElementState);
         image.ImageState = ImageState;
     })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var internal;
+    (function (internal) {
+        var WatchChanger = (function () {
+            function WatchChanger() {
+                this.$watchers = [];
+            }
+            WatchChanger.prototype.watch = function (onChanged) {
+                var watchers = this.$watchers;
+                var watcher = {
+                    change: onChanged,
+                    unwatch: function () {
+                        var ind = watchers.indexOf(watcher);
+                        if (ind > -1)
+                            watchers.splice(ind, 1);
+                    }
+                };
+                watchers.push(watcher);
+                return watcher;
+            };
+            WatchChanger.prototype.on = function () {
+                for (var watchers = this.$watchers, i = 0; i < watchers.length; i++) {
+                    watchers[i].change();
+                }
+            };
+            return WatchChanger;
+        })();
+        internal.WatchChanger = WatchChanger;
+    })(internal = puck.internal || (puck.internal = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var linearGradient;
+    (function (linearGradient) {
+        function createRepeatInterpolator(start, end, bounds) {
+            var first = { x: start.x, y: start.y };
+            var last = { x: end.x, y: end.y };
+            var dir = { x: end.x - start.x, y: end.y - start.y };
+            linearGradient.calcMetrics(dir, first, last, bounds);
+            var numSteps = (last.x - first.x) / dir.x;
+            var stepSize = 1.0 / numSteps;
+            var cur = -stepSize;
+            return {
+                x0: first.x,
+                y0: first.y,
+                x1: last.x,
+                y1: last.y,
+                step: function () {
+                    cur += stepSize;
+                    return cur < 1;
+                },
+                interpolate: function (offset) {
+                    return cur + (offset / numSteps);
+                }
+            };
+        }
+        linearGradient.createRepeatInterpolator = createRepeatInterpolator;
+        function createReflectInterpolator(start, end, bounds) {
+            var first = { x: start.x, y: start.y };
+            var last = { x: end.x, y: end.y };
+            var dir = { x: end.x - start.x, y: end.y - start.y };
+            linearGradient.calcMetrics(dir, first, last, bounds);
+            var numSteps = (last.x - first.x) / dir.x;
+            var stepSize = 1.0 / numSteps;
+            var cur = -stepSize;
+            var inverted = Math.round((start.x - first.x) / dir.x) % 2 === 0;
+            return {
+                x0: first.x,
+                y0: first.y,
+                x1: last.x,
+                y1: last.y,
+                step: function () {
+                    inverted = !inverted;
+                    cur += stepSize;
+                    return cur < 1;
+                },
+                interpolate: function (offset) {
+                    var norm = offset / numSteps;
+                    return !inverted ? cur + norm : cur + (stepSize - norm);
+                }
+            };
+        }
+        linearGradient.createReflectInterpolator = createReflectInterpolator;
+    })(linearGradient = puck.linearGradient || (puck.linearGradient = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var linearGradient;
+    (function (linearGradient) {
+        function calcMetrics(dir, first, last, bounds) {
+            if (dir.y === 0) {
+                if (dir.x < 0)
+                    W(dir, first, last, bounds);
+                else if (dir.x !== 0)
+                    E(dir, first, last, bounds);
+            }
+            else if (dir.x === 0) {
+                if (dir.y < 0)
+                    N(dir, first, last, bounds);
+                else if (dir.y !== 0)
+                    S(dir, first, last, bounds);
+            }
+            else if (dir.x < 0 && dir.y < 0) {
+                NW(dir, first, last, bounds);
+            }
+            else if (dir.x < 0 && dir.y > 0) {
+                SW(dir, first, last, bounds);
+            }
+            else if (dir.x > 0 && dir.y < 0) {
+                NE(dir, first, last, bounds);
+            }
+            else if (dir.x > 0 && dir.y > 0) {
+                SE(dir, first, last, bounds);
+            }
+        }
+        linearGradient.calcMetrics = calcMetrics;
+        function E(dir, first, last, bounds) {
+            var maxX = bounds.x + bounds.width;
+            while (first.x >= bounds.x)
+                first.x -= dir.x;
+            while (last.x <= maxX)
+                last.x += dir.x;
+        }
+        function W(dir, first, last, bounds) {
+            var maxX = bounds.x + bounds.width;
+            while (first.x <= maxX)
+                first.x -= dir.x;
+            while (last.x >= bounds.x)
+                last.x += dir.x;
+        }
+        function S(dir, first, last, bounds) {
+            var maxY = bounds.y + bounds.height;
+            while (first.y >= bounds.y)
+                first.y -= dir.y;
+            while (last.y <= maxY)
+                last.y += dir.y;
+        }
+        function N(dir, first, last, bounds) {
+            var maxY = bounds.y + bounds.height;
+            while (first.y <= maxY)
+                first.y -= dir.y;
+            while (last.y >= bounds.y)
+                last.y += dir.y;
+        }
+        function NW(dir, first, last, bounds) {
+            var maxX = bounds.x + bounds.width;
+            var maxY = bounds.y + bounds.height;
+            while (first.x <= maxX && first.y <= maxY) {
+                first.x -= dir.x;
+                first.y -= dir.y;
+            }
+            while (last.x >= bounds.x && last.y >= bounds.y) {
+                last.x += dir.x;
+                last.y += dir.y;
+            }
+        }
+        function SW(dir, first, last, bounds) {
+            var maxX = bounds.x + bounds.width;
+            var maxY = bounds.y + bounds.height;
+            while (first.x <= maxX && first.y >= bounds.y) {
+                first.x -= dir.x;
+                first.y -= dir.y;
+            }
+            while (last.x >= bounds.x && last.y <= maxY) {
+                last.x += dir.x;
+                last.y += dir.y;
+            }
+        }
+        function NE(dir, first, last, bounds) {
+            var maxX = bounds.x + bounds.width;
+            var maxY = bounds.y + bounds.height;
+            while (first.x >= bounds.x && first.y <= maxY) {
+                first.x -= dir.x;
+                first.y -= dir.y;
+            }
+            while (last.x <= maxX && last.y >= bounds.y) {
+                last.x += dir.x;
+                last.y += dir.y;
+            }
+        }
+        function SE(dir, first, last, bounds) {
+            var maxX = bounds.x + bounds.width;
+            var maxY = bounds.y + bounds.height;
+            while (first.x >= bounds.x && first.y >= bounds.y) {
+                first.x -= dir.x;
+                first.y -= dir.y;
+            }
+            while (last.x <= maxX && last.y <= maxY) {
+                last.x += dir.x;
+                last.y += dir.y;
+            }
+        }
+    })(linearGradient = puck.linearGradient || (puck.linearGradient = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var radialGradient;
+    (function (radialGradient) {
+        function createExtender(data, bounds) {
+            var started = false;
+            var dx = data.x1 - data.x0;
+            var dy = data.y1 - data.y0;
+            var rstep = data.r1;
+            var reached = false;
+            var ext = {
+                x0: data.x0,
+                y0: data.y0,
+                r0: 0,
+                x1: data.x1,
+                y1: data.y1,
+                r1: data.r1,
+                step: function () {
+                    if (!started) {
+                        started = true;
+                        return true;
+                    }
+                    ext.x0 = ext.x1;
+                    ext.y0 = ext.y1;
+                    ext.r0 += rstep;
+                    ext.r1 += rstep;
+                    ext.x1 += dx;
+                    ext.y1 += dy;
+                    if (reached)
+                        return false;
+                    reached = exceedBounds(ext.x1, ext.y1, ext.r1, bounds);
+                    return true;
+                },
+                createGradient: function (ctx) {
+                    return ctx.createRadialGradient(ext.x0, ext.y0, ext.r0, ext.x1, ext.y1, ext.r1);
+                }
+            };
+            return ext;
+        }
+        radialGradient.createExtender = createExtender;
+        function exceedBounds(cx, cy, radius, bounds) {
+            var ne = len(cx, cy, bounds.x, bounds.y);
+            var nw = len(cx, cy, bounds.x + bounds.width, bounds.y);
+            var sw = len(cx, cy, bounds.x + bounds.width, bounds.y + bounds.height);
+            var se = len(cx, cy, bounds.x, bounds.y + bounds.height);
+            return Math.max(ne, nw, sw, se) < radius;
+        }
+        function len(x1, y1, x2, y2) {
+            var dx = x2 - x1;
+            var dy = y2 - y1;
+            return Math.sqrt((dx * dx) + (dy * dy));
+        }
+    })(radialGradient = puck.radialGradient || (puck.radialGradient = {}));
 })(puck || (puck = {}));
 var puck;
 (function (puck) {

@@ -4,8 +4,8 @@ namespace puck {
     import DirtyFlags = puck.element.DirtyFlags;
 
     export class Visual extends Element implements visual.IVisual {
-        private $fillwatch: IBrushWatcher = null;
-        private $strokewatch: IBrushWatcher = null;
+        private $fillwatch: puck.internal.IWatcher = null;
+        private $strokewatch: puck.internal.IWatcher = null;
 
         state: IVisualState;
         composite: IVisualComposite;

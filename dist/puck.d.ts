@@ -2,6 +2,12 @@ declare module puck {
     var version: string;
 }
 declare namespace puck {
+    enum BrushMappingMode {
+        relativeToBounds = 0,
+        absolute = 1,
+    }
+}
+declare namespace puck {
     class Color {
         r: number;
         g: number;
@@ -298,14 +304,73 @@ declare namespace puck {
     }
 }
 declare namespace puck {
+    abstract class GradientBrush implements IBrush {
+        private $cachedBrush;
+        private $cachedBounds;
+        protected $changer: internal.WatchChanger;
+        private $stops;
+        private $spreadMethod;
+        private $mappingMode;
+        constructor();
+        spreadMethod: GradientSpreadMethod;
+        mappingMode: BrushMappingMode;
+        stops: GradientStops;
+        watch(onChanged: () => void): puck.internal.IWatcher;
+        setup(ctx: CanvasRenderingContext2D, region: la.IRect): void;
+        toHtml5Object(): any;
+        protected createBrush(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected abstract createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected abstract createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected abstract createRepeat(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected mapPoint(region: la.IRect, point: la.IPoint): la.IPoint;
+    }
+}
+declare namespace puck {
+    enum GradientSpreadMethod {
+        pad = 0,
+        reflect = 1,
+        repeat = 2,
+    }
+}
+declare namespace puck {
+    interface IGradientStop {
+        color: Color;
+        offset: number;
+    }
+    class GradientStop implements IGradientStop {
+        color: Color;
+        offset: number;
+        constructor(color: Color, offset: number);
+    }
+}
+declare namespace puck {
+    class PuckArray<T> {
+        protected $backing: T[];
+        protected $changer: internal.WatchChanger;
+        length: number;
+        add(stop: T): this;
+        addMany(stops: T[]): this;
+        insert(index: number, stop: T): this;
+        insertMany(index: number, stops: T[]): this;
+        edit(oldStop: T, newStop: T): this;
+        editAt(index: number, newStop: T): this;
+        remove(stop: T): this;
+        removeAt(index: number): this;
+        watch(onChanged: () => void): puck.internal.IWatcher;
+        iter(): Iterator<T>;
+        static arrayIter<T>(arr: T[]): Iterator<T>;
+    }
+}
+declare namespace puck {
+    class GradientStops extends PuckArray<IGradientStop> {
+        paddedIter(): Iterator<IGradientStop>;
+    }
+}
+declare namespace puck {
     interface IBrush {
-        watch(onChanged: () => void): IBrushWatcher;
+        watch(onChanged: () => void): puck.internal.IWatcher;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): any;
         toHtml5Object(): any;
-    }
-    interface IBrushWatcher {
-        change(): any;
-        unwatch(): any;
     }
 }
 declare namespace puck {
@@ -346,6 +411,46 @@ declare namespace puck {
     }
 }
 declare namespace puck {
+    class LinearGradientBrush extends GradientBrush {
+        private $start;
+        private $end;
+        start: la.IPoint;
+        end: la.IPoint;
+        protected createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected createRepeat(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        private createInterpolated(ctx, interpolator);
+    }
+}
+declare namespace puck {
+    class Points extends PuckArray<la.IPoint> {
+    }
+}
+declare namespace puck {
+    import IVisualState = puck.visual.IVisualState;
+    import IVisualComposite = puck.visual.IVisualComposite;
+    class Polyline extends Visual {
+        init(state?: IVisualState, composite?: IVisualComposite): void;
+    }
+}
+declare namespace puck {
+    class RadialGradientBrush extends GradientBrush {
+        private $center;
+        private $origin;
+        private $radius;
+        center: la.IPoint;
+        origin: la.IPoint;
+        radiusX: number;
+        radiusY: number;
+        protected createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        protected createRepeat(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
+        private createInterpolated(data, bounds, reflect);
+        private getPointData(bounds);
+        private fit(ctx, fill, data, bounds);
+    }
+}
+declare namespace puck {
     import IVisualState = puck.visual.IVisualState;
     import IVisualComposite = puck.visual.IVisualComposite;
     class Rectangle extends Visual {
@@ -359,11 +464,10 @@ declare namespace puck {
 declare namespace puck {
     class SolidColorBrush implements IBrush {
         private $color;
-        private $watchers;
+        private $changer;
         constructor(color?: Color | string);
         color: Color;
-        watch(onChanged: () => void): puck.IBrushWatcher;
-        protected onChanged(): void;
+        watch(onChanged: () => void): puck.internal.IWatcher;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): void;
         toHtml5Object(): any;
     }
@@ -567,6 +671,65 @@ declare namespace puck.image {
         reset(): this;
         getEffectiveStretch(): Stretch;
     }
+}
+declare namespace puck.internal {
+    interface IWatcher {
+        change(): any;
+        unwatch(): any;
+    }
+    class WatchChanger {
+        private $watchers;
+        watch(onChanged: () => void): IWatcher;
+        on(): void;
+    }
+}
+declare namespace puck.linearGradient {
+    interface IInterpolator {
+        x0: number;
+        y0: number;
+        x1: number;
+        y1: number;
+        step(): boolean;
+        interpolate(offset: number): number;
+    }
+    function createRepeatInterpolator(start: la.IPoint, end: la.IPoint, bounds: la.IRect): IInterpolator;
+    function createReflectInterpolator(start: la.IPoint, end: la.IPoint, bounds: la.IRect): IInterpolator;
+}
+declare namespace puck.linearGradient {
+    function calcMetrics(dir: la.IPoint, first: la.IPoint, last: la.IPoint, bounds: la.IRect): void;
+}
+interface IteratorResult<T> {
+    done: boolean;
+    value?: T;
+}
+interface Iterator<T> {
+    next(value?: any): IteratorResult<T>;
+    return?(value?: any): IteratorResult<T>;
+    throw?(e?: any): IteratorResult<T>;
+}
+declare namespace puck.radialGradient {
+    interface IExtender {
+        x0: number;
+        y0: number;
+        r0: number;
+        x1: number;
+        y1: number;
+        r1: number;
+        step(): boolean;
+        createGradient(ctx: CanvasRenderingContext2D): CanvasGradient;
+    }
+    interface IRadialPointData {
+        x0: number;
+        y0: number;
+        x1: number;
+        y1: number;
+        r1: number;
+        sx: number;
+        sy: number;
+        side: number;
+        balanced: boolean;
+    }
+    function createExtender(data: IRadialPointData, bounds: la.IRect): IExtender;
 }
 declare namespace puck.render {
     interface IStrokeParameters {
