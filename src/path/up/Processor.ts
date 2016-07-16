@@ -1,6 +1,6 @@
 /// <reference path="../../element/up/Processor" />
 
-namespace puck.image.up {
+namespace puck.path.up {
     import IProcessorBag = puck.element.up.IProcessorBag;
     import DirtyFlags = puck.element.DirtyFlags;
     import newbounds = puck.element.up.newbounds;

@@ -11,8 +11,10 @@ namespace puck.element {
         //origin of transform in relative coordinate space ([0.0,1.0], [0.0,1.0])
         transform: Float32Array;
         transformOrigin: la.IPoint;
-        
+
         reset();
+
+        mapTransformOrigin(comp: IElementComposite): la.IPoint;
     }
 
     export class ElementState implements IElementState {
@@ -34,6 +36,15 @@ namespace puck.element {
             this.transformOrigin.x = 0.5;
             this.transformOrigin.y = 0.5;
             return this;
+        }
+
+        mapTransformOrigin(comp: IElementComposite): la.IPoint {
+            var to = this.transformOrigin,
+                size = this.size;
+            return {
+                x: to.x * size.width,
+                y: to.y * size.height
+            };
         }
     }
 }

@@ -9,7 +9,8 @@
     "gulpfile.js"
   ],
   "dependencies": {
-    "la": "~0.2.4"
+    "la": "~0.2.4",
+    "curve": "~0.1.4"
   },
   "devDependencies": {
     "qunit": "~1.20.0"

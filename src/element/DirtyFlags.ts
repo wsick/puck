@@ -9,10 +9,9 @@ namespace puck.element {
         padding = 1 << 4,
         extents = 1 << 5,
         newbounds = 1 << 6,
-
         invalidate = 1 << 7,
 
         down = DirtyFlags.opacity | DirtyFlags.visible | DirtyFlags.stretch | DirtyFlags.transform,
-        up = DirtyFlags.padding | DirtyFlags.extents | DirtyFlags.newbounds
+        up = DirtyFlags.padding | DirtyFlags.extents | DirtyFlags.newbounds | DirtyFlags.invalidate,
     }
 }

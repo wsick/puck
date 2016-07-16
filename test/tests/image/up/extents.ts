@@ -9,7 +9,7 @@ namespace puck.image.up.extents.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.none;
         rect.init(0, 0, 0, 0, comp.extents);
@@ -29,7 +29,7 @@ namespace puck.image.up.extents.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.fill;
         rect.init(0, 0, 0, 0, comp.extents);
@@ -49,7 +49,7 @@ namespace puck.image.up.extents.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.uniform;
         rect.init(0, 0, 0, 0, comp.extents);
@@ -69,7 +69,7 @@ namespace puck.image.up.extents.tests {
             state = <IImageState>bag.state,
             comp = <IImageComposite>bag.composite,
             size = state.size,
-            natural = state.naturalSize;
+            natural = state.natural;
 
         state.stretch = Stretch.uniformToFill;
         rect.init(0, 0, 0, 0, comp.extents);

@@ -3,6 +3,14 @@ namespace puck {
     import IVisualComposite = puck.visual.IVisualComposite;
     import DirtyFlags = puck.element.DirtyFlags;
 
+    /*
+     * This represents an element that has a *fill*, *stroke*, and *strokeThickness*
+     * If *fill* or *stroke* change, visual needs repainted
+     * If a *fill* or *stroke* is cleared, *extents* needs updated
+     * If a *stroke* is cleared, *padding* needs updated
+     * If *strokeThickness* changes, *padding* needs updated
+     */
+
     export class Visual extends Element implements visual.IVisual {
         private $fillwatch: puck.internal.IWatcher = null;
         private $strokewatch: puck.internal.IWatcher = null;

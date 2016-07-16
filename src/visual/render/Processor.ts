@@ -26,21 +26,12 @@ namespace puck.visual.render {
         protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag) {
             if (!state.fill)
                 return;
-            /* TODO: Override this when drawing multiline segments to include
-             *   FillRule
-             */
             ctx.fillEx(sbag.fillRect, state.fill);
         }
 
         protected stroke(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag) {
             if (!state.stroke || state.strokeThickness <= 0)
                 return;
-            /* TODO: Override this when drawing multiline segments to include
-             *   StartLineCap
-             *   EndLineCap
-             *   LineJoin
-             *   MiterLimit
-             */
             ctx.strokeEx(sbag.strokeRect, state.stroke, state.strokeThickness);
         }
     }

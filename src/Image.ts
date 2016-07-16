@@ -14,6 +14,10 @@ namespace puck {
         composite: IImageComposite;
         stencil: stencil.IStencil;
 
+        constructor(state?: IImageState, composite?: IImageComposite) {
+            super(state, composite);
+        }
+
         init(state?: IImageState, composite?: IImageComposite) {
             this.state = (state || new image.ImageState()).reset();
             this.composite = (composite || new image.ImageComposite()).reset();
@@ -87,7 +91,7 @@ namespace puck {
         }
 
         protected setNaturalSize(width: number, height: number) {
-            var naturalSize = this.state.naturalSize;
+            var naturalSize = this.state.natural;
             naturalSize.width = width;
             naturalSize.height = height;
             this.composite.taint(DirtyFlags.stretch | DirtyFlags.extents).invalidate();

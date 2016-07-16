@@ -291,7 +291,7 @@ var puck;
             DirtyFlags[DirtyFlags["newbounds"] = 64] = "newbounds";
             DirtyFlags[DirtyFlags["invalidate"] = 128] = "invalidate";
             DirtyFlags[DirtyFlags["down"] = 15] = "down";
-            DirtyFlags[DirtyFlags["up"] = 112] = "up";
+            DirtyFlags[DirtyFlags["up"] = 240] = "up";
         })(element.DirtyFlags || (element.DirtyFlags = {}));
         var DirtyFlags = element.DirtyFlags;
     })(element = puck.element || (puck.element = {}));
@@ -682,21 +682,21 @@ var puck;
 var puck;
 (function (puck) {
     (function (FillRule) {
-        FillRule[FillRule["EvenOdd"] = 0] = "EvenOdd";
-        FillRule[FillRule["NonZero"] = 1] = "NonZero";
+        FillRule[FillRule["evenodd"] = 0] = "evenodd";
+        FillRule[FillRule["nonzero"] = 1] = "nonzero";
     })(puck.FillRule || (puck.FillRule = {}));
     var FillRule = puck.FillRule;
     (function (PenLineJoin) {
-        PenLineJoin[PenLineJoin["Miter"] = 0] = "Miter";
-        PenLineJoin[PenLineJoin["Bevel"] = 1] = "Bevel";
-        PenLineJoin[PenLineJoin["Round"] = 2] = "Round";
+        PenLineJoin[PenLineJoin["miter"] = 0] = "miter";
+        PenLineJoin[PenLineJoin["bevel"] = 1] = "bevel";
+        PenLineJoin[PenLineJoin["round"] = 2] = "round";
     })(puck.PenLineJoin || (puck.PenLineJoin = {}));
     var PenLineJoin = puck.PenLineJoin;
     (function (PenLineCap) {
-        PenLineCap[PenLineCap["Flat"] = 0] = "Flat";
-        PenLineCap[PenLineCap["Square"] = 1] = "Square";
-        PenLineCap[PenLineCap["Round"] = 2] = "Round";
-        PenLineCap[PenLineCap["Triangle"] = 3] = "Triangle";
+        PenLineCap[PenLineCap["flat"] = 0] = "flat";
+        PenLineCap[PenLineCap["square"] = 1] = "square";
+        PenLineCap[PenLineCap["round"] = 2] = "round";
+        PenLineCap[PenLineCap["triangle"] = 3] = "triangle";
     })(puck.PenLineCap || (puck.PenLineCap = {}));
     var PenLineCap = puck.PenLineCap;
 })(puck || (puck = {}));
@@ -859,6 +859,11 @@ var puck;
             enumerable: true,
             configurable: true
         });
+        PuckArray.prototype.clear = function () {
+            this.$backing.length = 0;
+            this.$changer.on();
+            return this;
+        };
         PuckArray.prototype.add = function (stop) {
             this.$backing.push(stop);
             Object.freeze(stop);
@@ -969,8 +974,8 @@ var puck;
     var DirtyFlags = puck.element.DirtyFlags;
     var Image = (function (_super) {
         __extends(Image, _super);
-        function Image() {
-            _super.apply(this, arguments);
+        function Image(state, composite) {
+            _super.call(this, state, composite);
         }
         Image.prototype.init = function (state, composite) {
             var _this = this;
@@ -1056,7 +1061,7 @@ var puck;
             this.setNaturalSize(source.naturalWidth, source.naturalHeight);
         };
         Image.prototype.setNaturalSize = function (width, height) {
-            var naturalSize = this.state.naturalSize;
+            var naturalSize = this.state.natural;
             naturalSize.width = width;
             naturalSize.height = height;
             this.composite.taint(DirtyFlags.stretch | DirtyFlags.extents).invalidate();
@@ -1202,6 +1207,167 @@ var puck;
         var color = stop.color.toString();
         grd.addColorStop(offset, color);
     }
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var DirtyFlags = puck.element.DirtyFlags;
+    var Path = (function (_super) {
+        __extends(Path, _super);
+        function Path(state, composite) {
+            _super.call(this, state, composite);
+        }
+        Path.prototype.init = function (state, composite) {
+            this.state = (state || new puck.path.PathState()).reset();
+            this.composite = (composite || new puck.path.PathComposite()).reset();
+            this.processor = {
+                down: puck.path.down.Processor.instance,
+                up: puck.path.up.Processor.instance,
+                render: puck.path.render.Processor.instance,
+            };
+            this.stencil = puck.stencil.path;
+        };
+        Object.defineProperty(Path.prototype, "x", {
+            get: function () {
+                return this.state.offset.x;
+            },
+            set: function (value) {
+                if (this.state.offset.x !== value) {
+                    this.state.offset.x = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "y", {
+            get: function () {
+                return this.state.offset.y;
+            },
+            set: function (value) {
+                if (this.state.offset.y !== value) {
+                    this.state.offset.y = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "width", {
+            get: function () {
+                return this.state.size.width;
+            },
+            set: function (value) {
+                if (this.state.size.width !== value) {
+                    this.state.size.width = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "height", {
+            get: function () {
+                return this.state.size.height;
+            },
+            set: function (value) {
+                if (this.state.size.height !== value) {
+                    this.state.size.height = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "stretch", {
+            get: function () {
+                return this.state.stretch;
+            },
+            set: function (value) {
+                if (this.state.stretch !== value) {
+                    this.state.stretch = value;
+                    this.composite.taint(DirtyFlags.stretch);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "path", {
+            get: function () {
+                return this.state.path;
+            },
+            set: function (value) {
+                if (this.state.path !== value) {
+                    this.state.path = value;
+                    this.composite.bounder.setPath(value);
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "fillRule", {
+            get: function () {
+                return this.state.fillRule;
+            },
+            set: function (value) {
+                if (this.state.fillRule !== value) {
+                    this.state.fillRule = value;
+                    this.composite.invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "strokeLineCap", {
+            get: function () {
+                return this.state.strokeLineCap;
+            },
+            set: function (value) {
+                if (this.state.strokeLineCap !== value) {
+                    this.state.strokeLineCap = value;
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "strokeLineJoin", {
+            get: function () {
+                return this.state.strokeLineJoin;
+            },
+            set: function (value) {
+                if (this.state.strokeLineJoin !== value) {
+                    this.state.strokeLineJoin = value;
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "strokeMiterLimit", {
+            get: function () {
+                return this.state.strokeMiterLimit;
+            },
+            set: function (value) {
+                if (this.state.strokeMiterLimit !== value) {
+                    this.state.strokeMiterLimit = value;
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Path;
+    })(puck.Visual);
+    puck.Path = Path;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -1603,6 +1769,13 @@ var puck;
                 this.transformOrigin.y = 0.5;
                 return this;
             };
+            ElementState.prototype.mapTransformOrigin = function (comp) {
+                var to = this.transformOrigin, size = this.size;
+                return {
+                    x: to.x * size.width,
+                    y: to.y * size.height
+                };
+            };
             return ElementState;
         })();
         element.ElementState = ElementState;
@@ -1785,7 +1958,7 @@ var puck;
                     raw.fill();
                 }
                 else {
-                    var fr = fillRule === puck.FillRule.EvenOdd ? "evenodd" : "nonzero";
+                    var fr = fillRule === puck.FillRule.evenodd ? "evenodd" : "nonzero";
                     raw.fillRule = raw.msFillRule = fr;
                     raw.fill(fr);
                 }
@@ -1797,13 +1970,16 @@ var puck;
                 raw.lineWidth = thickness;
                 raw.stroke();
             };
-            RenderContext.prototype.isPointInStrokeEx = function (pars, x, y) {
+            RenderContext.prototype.isPointInStrokeEx = function (x, y, thickness) {
                 var raw = this.raw;
-                raw.lineWidth = pars.strokeThickness;
-                raw.lineCap = caps[pars.strokeStartLineCap || pars.strokeEndLineCap || 0] || caps[0];
-                raw.lineJoin = joins[pars.strokeLineJoin || 0] || joins[0];
-                raw.miterLimit = pars.strokeMiterLimit;
+                raw.lineWidth = thickness;
                 return raw.isPointInStroke(x, y);
+            };
+            RenderContext.prototype.setStrokeExtras = function (lineCap, lineJoin, miterLimit) {
+                var raw = this.raw;
+                raw.lineCap = caps[lineCap || 0] || caps[0];
+                raw.lineJoin = joins[lineJoin || 0] || joins[0];
+                raw.miterLimit = miterLimit;
             };
             return RenderContext;
         })();
@@ -1836,6 +2012,83 @@ var puck;
         }
         engine.render = render;
     })(engine = puck.engine || (puck.engine = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var fit;
+    (function (fit) {
+        var extents;
+        (function (extents_1) {
+            function calc(extents, stretch, natural, size) {
+                var fitter = fits[stretch];
+                fitter && fitter(extents, natural, size);
+            }
+            extents_1.calc = calc;
+            var fits = {};
+            fits[puck.Stretch.none] = function (final, natural, size) {
+                la.rect.copyTo(natural, final);
+            };
+            fits[puck.Stretch.fill] = function (final, natural, size) {
+                final.width = size.width;
+                final.height = size.height;
+            };
+            fits[puck.Stretch.uniform] = function (final, natural, size) {
+                var sx = size.width / natural.width, sy = size.height / natural.height;
+                final.width = size.width;
+                final.height = size.height;
+                if (sx < sy) {
+                    final.height = natural.height * sx;
+                }
+                else {
+                    final.width = natural.width * sy;
+                }
+            };
+            fits[puck.Stretch.uniformToFill] = function (final, natural, size) {
+                var sx = size.width / natural.width, sy = size.height / natural.height;
+                final.width = size.width;
+                final.height = size.height;
+                if (sx > sy) {
+                    final.height = natural.height * sx;
+                }
+                else {
+                    final.width = natural.width * sy;
+                }
+            };
+        })(extents = fit.extents || (fit.extents = {}));
+    })(fit = puck.fit || (puck.fit = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var fit;
+    (function (fit) {
+        var transform;
+        (function (transform_1) {
+            var mat3 = la.mat3;
+            function calc(transform, stretch, natural, size) {
+                var fitter = fits[stretch];
+                fitter && fitter(transform, natural, size);
+            }
+            transform_1.calc = calc;
+            var fits = {};
+            fits[puck.Stretch.none] = function (mat, natural, size) {
+                mat3.identity(mat);
+            };
+            fits[puck.Stretch.fill] = function (mat, natural, size) {
+                mat3.createTranslate(-natural.x, -natural.y, mat);
+                mat3.scale(mat, size.width / natural.width, size.height / natural.height);
+            };
+            fits[puck.Stretch.uniform] = function (mat, natural, size) {
+                mat3.createTranslate(-natural.x, -natural.y, mat);
+                var smin = Math.min(size.width / natural.width, size.height / natural.height);
+                mat3.scale(mat, smin, smin);
+            };
+            fits[puck.Stretch.uniformToFill] = function (mat, natural, size) {
+                mat3.createTranslate(-natural.x, -natural.y, mat);
+                var smax = Math.max(size.width / natural.width, size.height / natural.height);
+                mat3.scale(mat, smax, smax);
+            };
+        })(transform = fit.transform || (fit.transform = {}));
+    })(fit = puck.fit || (puck.fit = {}));
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -1945,17 +2198,17 @@ var puck;
                 _super.apply(this, arguments);
                 this.source = new image.ImageSource();
                 this.stretch = puck.Stretch.none;
-                this.naturalSize = { width: 0, height: 0 };
+                this.natural = la.rect.init(0, 0, 0, 0);
             }
             ImageState.prototype.reset = function () {
                 _super.prototype.reset.call(this);
                 this.source.reset();
                 this.stretch = puck.Stretch.none;
-                this.naturalSize.width = this.naturalSize.height = 0;
+                la.rect.init(0, 0, 0, 0, this.natural);
                 return this;
             };
             ImageState.prototype.getEffectiveStretch = function () {
-                var size = this.size, natural = this.naturalSize;
+                var size = this.size, natural = this.natural;
                 if (size.width <= 0 || size.height <= 0) {
                     return puck.Stretch.none;
                 }
@@ -2163,6 +2416,200 @@ var puck;
             }
         }
     })(linearGradient = puck.linearGradient || (puck.linearGradient = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path_1) {
+        var FillBounds = curve.bounds.fill.FillBounds;
+        var StrokeBounds = curve.bounds.stroke.StrokeBounds;
+        var Bounder = (function () {
+            function Bounder() {
+                this.$path = null;
+                this.$filled = null;
+                this.$stroked = null;
+                this.$pars = {
+                    strokeThickness: 0,
+                    strokeDashArray: null,
+                    strokeDashCap: curve.PenLineCap.Flat,
+                    strokeDashOffset: 0,
+                    strokeEndLineCap: curve.PenLineCap.Flat,
+                    strokeLineJoin: curve.PenLineJoin.Miter,
+                    strokeMiterLimit: 10,
+                    strokeStartLineCap: curve.PenLineCap.Flat,
+                };
+            }
+            Bounder.prototype.getPath = function () {
+                return this.$path;
+            };
+            Bounder.prototype.setPath = function (path) {
+                if (this.$path === path)
+                    return;
+                this.$path = path;
+                if (!path) {
+                    this.$filled = null;
+                    this.$stroked = null;
+                }
+                else {
+                    this.$filled = new FillBounds(path);
+                    this.$stroked = new StrokeBounds(path);
+                    this.$stroked.pars = this.$pars;
+                }
+            };
+            Bounder.prototype.reset = function () {
+                if (this.$filled)
+                    this.$filled.reset();
+                if (this.$stroked)
+                    this.$stroked.reset();
+            };
+            Bounder.prototype.getFillRect = function (dest) {
+                var box = this.$filled;
+                if (!box) {
+                    la.rect.init(0, 0, 0, 0, dest);
+                }
+                else {
+                    dest.x = box.l;
+                    dest.y = box.t;
+                    dest.width = box.r - box.l;
+                    dest.height = box.b - box.t;
+                }
+                return this;
+            };
+            Bounder.prototype.getStrokeRect = function (dest) {
+                var box = this.$stroked;
+                if (!box) {
+                    la.rect.init(0, 0, 0, 0, dest);
+                }
+                else {
+                    dest.x = box.l;
+                    dest.y = box.t;
+                    dest.width = box.r - box.l;
+                    dest.height = box.b - box.t;
+                }
+                return this;
+            };
+            Bounder.prototype.calc = function (state) {
+                var stroked = this.$stroked, filled = this.$filled;
+                if (stroked) {
+                    if (!!state.stroke && state.strokeThickness > 0) {
+                        this.setStroke(state);
+                        stroked.ensure();
+                    }
+                    else {
+                        stroked.reset();
+                    }
+                }
+                if (filled) {
+                    filled.ensure();
+                }
+                return this;
+            };
+            Bounder.prototype.setStroke = function (state) {
+                var pars = this.$pars;
+                pars.strokeThickness = state.strokeThickness;
+                pars.strokeStartLineCap = state.strokeLineCap;
+                pars.strokeLineJoin = state.strokeLineJoin;
+                pars.strokeMiterLimit = state.strokeMiterLimit;
+            };
+            return Bounder;
+        })();
+        path_1.Bounder = Bounder;
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var PathComposite = (function (_super) {
+            __extends(PathComposite, _super);
+            function PathComposite() {
+                _super.apply(this, arguments);
+                this.stretchTransform = la.mat3.identity();
+                this.natural = la.rect.init(0, 0, 0, 0);
+                this.bounder = new path.Bounder();
+            }
+            PathComposite.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                la.mat3.identity(this.stretchTransform);
+                la.rect.init(0, 0, 0, 0, this.natural);
+                this.bounder.reset();
+                return this;
+            };
+            return PathComposite;
+        })(puck.element.ElementComposite);
+        path.PathComposite = PathComposite;
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var visual;
+    (function (visual) {
+        var ElementState = puck.element.ElementState;
+        var VisualState = (function (_super) {
+            __extends(VisualState, _super);
+            function VisualState() {
+                _super.apply(this, arguments);
+            }
+            VisualState.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                this.fill = null;
+                this.stroke = null;
+                this.strokeThickness = 0;
+                return this;
+            };
+            return VisualState;
+        })(ElementState);
+        visual.VisualState = VisualState;
+    })(visual = puck.visual || (puck.visual = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var PathState = (function (_super) {
+            __extends(PathState, _super);
+            function PathState() {
+                _super.apply(this, arguments);
+                this.path = null;
+                this.stretch = puck.Stretch.none;
+                this.fillRule = puck.FillRule.evenodd;
+                this.strokeLineCap = puck.PenLineCap.flat;
+                this.strokeLineJoin = puck.PenLineJoin.miter;
+                this.strokeMiterLimit = 10;
+            }
+            PathState.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                this.path = null;
+                this.stretch = puck.Stretch.none;
+                this.fillRule = puck.FillRule.evenodd;
+                this.strokeLineCap = puck.PenLineCap.flat;
+                this.strokeLineJoin = puck.PenLineJoin.miter;
+                this.strokeMiterLimit = 10;
+                return this;
+            };
+            PathState.prototype.getEffectiveStretch = function (comp) {
+                var size = this.size, natural = comp.natural;
+                if (size.width <= 0 || size.height <= 0) {
+                    return puck.Stretch.none;
+                }
+                if (natural.width <= 0 || natural.height <= 0) {
+                    return puck.Stretch.none;
+                }
+                return this.stretch;
+            };
+            PathState.prototype.mapTransformOrigin = function (comp) {
+                var to = this.transformOrigin;
+                var final = la.rect.init(0, 0, 0, 0);
+                puck.fit.extents.calc(final, this.getEffectiveStretch(comp), comp.natural, this.size);
+                return {
+                    x: final.x + (to.x * final.width),
+                    y: final.y + (to.y * final.height),
+                };
+            };
+            return PathState;
+        })(puck.visual.VisualState);
+        path.PathState = PathState;
+    })(path = puck.path || (puck.path = {}));
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -2392,6 +2839,29 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var stencil;
+    (function (stencil) {
+        stencil.path = {
+            draft: function (bag) {
+                var comp = bag.composite;
+                comp.bounder
+                    .getFillRect(bag.fillRect)
+                    .getStrokeRect(bag.strokeRect);
+            },
+            draw: function (ctx, bag) {
+                var fr = bag.fillRect;
+                if (fr.width <= 0 || fr.height <= 0) {
+                    return;
+                }
+                var raw = ctx.raw, state = bag.state;
+                raw.beginPath();
+                state.path.draw(raw);
+            },
+        };
+    })(stencil = puck.stencil || (puck.stencil = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var visual;
     (function (visual) {
         var ElementComposite = puck.element.ElementComposite;
@@ -2403,28 +2873,6 @@ var puck;
             return VisualComposite;
         })(ElementComposite);
         visual.VisualComposite = VisualComposite;
-    })(visual = puck.visual || (puck.visual = {}));
-})(puck || (puck = {}));
-var puck;
-(function (puck) {
-    var visual;
-    (function (visual) {
-        var ElementState = puck.element.ElementState;
-        var VisualState = (function (_super) {
-            __extends(VisualState, _super);
-            function VisualState() {
-                _super.apply(this, arguments);
-            }
-            VisualState.prototype.reset = function () {
-                _super.prototype.reset.call(this);
-                this.fill = null;
-                this.stroke = null;
-                this.strokeThickness = 0;
-                return this;
-            };
-            return VisualState;
-        })(ElementState);
-        visual.VisualState = VisualState;
     })(visual = puck.visual || (puck.visual = {}));
 })(puck || (puck = {}));
 var puck;
@@ -2764,14 +3212,11 @@ var puck;
                         return false;
                     mat3.copyTo(comp.transform, oldTransform);
                     var state = bag.state;
-                    mat3.createTranslate(state.offset.x, state.offset.y, comp.transform);
-                    var xo = {
-                        x: state.transformOrigin.x * state.size.width,
-                        y: state.transformOrigin.y * state.size.height
-                    };
-                    mat3.translate(comp.transform, -xo.x, -xo.y);
+                    var xo = state.mapTransformOrigin(comp);
+                    mat3.createTranslate(-xo.x, -xo.y, comp.transform);
                     mat3.apply(comp.transform, state.transform);
                     mat3.translate(comp.transform, xo.x, xo.y);
+                    mat3.translate(comp.transform, state.offset.x, state.offset.y);
                     if (!mat3.equal(comp.transform, oldTransform)) {
                         comp.taint(element.DirtyFlags.extents);
                     }
@@ -2934,7 +3379,7 @@ var puck;
         var down;
         (function (down) {
             var stretch;
-            (function (stretch_1) {
+            (function (stretch) {
                 var DirtyFlags = puck.element.DirtyFlags;
                 var mat3 = la.mat3;
                 var oldStretchTransform = mat3.identity();
@@ -2943,29 +3388,13 @@ var puck;
                     if (!comp.hasDirt(DirtyFlags.stretch))
                         return false;
                     mat3.copyTo(comp.stretchTransform, oldStretchTransform);
-                    var fitter = fits[state.getEffectiveStretch()];
-                    fitter && fitter(comp.stretchTransform, state.naturalSize, state.size);
+                    puck.fit.transform.calc(comp.stretchTransform, state.getEffectiveStretch(), state.natural, state.size);
                     if (mat3.equal(comp.stretchTransform, oldStretchTransform))
                         return false;
                     comp.taint(DirtyFlags.extents);
                     return true;
                 }
-                stretch_1.process = process;
-                var fits = {};
-                fits[puck.Stretch.none] = function (mat, natural, size) {
-                    mat3.identity(mat);
-                };
-                fits[puck.Stretch.fill] = function (mat, natural, size) {
-                    mat3.createScale(size.width / natural.width, size.height / natural.height, mat);
-                };
-                fits[puck.Stretch.uniform] = function (mat, natural, size) {
-                    var smin = Math.min(size.width / natural.width, size.height / natural.height);
-                    mat3.createScale(smin, smin, mat);
-                };
-                fits[puck.Stretch.uniformToFill] = function (mat, natural, size) {
-                    var smax = Math.max(size.width / natural.width, size.height / natural.height);
-                    mat3.createScale(smax, smax, mat);
-                };
+                stretch.process = process;
             })(stretch = down.stretch || (down.stretch = {}));
         })(down = image.down || (image.down = {}));
     })(image = puck.image || (puck.image = {}));
@@ -2988,8 +3417,7 @@ var puck;
                     var state = bag.state;
                     rect.copyTo(comp.extents, oldExtents);
                     rect.init(0, 0, 0, 0, comp.extents);
-                    var fitter = fits[state.getEffectiveStretch()];
-                    fitter && fitter(comp.extents, state.naturalSize, state.size);
+                    puck.fit.extents.calc(comp.extents, state.getEffectiveStretch(), state.natural, state.size);
                     rect.transform(comp.extents, comp.transform, comp.extents);
                     if (rect.equal(comp.extents, oldExtents))
                         return false;
@@ -2998,37 +3426,6 @@ var puck;
                     return true;
                 }
                 extents.process = process;
-                var fits = {};
-                fits[puck.Stretch.none] = function (final, natural, size) {
-                    final.width = natural.width;
-                    final.height = natural.height;
-                };
-                fits[puck.Stretch.fill] = function (final, natural, size) {
-                    final.width = size.width;
-                    final.height = size.height;
-                };
-                fits[puck.Stretch.uniform] = function (final, natural, size) {
-                    var sx = size.width / natural.width, sy = size.height / natural.height;
-                    final.width = size.width;
-                    final.height = size.height;
-                    if (sx < sy) {
-                        final.height = natural.height * sx;
-                    }
-                    else {
-                        final.width = natural.width * sy;
-                    }
-                };
-                fits[puck.Stretch.uniformToFill] = function (final, natural, size) {
-                    var sx = size.width / natural.width, sy = size.height / natural.height;
-                    final.width = size.width;
-                    final.height = size.height;
-                    if (sx > sy) {
-                        final.height = natural.height * sx;
-                    }
-                    else {
-                        final.width = natural.width * sy;
-                    }
-                };
             })(extents = up.extents || (up.extents = {}));
         })(up = image.up || (image.up = {}));
     })(image = puck.image || (puck.image = {}));
@@ -3060,33 +3457,88 @@ var puck;
         })(up = image.up || (image.up = {}));
     })(image = puck.image || (puck.image = {}));
 })(puck || (puck = {}));
-if (!CanvasRenderingContext2D.prototype.hasOwnProperty("backingStorePixelRatio")) {
-    Object.defineProperty(CanvasRenderingContext2D.prototype, "backingStorePixelRatio", {
-        get: function () {
-            var ctx = this;
-            return ctx.webkitBackingStorePixelRatio
-                || ctx.mozBackingStorePixelRatio
-                || ctx.msBackingStorePixelRatio
-                || ctx.oBackingStorePixelRatio
-                || 1;
-        }
-    });
-}
-if (!CanvasRenderingContext2D.prototype.ellipse) {
-    CanvasRenderingContext2D.prototype.ellipse = function (x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise) {
-        this.save();
-        this.translate(x, y);
-        this.rotate(rotation);
-        this.scale(radiusX, radiusY);
-        this.arc(0, 0, 1, startAngle, endAngle, antiClockwise);
-        this.restore();
-    };
-}
-if (!CanvasRenderingContext2D.prototype.isPointInStroke) {
-    CanvasRenderingContext2D.prototype.isPointInStroke = function (x, y) {
-        return false;
-    };
-}
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var down;
+        (function (down) {
+            var natural;
+            (function (natural) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                var oldNatural = la.rect.init(0, 0, 0, 0);
+                var activeFill = la.rect.init(0, 0, 0, 0);
+                var activeStroke = la.rect.init(0, 0, 0, 0);
+                function process(bag) {
+                    var state = bag.state, comp = bag.composite;
+                    if (!comp.hasDirt(DirtyFlags.padding))
+                        return false;
+                    comp.bounder.reset();
+                    la.rect.copyTo(comp.natural, oldNatural);
+                    comp.bounder.calc(state)
+                        .getFillRect(activeFill)
+                        .getStrokeRect(activeStroke);
+                    la.rect.union(activeFill, activeStroke, comp.natural);
+                    if (!la.rect.equal(comp.natural, oldNatural))
+                        return false;
+                    comp.taint(DirtyFlags.stretch);
+                    return true;
+                }
+                natural.process = process;
+            })(natural = down.natural || (down.natural = {}));
+        })(down = path.down || (path.down = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var down;
+        (function (down) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.process = function (bag) {
+                    down.natural.process(bag);
+                    down.stretch.process(bag);
+                    return _super.prototype.process.call(this, bag);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.down.Processor);
+            down.Processor = Processor;
+        })(down = path.down || (path.down = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var down;
+        (function (down) {
+            var stretch;
+            (function (stretch) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                var mat3 = la.mat3;
+                var oldStretchTransform = mat3.identity();
+                function process(bag) {
+                    var state = bag.state, comp = bag.composite;
+                    if (!comp.hasDirt(DirtyFlags.stretch))
+                        return false;
+                    mat3.copyTo(comp.stretchTransform, oldStretchTransform);
+                    puck.fit.transform.calc(comp.stretchTransform, state.getEffectiveStretch(comp), comp.natural, state.size);
+                    if (mat3.equal(comp.stretchTransform, oldStretchTransform))
+                        return false;
+                    comp.taint(DirtyFlags.extents);
+                    return true;
+                }
+                stretch.process = process;
+            })(stretch = down.stretch || (down.stretch = {}));
+        })(down = path.down || (path.down = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
 var puck;
 (function (puck) {
     var visual;
@@ -3128,5 +3580,119 @@ var puck;
         })(render = visual.render || (visual.render = {}));
     })(visual = puck.visual || (puck.visual = {}));
 })(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var render;
+        (function (render) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.fill = function (ctx, state, sbag) {
+                    if (!state.fill)
+                        return;
+                    ctx.fillEx(sbag.fillRect, state.fill, state.fillRule);
+                };
+                Processor.prototype.stroke = function (ctx, state, sbag) {
+                    if (!state.stroke || state.strokeThickness <= 0)
+                        return;
+                    ctx.setStrokeExtras(state.strokeLineCap, state.strokeLineJoin, state.strokeMiterLimit);
+                    ctx.strokeEx(sbag.strokeRect, state.stroke, state.strokeThickness);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.visual.render.Processor);
+            render.Processor = Processor;
+        })(render = path.render || (path.render = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var up;
+        (function (up) {
+            var extents;
+            (function (extents) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                var rect = la.rect;
+                var oldExtents = rect.init(0, 0, 0, 0);
+                function process(bag) {
+                    var comp = bag.composite;
+                    if (!comp.hasDirt(DirtyFlags.extents))
+                        return false;
+                    var state = bag.state;
+                    rect.copyTo(comp.extents, oldExtents);
+                    rect.init(0, 0, 0, 0, comp.extents);
+                    puck.fit.extents.calc(comp.extents, state.getEffectiveStretch(comp), comp.natural, state.size);
+                    rect.transform(comp.extents, comp.transform, comp.extents);
+                    if (rect.equal(comp.extents, oldExtents))
+                        return false;
+                    rect.union(comp.paint, oldExtents);
+                    comp.taint(DirtyFlags.newbounds);
+                    return true;
+                }
+                extents.process = process;
+            })(extents = up.extents || (up.extents = {}));
+        })(up = path.up || (path.up = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var up;
+        (function (up) {
+            var DirtyFlags = puck.element.DirtyFlags;
+            var newbounds = puck.element.up.newbounds;
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.process = function (bag) {
+                    var dirt = DirtyFlags.none;
+                    if (up.extents.process(bag))
+                        dirt |= DirtyFlags.extents;
+                    newbounds.process(bag);
+                    return dirt;
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.up.Processor);
+            up.Processor = Processor;
+        })(up = path.up || (path.up = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+if (!CanvasRenderingContext2D.prototype.hasOwnProperty("backingStorePixelRatio")) {
+    Object.defineProperty(CanvasRenderingContext2D.prototype, "backingStorePixelRatio", {
+        get: function () {
+            var ctx = this;
+            return ctx.webkitBackingStorePixelRatio
+                || ctx.mozBackingStorePixelRatio
+                || ctx.msBackingStorePixelRatio
+                || ctx.oBackingStorePixelRatio
+                || 1;
+        }
+    });
+}
+if (!CanvasRenderingContext2D.prototype.ellipse) {
+    CanvasRenderingContext2D.prototype.ellipse = function (x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise) {
+        this.save();
+        this.translate(x, y);
+        this.rotate(rotation);
+        this.scale(radiusX, radiusY);
+        this.arc(0, 0, 1, startAngle, endAngle, antiClockwise);
+        this.restore();
+    };
+}
+if (!CanvasRenderingContext2D.prototype.isPointInStroke) {
+    CanvasRenderingContext2D.prototype.isPointInStroke = function (x, y) {
+        return false;
+    };
+}
 
 //# sourceMappingURL=puck.js.map
