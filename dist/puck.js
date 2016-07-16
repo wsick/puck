@@ -1224,8 +1224,60 @@ var puck;
                 up: puck.path.up.Processor.instance,
                 render: puck.path.render.Processor.instance,
             };
-            this.stencil = pathStencil;
+            this.stencil = puck.stencil.path;
         };
+        Object.defineProperty(Path.prototype, "x", {
+            get: function () {
+                return this.state.offset.x;
+            },
+            set: function (value) {
+                if (this.state.offset.x !== value) {
+                    this.state.offset.x = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "y", {
+            get: function () {
+                return this.state.offset.y;
+            },
+            set: function (value) {
+                if (this.state.offset.y !== value) {
+                    this.state.offset.y = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "width", {
+            get: function () {
+                return this.state.size.width;
+            },
+            set: function (value) {
+                if (this.state.size.width !== value) {
+                    this.state.size.width = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Path.prototype, "height", {
+            get: function () {
+                return this.state.size.height;
+            },
+            set: function (value) {
+                if (this.state.size.height !== value) {
+                    this.state.size.height = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Path.prototype, "stretch", {
             get: function () {
                 return this.state.stretch;
@@ -1246,6 +1298,7 @@ var puck;
             set: function (value) {
                 if (this.state.path !== value) {
                     this.state.path = value;
+                    this.composite.bounder.setPath(value);
                     this.composite
                         .taint(DirtyFlags.padding)
                         .invalidate();
@@ -1315,23 +1368,6 @@ var puck;
         return Path;
     })(puck.Visual);
     puck.Path = Path;
-    var pathStencil = {
-        draft: function (bag) {
-            var comp = bag.composite;
-            comp.bounder
-                .getFillRect(bag.fillRect)
-                .getStrokeRect(bag.strokeRect);
-        },
-        draw: function (ctx, bag) {
-            var fr = bag.fillRect;
-            if (fr.width <= 0 || fr.height <= 0) {
-                return;
-            }
-            var raw = ctx.raw;
-            raw.beginPath();
-            bag.path.draw(raw);
-        },
-    };
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -1732,6 +1768,13 @@ var puck;
                 this.transformOrigin.x = 0.5;
                 this.transformOrigin.y = 0.5;
                 return this;
+            };
+            ElementState.prototype.mapTransformOrigin = function (comp) {
+                var to = this.transformOrigin, size = this.size;
+                return {
+                    x: to.x * size.width,
+                    y: to.y * size.height
+                };
             };
             return ElementState;
         })();
@@ -2536,7 +2579,7 @@ var puck;
             }
             PathState.prototype.reset = function () {
                 _super.prototype.reset.call(this);
-                this.path = new curve.Path();
+                this.path = null;
                 this.stretch = puck.Stretch.none;
                 this.fillRule = puck.FillRule.evenodd;
                 this.strokeLineCap = puck.PenLineCap.flat;
@@ -2553,6 +2596,15 @@ var puck;
                     return puck.Stretch.none;
                 }
                 return this.stretch;
+            };
+            PathState.prototype.mapTransformOrigin = function (comp) {
+                var to = this.transformOrigin;
+                var final = la.rect.init(0, 0, 0, 0);
+                puck.fit.extents.calc(final, this.getEffectiveStretch(comp), comp.natural, this.size);
+                return {
+                    x: final.x + (to.x * final.width),
+                    y: final.y + (to.y * final.height),
+                };
             };
             return PathState;
         })(puck.visual.VisualState);
@@ -2787,6 +2839,29 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var stencil;
+    (function (stencil) {
+        stencil.path = {
+            draft: function (bag) {
+                var comp = bag.composite;
+                comp.bounder
+                    .getFillRect(bag.fillRect)
+                    .getStrokeRect(bag.strokeRect);
+            },
+            draw: function (ctx, bag) {
+                var fr = bag.fillRect;
+                if (fr.width <= 0 || fr.height <= 0) {
+                    return;
+                }
+                var raw = ctx.raw, state = bag.state;
+                raw.beginPath();
+                state.path.draw(raw);
+            },
+        };
+    })(stencil = puck.stencil || (puck.stencil = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var visual;
     (function (visual) {
         var ElementComposite = puck.element.ElementComposite;
@@ -2928,7 +3003,6 @@ var puck;
                         composite: bag.composite,
                         fillRect: la.rect.init(0, 0, 0, 0),
                         strokeRect: la.rect.init(0, 0, 0, 0),
-                        path: null,
                     };
                 };
                 Processor.instance = new Processor();
@@ -3138,14 +3212,11 @@ var puck;
                         return false;
                     mat3.copyTo(comp.transform, oldTransform);
                     var state = bag.state;
-                    mat3.createTranslate(state.offset.x, state.offset.y, comp.transform);
-                    var xo = {
-                        x: state.transformOrigin.x * state.size.width,
-                        y: state.transformOrigin.y * state.size.height
-                    };
-                    mat3.translate(comp.transform, -xo.x, -xo.y);
+                    var xo = state.mapTransformOrigin(comp);
+                    mat3.createTranslate(-xo.x, -xo.y, comp.transform);
                     mat3.apply(comp.transform, state.transform);
                     mat3.translate(comp.transform, xo.x, xo.y);
+                    mat3.translate(comp.transform, state.offset.x, state.offset.y);
                     if (!mat3.equal(comp.transform, oldTransform)) {
                         comp.taint(element.DirtyFlags.extents);
                     }

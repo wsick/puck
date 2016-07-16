@@ -437,6 +437,10 @@ declare namespace puck {
         };
         constructor(state?: IPathState, composite?: IPathComposite);
         init(state?: IPathState, composite?: IPathComposite): void;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
         stretch: Stretch;
         path: curve.Path;
         fillRule: FillRule;
@@ -547,6 +551,7 @@ declare namespace puck.element {
         transform: Float32Array;
         transformOrigin: la.IPoint;
         reset(): any;
+        mapTransformOrigin(comp: IElementComposite): la.IPoint;
     }
     class ElementState implements IElementState {
         opacity: number;
@@ -565,6 +570,7 @@ declare namespace puck.element {
             y: number;
         };
         reset(): this;
+        mapTransformOrigin(comp: IElementComposite): la.IPoint;
     }
 }
 declare namespace puck.container {
@@ -793,6 +799,7 @@ declare namespace puck.path {
         strokeMiterLimit: number;
         reset(): this;
         getEffectiveStretch(comp: IPathComposite): Stretch;
+        mapTransformOrigin(comp: IPathComposite): la.IPoint;
     }
 }
 interface IteratorResult<T> {
@@ -863,13 +870,15 @@ declare namespace puck.stencil {
         composite: IElementComposite;
         fillRect: IRect;
         strokeRect: IRect;
-        path: curve.Path;
     }
     interface IStencil {
         draft(bag: IStencilBag): any;
         draw(ctx: RenderContext, bag: IStencilBag): any;
     }
     var empty: IStencil;
+}
+declare namespace puck.stencil {
+    var path: IStencil;
 }
 declare namespace puck.visual {
     interface IVisual extends element.IElement {

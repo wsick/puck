@@ -44,5 +44,17 @@ namespace puck.path {
             }
             return this.stretch;
         }
+
+        mapTransformOrigin(comp: IPathComposite): la.IPoint {
+            var to = this.transformOrigin;
+
+            // must precompute extents even though it will be performed later
+            var final = la.rect.init(0, 0, 0, 0);
+            puck.fit.extents.calc(final, this.getEffectiveStretch(comp), comp.natural, this.size);
+            return {
+                x: final.x + (to.x * final.width),
+                y: final.y + (to.y * final.height),
+            }
+        }
     }
 }
