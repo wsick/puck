@@ -13,58 +13,58 @@ namespace puck {
             return this;
         }
 
-        add(stop: T): this {
-            this.$backing.push(stop);
-            Object.freeze(stop);
+        add(item: T): this {
+            this.$backing.push(item);
+            Object.freeze(item);
             this.$changer.on();
             return this;
         }
 
-        addMany(stops: T[]): this {
+        addMany(items: T[]): this {
             var backing = this.$backing;
-            for (var i = 0; i < stops.length; i++) {
-                Object.freeze(stops[i]);
+            for (var i = 0; i < items.length; i++) {
+                Object.freeze(items[i]);
             }
-            backing.push.apply(backing, stops);
+            backing.push.apply(backing, items);
             this.$changer.on();
             return this;
         }
 
-        insert(index: number, stop: T): this {
-            this.$backing.splice(index, 0, stop);
-            Object.freeze(stop);
+        insert(index: number, item: T): this {
+            this.$backing.splice(index, 0, item);
+            Object.freeze(item);
             this.$changer.on();
             return this;
         }
 
-        insertMany(index: number, stops: T[]): this {
-            for (var i = 0; i < stops.length; i++) {
-                Object.freeze(stops[i]);
+        insertMany(index: number, items: T[]): this {
+            for (var i = 0; i < items.length; i++) {
+                Object.freeze(items[i]);
             }
             var backing = this.$backing;
-            for (var i = stops.length - 1; i >= 0; i--) {
-                backing.splice(index, 0, stops[i]);
+            for (var i = items.length - 1; i >= 0; i--) {
+                backing.splice(index, 0, items[i]);
             }
             this.$changer.on();
             return this;
         }
 
-        edit(oldStop: T, newStop: T): this {
-            return this.editAt(this.$backing.indexOf(oldStop), newStop);
+        edit(oldItem: T, newItem: T): this {
+            return this.editAt(this.$backing.indexOf(oldItem), newItem);
         }
 
-        editAt(index: number, newStop: T): this {
+        editAt(index: number, newItem: T): this {
             var backing = this.$backing;
             if (index < 0 && index >= backing.length)
                 return this;
-            backing[index] = newStop;
-            Object.freeze(newStop);
+            backing[index] = newItem;
+            Object.freeze(newItem);
             this.$changer.on();
             return this;
         }
 
-        remove(stop: T) {
-            return this.removeAt(this.$backing.indexOf(stop));
+        remove(item: T) {
+            return this.removeAt(this.$backing.indexOf(item));
         }
 
         removeAt(index: number) {

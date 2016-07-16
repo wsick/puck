@@ -864,52 +864,52 @@ var puck;
             this.$changer.on();
             return this;
         };
-        PuckArray.prototype.add = function (stop) {
-            this.$backing.push(stop);
-            Object.freeze(stop);
+        PuckArray.prototype.add = function (item) {
+            this.$backing.push(item);
+            Object.freeze(item);
             this.$changer.on();
             return this;
         };
-        PuckArray.prototype.addMany = function (stops) {
+        PuckArray.prototype.addMany = function (items) {
             var backing = this.$backing;
-            for (var i = 0; i < stops.length; i++) {
-                Object.freeze(stops[i]);
+            for (var i = 0; i < items.length; i++) {
+                Object.freeze(items[i]);
             }
-            backing.push.apply(backing, stops);
+            backing.push.apply(backing, items);
             this.$changer.on();
             return this;
         };
-        PuckArray.prototype.insert = function (index, stop) {
-            this.$backing.splice(index, 0, stop);
-            Object.freeze(stop);
+        PuckArray.prototype.insert = function (index, item) {
+            this.$backing.splice(index, 0, item);
+            Object.freeze(item);
             this.$changer.on();
             return this;
         };
-        PuckArray.prototype.insertMany = function (index, stops) {
-            for (var i = 0; i < stops.length; i++) {
-                Object.freeze(stops[i]);
+        PuckArray.prototype.insertMany = function (index, items) {
+            for (var i = 0; i < items.length; i++) {
+                Object.freeze(items[i]);
             }
             var backing = this.$backing;
-            for (var i = stops.length - 1; i >= 0; i--) {
-                backing.splice(index, 0, stops[i]);
+            for (var i = items.length - 1; i >= 0; i--) {
+                backing.splice(index, 0, items[i]);
             }
             this.$changer.on();
             return this;
         };
-        PuckArray.prototype.edit = function (oldStop, newStop) {
-            return this.editAt(this.$backing.indexOf(oldStop), newStop);
+        PuckArray.prototype.edit = function (oldItem, newItem) {
+            return this.editAt(this.$backing.indexOf(oldItem), newItem);
         };
-        PuckArray.prototype.editAt = function (index, newStop) {
+        PuckArray.prototype.editAt = function (index, newItem) {
             var backing = this.$backing;
             if (index < 0 && index >= backing.length)
                 return this;
-            backing[index] = newStop;
-            Object.freeze(newStop);
+            backing[index] = newItem;
+            Object.freeze(newItem);
             this.$changer.on();
             return this;
         };
-        PuckArray.prototype.remove = function (stop) {
-            return this.removeAt(this.$backing.indexOf(stop));
+        PuckArray.prototype.remove = function (item) {
+            return this.removeAt(this.$backing.indexOf(item));
         };
         PuckArray.prototype.removeAt = function (index) {
             var backing = this.$backing;
@@ -1368,6 +1368,187 @@ var puck;
         return Path;
     })(puck.Visual);
     puck.Path = Path;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var Points = (function (_super) {
+        __extends(Points, _super);
+        function Points() {
+            _super.apply(this, arguments);
+        }
+        return Points;
+    })(puck.PuckArray);
+    puck.Points = Points;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var DirtyFlags = puck.element.DirtyFlags;
+    var Polyline = (function (_super) {
+        __extends(Polyline, _super);
+        function Polyline(state, composite) {
+            _super.call(this, state, composite);
+        }
+        Polyline.prototype.init = function (state, composite) {
+            var _this = this;
+            this.state = (state || new puck.polyline.PolylineState()).reset();
+            this.composite = (composite || new puck.path.PathComposite()).reset();
+            this.processor = {
+                down: puck.polyline.down.Processor.instance,
+                up: puck.path.up.Processor.instance,
+                render: puck.path.render.Processor.instance,
+            };
+            this.stencil = puck.stencil.path;
+            this.state.points.watch(function () {
+                if (_this.state.path)
+                    _this.state.path.reset();
+            });
+        };
+        Object.defineProperty(Polyline.prototype, "points", {
+            get: function () {
+                return this.state.points;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "closed", {
+            get: function () {
+                return this.closed;
+            },
+            set: function (value) {
+                if (this.state.closed !== value) {
+                    this.state.closed = value;
+                    this.composite.invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "x", {
+            get: function () {
+                return this.state.offset.x;
+            },
+            set: function (value) {
+                if (this.state.offset.x !== value) {
+                    this.state.offset.x = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "y", {
+            get: function () {
+                return this.state.offset.y;
+            },
+            set: function (value) {
+                if (this.state.offset.y !== value) {
+                    this.state.offset.y = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "width", {
+            get: function () {
+                return this.state.size.width;
+            },
+            set: function (value) {
+                if (this.state.size.width !== value) {
+                    this.state.size.width = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "height", {
+            get: function () {
+                return this.state.size.height;
+            },
+            set: function (value) {
+                if (this.state.size.height !== value) {
+                    this.state.size.height = value;
+                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "stretch", {
+            get: function () {
+                return this.state.stretch;
+            },
+            set: function (value) {
+                if (this.state.stretch !== value) {
+                    this.state.stretch = value;
+                    this.composite.taint(DirtyFlags.stretch);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "fillRule", {
+            get: function () {
+                return this.state.fillRule;
+            },
+            set: function (value) {
+                if (this.state.fillRule !== value) {
+                    this.state.fillRule = value;
+                    this.composite.invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "strokeLineCap", {
+            get: function () {
+                return this.state.strokeLineCap;
+            },
+            set: function (value) {
+                if (this.state.strokeLineCap !== value) {
+                    this.state.strokeLineCap = value;
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "strokeLineJoin", {
+            get: function () {
+                return this.state.strokeLineJoin;
+            },
+            set: function (value) {
+                if (this.state.strokeLineJoin !== value) {
+                    this.state.strokeLineJoin = value;
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Polyline.prototype, "strokeMiterLimit", {
+            get: function () {
+                return this.state.strokeMiterLimit;
+            },
+            set: function (value) {
+                if (this.state.strokeMiterLimit !== value) {
+                    this.state.strokeMiterLimit = value;
+                    this.composite
+                        .taint(DirtyFlags.padding)
+                        .invalidate();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Polyline;
+    })(puck.Visual);
+    puck.Polyline = Polyline;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -2613,6 +2794,28 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var polyline;
+    (function (polyline) {
+        var PolylineState = (function (_super) {
+            __extends(PolylineState, _super);
+            function PolylineState() {
+                _super.apply(this, arguments);
+                this.points = new puck.Points();
+                this.closed = false;
+            }
+            PolylineState.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                this.points.clear();
+                this.closed = false;
+                return this;
+            };
+            return PolylineState;
+        })(puck.path.PathState);
+        polyline.PolylineState = PolylineState;
+    })(polyline = puck.polyline || (puck.polyline = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var radialGradient;
     (function (radialGradient) {
         function createExtender(data, bounds) {
@@ -3694,5 +3897,64 @@ if (!CanvasRenderingContext2D.prototype.isPointInStroke) {
         return false;
     };
 }
+var puck;
+(function (puck) {
+    var polyline;
+    (function (polyline) {
+        var down;
+        (function (down) {
+            var points;
+            (function (points) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                function process(bag) {
+                    var state = bag.state, comp = bag.composite, path = state.path;
+                    if (!path) {
+                        comp.bounder.setPath(path = state.path = new curve.Path());
+                    }
+                    else if (!path.isEmpty) {
+                        return false;
+                    }
+                    for (var first = true, it = state.points.iter(), result = it.next(); !result.done; result = it.next()) {
+                        var cur = result.value;
+                        if (first) {
+                            first = false;
+                            path.moveTo(cur.x, cur.y);
+                        }
+                        else {
+                            path.lineTo(cur.x, cur.y);
+                        }
+                    }
+                    if (state.closed)
+                        path.closePath();
+                    comp.taint(DirtyFlags.padding);
+                    return true;
+                }
+                points.process = process;
+            })(points = down.points || (down.points = {}));
+        })(down = polyline.down || (polyline.down = {}));
+    })(polyline = puck.polyline || (puck.polyline = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var polyline;
+    (function (polyline) {
+        var down;
+        (function (down) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.process = function (bag) {
+                    down.points.process(bag);
+                    return _super.prototype.process.call(this, bag);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.path.down.Processor);
+            down.Processor = Processor;
+        })(down = polyline.down || (polyline.down = {}));
+    })(polyline = puck.polyline || (puck.polyline = {}));
+})(puck || (puck = {}));
 
 //# sourceMappingURL=puck.js.map
