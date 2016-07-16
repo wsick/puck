@@ -4,6 +4,11 @@ namespace puck.path.render {
     export class Processor extends visual.render.Processor {
         static instance = new Processor();
 
+        protected transformLocal(ctx: puck.render.RenderContext, bag: stencil.IStencilBag) {
+            var comp = <IPathComposite>bag.composite;
+            ctx.preapply(comp.stretchTransform);
+        }
+
         protected fill(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag) {
             if (!state.fill)
                 return;

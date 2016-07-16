@@ -3662,6 +3662,83 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var visual;
+    (function (visual) {
+        var render;
+        (function (render) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.render = function (bag) {
+                    var state = bag.state;
+                    if (!state.fill && !state.stroke)
+                        return false;
+                    var ctx = bag.ctx;
+                    ctx.save();
+                    var sbag = this.createStencilBag(bag);
+                    bag.stencil.draft(sbag);
+                    this.transformLocal(ctx, sbag);
+                    bag.stencil.draw(ctx, sbag);
+                    this.fill(ctx, state, sbag);
+                    this.stroke(ctx, state, sbag);
+                    ctx.restore();
+                };
+                Processor.prototype.transformLocal = function (ctx, bag) {
+                };
+                Processor.prototype.fill = function (ctx, state, sbag) {
+                    if (!state.fill)
+                        return;
+                    ctx.fillEx(sbag.fillRect, state.fill);
+                };
+                Processor.prototype.stroke = function (ctx, state, sbag) {
+                    if (!state.stroke || state.strokeThickness <= 0)
+                        return;
+                    ctx.strokeEx(sbag.strokeRect, state.stroke, state.strokeThickness);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.render.Processor);
+            render.Processor = Processor;
+        })(render = visual.render || (visual.render = {}));
+    })(visual = puck.visual || (puck.visual = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path) {
+        var render;
+        (function (render) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.transformLocal = function (ctx, bag) {
+                    var comp = bag.composite;
+                    ctx.preapply(comp.stretchTransform);
+                };
+                Processor.prototype.fill = function (ctx, state, sbag) {
+                    if (!state.fill)
+                        return;
+                    ctx.fillEx(sbag.fillRect, state.fill, state.fillRule);
+                };
+                Processor.prototype.stroke = function (ctx, state, sbag) {
+                    if (!state.stroke || state.strokeThickness <= 0)
+                        return;
+                    ctx.setStrokeExtras(state.strokeLineCap, state.strokeLineJoin, state.strokeMiterLimit);
+                    ctx.strokeEx(sbag.strokeRect, state.stroke, state.strokeThickness);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.visual.render.Processor);
+            render.Processor = Processor;
+        })(render = path.render || (path.render = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var path;
     (function (path) {
         var down;
@@ -3740,76 +3817,6 @@ var puck;
                 stretch.process = process;
             })(stretch = down.stretch || (down.stretch = {}));
         })(down = path.down || (path.down = {}));
-    })(path = puck.path || (puck.path = {}));
-})(puck || (puck = {}));
-var puck;
-(function (puck) {
-    var visual;
-    (function (visual) {
-        var render;
-        (function (render) {
-            var Processor = (function (_super) {
-                __extends(Processor, _super);
-                function Processor() {
-                    _super.apply(this, arguments);
-                }
-                Processor.prototype.render = function (bag) {
-                    var state = bag.state;
-                    if (!state.fill && !state.stroke)
-                        return false;
-                    var ctx = bag.ctx;
-                    ctx.save();
-                    var sbag = this.createStencilBag(bag);
-                    bag.stencil.draft(sbag);
-                    bag.stencil.draw(ctx, sbag);
-                    this.fill(ctx, state, sbag);
-                    this.stroke(ctx, state, sbag);
-                    ctx.restore();
-                };
-                Processor.prototype.fill = function (ctx, state, sbag) {
-                    if (!state.fill)
-                        return;
-                    ctx.fillEx(sbag.fillRect, state.fill);
-                };
-                Processor.prototype.stroke = function (ctx, state, sbag) {
-                    if (!state.stroke || state.strokeThickness <= 0)
-                        return;
-                    ctx.strokeEx(sbag.strokeRect, state.stroke, state.strokeThickness);
-                };
-                Processor.instance = new Processor();
-                return Processor;
-            })(puck.element.render.Processor);
-            render.Processor = Processor;
-        })(render = visual.render || (visual.render = {}));
-    })(visual = puck.visual || (puck.visual = {}));
-})(puck || (puck = {}));
-var puck;
-(function (puck) {
-    var path;
-    (function (path) {
-        var render;
-        (function (render) {
-            var Processor = (function (_super) {
-                __extends(Processor, _super);
-                function Processor() {
-                    _super.apply(this, arguments);
-                }
-                Processor.prototype.fill = function (ctx, state, sbag) {
-                    if (!state.fill)
-                        return;
-                    ctx.fillEx(sbag.fillRect, state.fill, state.fillRule);
-                };
-                Processor.prototype.stroke = function (ctx, state, sbag) {
-                    if (!state.stroke || state.strokeThickness <= 0)
-                        return;
-                    ctx.setStrokeExtras(state.strokeLineCap, state.strokeLineJoin, state.strokeMiterLimit);
-                    ctx.strokeEx(sbag.strokeRect, state.stroke, state.strokeThickness);
-                };
-                Processor.instance = new Processor();
-                return Processor;
-            })(puck.visual.render.Processor);
-            render.Processor = Processor;
-        })(render = path.render || (path.render = {}));
     })(path = puck.path || (puck.path = {}));
 })(puck || (puck = {}));
 var puck;

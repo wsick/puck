@@ -1101,6 +1101,26 @@ declare namespace puck.image.up {
         process(bag: IProcessorBag): DirtyFlags;
     }
 }
+declare namespace puck.visual.render {
+    interface IProcessorBag extends puck.element.render.IProcessorBag {
+        stencil: stencil.IStencil;
+    }
+    class Processor extends element.render.Processor {
+        static instance: Processor;
+        protected render(bag: IProcessorBag): boolean;
+        protected transformLocal(ctx: puck.render.RenderContext, bag: stencil.IStencilBag): void;
+        protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
+        protected stroke(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
+    }
+}
+declare namespace puck.path.render {
+    class Processor extends visual.render.Processor {
+        static instance: Processor;
+        protected transformLocal(ctx: puck.render.RenderContext, bag: stencil.IStencilBag): void;
+        protected fill(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
+        protected stroke(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
+    }
+}
 declare namespace puck.path.down.natural {
     import IProcessorBag = puck.element.down.IProcessorBag;
     function process(bag: IProcessorBag): boolean;
@@ -1116,24 +1136,6 @@ declare namespace puck.path.down {
 declare namespace puck.path.down.stretch {
     import IProcessorBag = puck.element.down.IProcessorBag;
     function process(bag: IProcessorBag): boolean;
-}
-declare namespace puck.visual.render {
-    interface IProcessorBag extends puck.element.render.IProcessorBag {
-        stencil: stencil.IStencil;
-    }
-    class Processor extends element.render.Processor {
-        static instance: Processor;
-        protected render(bag: IProcessorBag): boolean;
-        protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
-        protected stroke(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
-    }
-}
-declare namespace puck.path.render {
-    class Processor extends visual.render.Processor {
-        static instance: Processor;
-        protected fill(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
-        protected stroke(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
-    }
 }
 declare namespace puck.path.up.extents {
     import IProcessorBag = puck.element.up.IProcessorBag;
