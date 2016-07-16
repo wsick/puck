@@ -3761,10 +3761,13 @@ var puck;
                     ctx.save();
                     var sbag = this.createStencilBag(bag);
                     bag.stencil.draft(sbag);
+                    this.transformLocal(ctx, sbag);
                     bag.stencil.draw(ctx, sbag);
                     this.fill(ctx, state, sbag);
                     this.stroke(ctx, state, sbag);
                     ctx.restore();
+                };
+                Processor.prototype.transformLocal = function (ctx, bag) {
                 };
                 Processor.prototype.fill = function (ctx, state, sbag) {
                     if (!state.fill)
@@ -3794,6 +3797,10 @@ var puck;
                 function Processor() {
                     _super.apply(this, arguments);
                 }
+                Processor.prototype.transformLocal = function (ctx, bag) {
+                    var comp = bag.composite;
+                    ctx.preapply(comp.stretchTransform);
+                };
                 Processor.prototype.fill = function (ctx, state, sbag) {
                     if (!state.fill)
                         return;

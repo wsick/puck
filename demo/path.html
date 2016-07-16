@@ -35,6 +35,18 @@
             path2.applyTransform(la.mat3.createScale(-1, 1));
             path2.strokeThickness = 5;
             root.elements.push(path2);
+
+            var path3 = new puck.Path();
+            path3.x = 75;
+            path3.y = 75;
+            path3.width = 400;
+            path3.height = 400;
+            path3.stretch = puck.Stretch.fill;
+            path3.path = new curve.Path("M 0 0 A 10 10 0 0,1 0 100");
+            path3.fill = new puck.SolidColorBrush("Yellow");
+            path3.stroke = new puck.SolidColorBrush("Black");
+            path3.strokeThickness = 5;
+            root.elements.push(path3);
         };
     </script>
 </head>

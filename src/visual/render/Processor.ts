@@ -17,10 +17,14 @@ namespace puck.visual.render {
             ctx.save();
             var sbag = this.createStencilBag(bag);
             bag.stencil.draft(sbag);
+            this.transformLocal(ctx, sbag);
             bag.stencil.draw(ctx, sbag);
             this.fill(ctx, state, sbag);
             this.stroke(ctx, state, sbag);
             ctx.restore();
+        }
+
+        protected transformLocal(ctx: puck.render.RenderContext, bag: stencil.IStencilBag) {
         }
 
         protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag) {

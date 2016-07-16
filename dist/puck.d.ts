@@ -1124,6 +1124,7 @@ declare namespace puck.visual.render {
     class Processor extends element.render.Processor {
         static instance: Processor;
         protected render(bag: IProcessorBag): boolean;
+        protected transformLocal(ctx: puck.render.RenderContext, bag: stencil.IStencilBag): void;
         protected fill(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
         protected stroke(ctx: puck.render.RenderContext, state: IVisualState, sbag: stencil.IStencilBag): void;
     }
@@ -1131,6 +1132,7 @@ declare namespace puck.visual.render {
 declare namespace puck.path.render {
     class Processor extends visual.render.Processor {
         static instance: Processor;
+        protected transformLocal(ctx: puck.render.RenderContext, bag: stencil.IStencilBag): void;
         protected fill(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
         protected stroke(ctx: puck.render.RenderContext, state: IPathState, sbag: stencil.IStencilBag): void;
     }
