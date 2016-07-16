@@ -11,7 +11,7 @@ namespace puck.path {
         getEffectiveStretch(comp: IPathComposite): Stretch;
     }
     export class PathState extends visual.VisualState implements IPathState {
-        path: curve.Path = new curve.Path();
+        path: curve.Path = null;
         stretch: Stretch = Stretch.none;
         fillRule: FillRule = FillRule.evenodd;
         strokeLineCap: PenLineCap = PenLineCap.flat;
@@ -20,7 +20,7 @@ namespace puck.path {
 
         reset(): this {
             super.reset();
-            this.path.reset();
+            this.path = null;
             this.stretch = Stretch.none;
             this.fillRule = FillRule.evenodd;
             this.strokeLineCap = PenLineCap.flat;

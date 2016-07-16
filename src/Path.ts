@@ -29,6 +29,50 @@ namespace puck {
             this.stencil = stencil.path;
         }
 
+        get x(): number {
+            return this.state.offset.x;
+        }
+
+        set x(value: number) {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+        }
+
+        get y(): number {
+            return this.state.offset.y;
+        }
+
+        set y(value: number) {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+        }
+
+        get width(): number {
+            return this.state.size.width;
+        }
+
+        set width(value: number) {
+            if (this.state.size.width !== value) {
+                this.state.size.width = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+        }
+
+        get height(): number {
+            return this.state.size.height;
+        }
+
+        set height(value: number) {
+            if (this.state.size.height !== value) {
+                this.state.size.height = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+        }
+
         get stretch(): Stretch {
             return this.state.stretch;
         }
@@ -47,6 +91,7 @@ namespace puck {
         set path(value: curve.Path) {
             if (this.state.path !== value) {
                 this.state.path = value;
+                this.composite.bounder.setPath(value);
                 this.composite
                     .taint(DirtyFlags.padding)
                     .invalidate();

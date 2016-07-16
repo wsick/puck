@@ -9,7 +9,6 @@ namespace puck.stencil {
         composite: IElementComposite;
         fillRect: IRect;
         strokeRect: IRect;
-        path: curve.Path;
     }
 
     export interface IStencil {

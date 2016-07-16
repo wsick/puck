@@ -1,4 +1,5 @@
 namespace puck.stencil {
+    import IPathState = puck.path.IPathState;
     import IPathComposite = puck.path.IPathComposite;
 
     export var path: IStencil = {
@@ -16,9 +17,10 @@ namespace puck.stencil {
                 return;
             }
 
-            var raw = ctx.raw;
+            var raw = ctx.raw,
+                state = <IPathState>bag.state;
             raw.beginPath();
-            bag.path.draw(raw);
+            state.path.draw(raw);
             // NOTE: curve.Path dictates whether to "closePath"
         },
     };
