@@ -415,7 +415,9 @@ var puck;
             };
         };
         Object.defineProperty(Container.prototype, "opacity", {
-            get: function () { return this.state.opacity; },
+            get: function () {
+                return this.state.opacity;
+            },
             set: function (value) {
                 if (this.state.opacity !== value) {
                     this.state.opacity = value;
@@ -426,7 +428,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Container.prototype, "visible", {
-            get: function () { return this.state.visible; },
+            get: function () {
+                return this.state.visible;
+            },
             set: function (value) {
                 if (this.state.visible !== value) {
                     this.state.visible = value;
@@ -437,7 +441,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Container.prototype, "x", {
-            get: function () { return this.state.offset.x; },
+            get: function () {
+                return this.state.offset.x;
+            },
             set: function (value) {
                 if (this.state.offset.x !== value) {
                     this.state.offset.x = value;
@@ -448,7 +454,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Container.prototype, "y", {
-            get: function () { return this.state.offset.y; },
+            get: function () {
+                return this.state.offset.y;
+            },
             set: function (value) {
                 if (this.state.offset.y !== value) {
                     this.state.offset.y = value;
@@ -459,7 +467,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Container.prototype, "transformOriginX", {
-            get: function () { return this.state.transformOrigin.x; },
+            get: function () {
+                return this.state.transformOrigin.x;
+            },
             set: function (value) {
                 if (this.state.transformOrigin.x !== value) {
                     this.state.transformOrigin.x = value;
@@ -470,7 +480,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Container.prototype, "transformOriginY", {
-            get: function () { return this.state.transformOrigin.y; },
+            get: function () {
+                return this.state.transformOrigin.y;
+            },
             set: function (value) {
                 if (this.state.transformOrigin.y !== value) {
                     this.state.transformOrigin.y = value;
@@ -1082,17 +1094,20 @@ var puck;
 (function (puck) {
     var Layer = (function (_super) {
         __extends(Layer, _super);
-        function Layer(ctx) {
-            this.$ctx = new puck.render.RenderContext(ctx);
-            _super.call(this);
+        function Layer() {
+            _super.apply(this, arguments);
         }
         Object.defineProperty(Layer.prototype, "width", {
-            get: function () { return this.$ctx.raw.canvas.width; },
+            get: function () {
+                return this.$ctx.raw.canvas.width;
+            },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(Layer.prototype, "height", {
-            get: function () { return this.$ctx.raw.canvas.height; },
+            get: function () {
+                return this.$ctx.raw.canvas.height;
+            },
             enumerable: true,
             configurable: true
         });
@@ -1102,6 +1117,11 @@ var puck;
             this.frameDebug = new puck.FrameDebug();
             this.$timer = new puck.Timer(function (now) { return _this.onTick(now); });
             this.$collector = new puck.Element();
+            this.$ctx = new puck.render.RenderContext();
+        };
+        Layer.prototype.attach = function (ctx) {
+            this.$ctx.init(ctx);
+            return this;
         };
         Layer.prototype.activate = function () {
             this.$timer.enable();
@@ -2051,16 +2071,14 @@ var puck;
             "round"
         ];
         var RenderContext = (function () {
-            function RenderContext(ctx) {
+            function RenderContext() {
                 this.$$transforms = [];
                 this.currentTransform = mat3.identity();
                 Object.defineProperties(this, {
-                    "raw": { value: ctx, writable: false },
                     "currentTransform": { value: mat3.identity(), writable: false },
                     "hasFillRule": { value: RenderContext.hasFillRule, writable: false },
                     "size": { value: new render.RenderContextSize(), writable: false },
                 });
-                this.size.init(ctx);
             }
             Object.defineProperty(RenderContext, "hasFillRule", {
                 get: function () {
@@ -2073,6 +2091,13 @@ var puck;
                 enumerable: true,
                 configurable: true
             });
+            RenderContext.prototype.init = function (ctx) {
+                Object.defineProperties(this, {
+                    "raw": { value: ctx, writable: false }
+                });
+                this.size.init(ctx);
+                return this;
+            };
             RenderContext.prototype.applyDpiRatio = function () {
                 var ratio = this.size.dpiRatio;
                 this.scale(ratio, ratio);

@@ -19,7 +19,8 @@ namespace demo {
             });
 
             this.$canvas = canvas;
-            var root = this.root = new puck.Layer(canvas.getContext('2d'));
+            var root = this.root = new puck.Layer()
+                .attach(canvas.getContext('2d'));
             root.frameDebug
                 .onBeginProcess(() => this.onBeginProcess())
                 .onEndProcess(() => this.onEndProcess())

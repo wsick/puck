@@ -19,14 +19,12 @@ namespace puck.render {
         raw: CanvasRenderingContext2D;
         size: RenderContextSize;
 
-        constructor(ctx: CanvasRenderingContext2D) {
+        constructor() {
             Object.defineProperties(this, {
-                "raw": {value: ctx, writable: false},
                 "currentTransform": {value: mat3.identity(), writable: false},
                 "hasFillRule": {value: RenderContext.hasFillRule, writable: false},
                 "size": {value: new RenderContextSize(), writable: false},
             });
-            this.size.init(ctx);
         }
 
         static get hasFillRule(): boolean {
@@ -35,6 +33,14 @@ namespace puck.render {
                 return version < 0 || version > 10;
             }
             return true;
+        }
+
+        init(ctx: CanvasRenderingContext2D): this {
+            Object.defineProperties(this, {
+                "raw": {value: ctx, writable: false}
+            });
+            this.size.init(ctx);
+            return this;
         }
 
         applyDpiRatio() {

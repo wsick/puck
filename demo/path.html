@@ -10,7 +10,8 @@
         var root;
         window.onload = (e) => {
             var c = document.getElementById('canvas');
-            root = new puck.Layer(c.getContext('2d'))
+            root = new puck.Layer()
+                    .attach(c.getContext('2d'))
                     .activate();
 
             var path1 = new puck.Path();

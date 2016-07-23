@@ -403,10 +403,10 @@ declare namespace puck {
         private $timer;
         private $collector;
         frameDebug: FrameDebug;
-        constructor(ctx: CanvasRenderingContext2D);
         width: number;
         height: number;
         init(state?: IContainerState, composite?: IContainerComposite): void;
+        attach(ctx: CanvasRenderingContext2D): this;
         activate(): this;
         deactivate(): this;
         protected onTick(now: number): void;
@@ -643,8 +643,9 @@ declare namespace puck.render {
         hasFillRule: boolean;
         raw: CanvasRenderingContext2D;
         size: RenderContextSize;
-        constructor(ctx: CanvasRenderingContext2D);
+        constructor();
         static hasFillRule: boolean;
+        init(ctx: CanvasRenderingContext2D): this;
         applyDpiRatio(): void;
         save(): void;
         restore(): void;
