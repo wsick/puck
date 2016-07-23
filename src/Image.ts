@@ -1,6 +1,7 @@
 namespace puck {
     import IImageState = puck.image.IImageState;
     import IImageComposite = puck.image.IImageComposite;
+    import IImageProcessor = puck.image.IImageProcessor;
     import DirtyFlags = puck.element.DirtyFlags;
 
     /*
@@ -9,9 +10,10 @@ namespace puck {
      * If another stretch is represented, image will transform into width/height specified.
      */
 
-    export class Image extends Element {
+    export class Image extends Element implements image.IImage {
         state: IImageState;
         composite: IImageComposite;
+        processor: IImageProcessor;
         stencil: stencil.IStencil;
 
         constructor(state?: IImageState, composite?: IImageComposite) {
@@ -25,6 +27,7 @@ namespace puck {
                 down: image.down.Processor.instance,
                 up: image.up.Processor.instance,
                 render: element.render.Processor.instance,
+                hit: image.hit.Processor.instance,
             };
             this.stencil = imageStencil;
             this.state.source.watch(
@@ -33,11 +36,19 @@ namespace puck {
                 () => this.onSourceLoaded());
         }
 
-        get sourceUri(): string { return this.state.source.uri; }
-        // invalidations come through watcher
-        set sourceUri(value: string) { this.state.source.uri = value; }
+        get sourceUri(): string {
+            return this.state.source.uri;
+        }
 
-        get stretch(): Stretch { return this.state.stretch; }
+        // invalidations come through watcher
+        set sourceUri(value: string) {
+            this.state.source.uri = value;
+        }
+
+        get stretch(): Stretch {
+            return this.state.stretch;
+        }
+
         set stretch(value: Stretch) {
             if (this.state.stretch !== value) {
                 this.state.stretch = value;
@@ -45,7 +56,10 @@ namespace puck {
             }
         }
 
-        get x(): number { return this.state.offset.x; }
+        get x(): number {
+            return this.state.offset.x;
+        }
+
         set x(value: number) {
             if (this.state.offset.x !== value) {
                 this.state.offset.x = value;
@@ -53,7 +67,10 @@ namespace puck {
             }
         }
 
-        get y(): number { return this.state.offset.y; }
+        get y(): number {
+            return this.state.offset.y;
+        }
+
         set y(value: number) {
             if (this.state.offset.y !== value) {
                 this.state.offset.y = value;
@@ -61,7 +78,10 @@ namespace puck {
             }
         }
 
-        get width(): number { return this.state.size.width; }
+        get width(): number {
+            return this.state.size.width;
+        }
+
         set width(value: number) {
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
@@ -69,7 +89,10 @@ namespace puck {
             }
         }
 
-        get height(): number { return this.state.size.height; }
+        get height(): number {
+            return this.state.size.height;
+        }
+
         set height(value: number) {
             if (this.state.size.height !== value) {
                 this.state.size.height = value;
@@ -99,7 +122,8 @@ namespace puck {
     }
 
     var imageStencil = <stencil.IStencil>{
-        draft(bag: stencil.IStencilBag) {},
+        draft(bag: stencil.IStencilBag) {
+        },
         draw(ctx: render.RenderContext, bag: stencil.IStencilBag) {
             var state = <IImageState>bag.state,
                 comp = <IImageComposite>bag.composite;

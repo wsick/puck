@@ -28,7 +28,6 @@
     "bower-typings": "^0.1.0",
     "connect-livereload": "^0.5.0",
     "del": "^1.2.0",
-    "fayde-unify": "^0.4.14",
     "glob": "^5.0.5",
     "gulp": "^3.8.11",
     "gulp-bower": "0.0.10",

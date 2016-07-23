@@ -13,7 +13,10 @@ namespace puck {
             this.stencil = ellipseStencil;
         }
 
-        get x(): number { return this.state.offset.x; }
+        get x(): number {
+            return this.state.offset.x;
+        }
+
         set x(value: number) {
             if (this.state.offset.x !== value) {
                 this.state.offset.x = value;
@@ -21,7 +24,10 @@ namespace puck {
             }
         }
 
-        get y(): number { return this.state.offset.y; }
+        get y(): number {
+            return this.state.offset.y;
+        }
+
         set y(value: number) {
             if (this.state.offset.y !== value) {
                 this.state.offset.y = value;
@@ -29,7 +35,10 @@ namespace puck {
             }
         }
 
-        get width(): number { return this.state.size.width; }
+        get width(): number {
+            return this.state.size.width;
+        }
+
         set width(value: number) {
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
@@ -37,7 +46,10 @@ namespace puck {
             }
         }
 
-        get height(): number { return this.state.size.height; }
+        get height(): number {
+            return this.state.size.height;
+        }
+
         set height(value: number) {
             if (this.state.size.height !== value) {
                 this.state.size.height = value;

@@ -3,7 +3,14 @@ namespace puck.container {
         state: IContainerState;
         composite: IContainerComposite;
         elements: element.IElement[];
-        processor: {down: down.Processor, up: up.Processor, render: render.Processor};
+        processor: IContainerProcessor;
         walk(reverse?: boolean): walk.IWalker<element.IElement>;
+    }
+
+    export interface IContainerProcessor {
+        down: down.Processor;
+        up: up.Processor;
+        render: render.Processor;
+        hit: hit.Processor;
     }
 }

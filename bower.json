@@ -4,7 +4,6 @@
   "ignore": [
     "gulp",
     "test",
-    "testsite",
     "typings",
     "gulpfile.js"
   ],

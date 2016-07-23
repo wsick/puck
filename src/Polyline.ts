@@ -2,11 +2,12 @@ namespace puck {
     import DirtyFlags = puck.element.DirtyFlags;
     import IPolylineState = puck.polyline.IPolylineState;
     import IPathComposite = puck.path.IPathComposite;
+    import IPolylineProcessor = puck.polyline.IPolylineProcessor;
 
     export class Polyline extends Visual implements polyline.IPolyline {
         state: polyline.IPolylineState;
         composite: path.IPathComposite;
-        processor: {down: polyline.down.Processor; up: path.up.Processor; render: path.render.Processor};
+        processor: IPolylineProcessor;
 
         constructor(state?: IPolylineState, composite?: IPathComposite) {
             super(state, composite);
@@ -19,6 +20,7 @@ namespace puck {
                 down: polyline.down.Processor.instance,
                 up: path.up.Processor.instance,
                 render: path.render.Processor.instance,
+                hit: path.hit.Processor.instance,
             };
             this.stencil = stencil.path;
             this.state.points.watch(() => {

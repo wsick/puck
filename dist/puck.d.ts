@@ -188,14 +188,11 @@ declare namespace puck {
     import IElement = puck.element.IElement;
     import IElementState = puck.element.IElementState;
     import IElementComposite = puck.element.IElementComposite;
+    import IElementProcessor = puck.element.IElementProcessor;
     class Element implements IElement {
         state: IElementState;
         composite: IElementComposite;
-        processor: {
-            down: element.down.Processor;
-            up: element.up.Processor;
-            render: element.render.Processor;
-        };
+        processor: IElementProcessor;
         stencil: stencil.IStencil;
         constructor(state?: IElementState, composite?: IElementComposite);
         init(state?: IElementState, composite?: IElementComposite): void;
@@ -213,15 +210,12 @@ declare namespace puck {
     import IElement = puck.element.IElement;
     import IContainerState = puck.container.IContainerState;
     import IContainerComposite = puck.container.IContainerComposite;
+    import IContainerProcessor = puck.container.IContainerProcessor;
     class Container implements IContainer {
         state: IContainerState;
         composite: IContainerComposite;
         elements: IElement[];
-        processor: {
-            down: container.down.Processor;
-            up: container.up.Processor;
-            render: container.render.Processor;
-        };
+        processor: IContainerProcessor;
         constructor(state?: IContainerState, composite?: IContainerComposite);
         init(state?: IContainerState, composite?: IContainerComposite): void;
         walk(reverse?: boolean): walk.IWalker<element.IElement>;
@@ -239,16 +233,13 @@ declare namespace puck {
 declare namespace puck {
     import IVisualState = puck.visual.IVisualState;
     import IVisualComposite = puck.visual.IVisualComposite;
+    import IVisualProcessor = puck.visual.IVisualProcessor;
     class Visual extends Element implements visual.IVisual {
         private $fillwatch;
         private $strokewatch;
         state: IVisualState;
         composite: IVisualComposite;
-        processor: {
-            down: element.down.Processor;
-            up: element.up.Processor;
-            render: visual.render.Processor;
-        };
+        processor: IVisualProcessor;
         constructor(state?: IVisualState, composite?: IVisualComposite);
         init(state?: IVisualState, composite?: IVisualComposite): void;
         fill: IBrush;
@@ -377,9 +368,11 @@ declare namespace puck {
 declare namespace puck {
     import IImageState = puck.image.IImageState;
     import IImageComposite = puck.image.IImageComposite;
-    class Image extends Element {
+    import IImageProcessor = puck.image.IImageProcessor;
+    class Image extends Element implements image.IImage {
         state: IImageState;
         composite: IImageComposite;
+        processor: IImageProcessor;
         stencil: stencil.IStencil;
         constructor(state?: IImageState, composite?: IImageComposite);
         init(state?: IImageState, composite?: IImageComposite): void;
@@ -401,7 +394,6 @@ declare namespace puck {
     class Layer extends Container {
         private $ctx;
         private $timer;
-        private $collector;
         frameDebug: FrameDebug;
         width: number;
         height: number;
@@ -409,6 +401,8 @@ declare namespace puck {
         attach(ctx: CanvasRenderingContext2D): this;
         activate(): this;
         deactivate(): this;
+        process(): this;
+        render(): this;
         protected onTick(now: number): void;
     }
 }
@@ -427,14 +421,11 @@ declare namespace puck {
 declare namespace puck {
     import IPathState = puck.path.IPathState;
     import IPathComposite = puck.path.IPathComposite;
+    import IPathProcessor = puck.path.IPathProcessor;
     class Path extends Visual implements path.IPath {
         state: IPathState;
         composite: IPathComposite;
-        processor: {
-            down: path.down.Processor;
-            up: path.up.Processor;
-            render: path.render.Processor;
-        };
+        processor: IPathProcessor;
         constructor(state?: IPathState, composite?: IPathComposite);
         init(state?: IPathState, composite?: IPathComposite): void;
         x: number;
@@ -456,14 +447,11 @@ declare namespace puck {
 declare namespace puck {
     import IPolylineState = puck.polyline.IPolylineState;
     import IPathComposite = puck.path.IPathComposite;
+    import IPolylineProcessor = puck.polyline.IPolylineProcessor;
     class Polyline extends Visual implements polyline.IPolyline {
         state: polyline.IPolylineState;
         composite: path.IPathComposite;
-        processor: {
-            down: polyline.down.Processor;
-            up: path.up.Processor;
-            render: path.render.Processor;
-        };
+        processor: IPolylineProcessor;
         constructor(state?: IPolylineState, composite?: IPathComposite);
         init(state?: IPolylineState, composite?: IPathComposite): void;
         points: Points;
@@ -614,24 +602,31 @@ declare namespace puck.container {
         state: IContainerState;
         composite: IContainerComposite;
         elements: element.IElement[];
-        processor: {
-            down: down.Processor;
-            up: up.Processor;
-            render: render.Processor;
-        };
+        processor: IContainerProcessor;
         walk(reverse?: boolean): walk.IWalker<element.IElement>;
+    }
+    interface IContainerProcessor {
+        down: down.Processor;
+        up: up.Processor;
+        render: render.Processor;
+        hit: hit.Processor;
     }
 }
 declare namespace puck.element {
     interface IElement {
         state: IElementState;
         composite: IElementComposite;
-        processor: {
-            down: down.Processor;
-            up: up.Processor;
-            render: render.Processor;
-        };
+        processor: IElementProcessor;
     }
+    interface IElementProcessor {
+        down: down.Processor;
+        up: up.Processor;
+        render: render.Processor;
+        hit: hit.Processor;
+    }
+}
+declare namespace puck.engine {
+    function hit(el: element.IElement, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): void;
 }
 declare namespace puck.engine {
     function process(el: element.IElement, parent?: element.IElement): void;
@@ -673,6 +668,20 @@ declare namespace puck.fit.extents {
 }
 declare namespace puck.fit.transform {
     function calc(transform: Float32Array, stretch: Stretch, natural: la.IRect, size: la.ISize): void;
+}
+declare namespace puck.image {
+    interface IImage extends element.IElement {
+        state: IImageState;
+        composite: IImageComposite;
+        processor: IImageProcessor;
+        stencil: stencil.IStencil;
+    }
+    interface IImageProcessor {
+        down: down.Processor;
+        up: up.Processor;
+        render: element.render.Processor;
+        hit: hit.Processor;
+    }
 }
 declare namespace puck.image {
     interface IImageSource {
@@ -775,13 +784,15 @@ declare namespace puck.path {
 declare namespace puck.path {
     interface IPath extends visual.IVisual {
         state: IPathState;
-        composite: visual.IVisualComposite;
-        processor: {
-            down: path.down.Processor;
-            up: path.up.Processor;
-            render: path.render.Processor;
-        };
+        composite: IPathComposite;
+        processor: IPathProcessor;
         stencil: stencil.IStencil;
+    }
+    interface IPathProcessor {
+        down: down.Processor;
+        up: up.Processor;
+        render: render.Processor;
+        hit: hit.Processor;
     }
 }
 declare namespace puck.path {
@@ -846,12 +857,14 @@ declare namespace puck.polyline {
     interface IPolyline extends visual.IVisual {
         state: IPolylineState;
         composite: path.IPathComposite;
-        processor: {
-            down: polyline.down.Processor;
-            up: path.up.Processor;
-            render: path.render.Processor;
-        };
+        processor: IPolylineProcessor;
         stencil: stencil.IStencil;
+    }
+    interface IPolylineProcessor {
+        down: polyline.down.Processor;
+        up: path.up.Processor;
+        render: path.render.Processor;
+        hit: path.hit.Processor;
     }
 }
 declare namespace puck.polyline {
@@ -938,12 +951,14 @@ declare namespace puck.visual {
     interface IVisual extends element.IElement {
         state: IVisualState;
         composite: IVisualComposite;
-        processor: {
-            down: element.down.Processor;
-            up: element.up.Processor;
-            render: visual.render.Processor;
-        };
+        processor: IVisualProcessor;
         stencil: stencil.IStencil;
+    }
+    interface IVisualProcessor {
+        down: element.down.Processor;
+        up: element.up.Processor;
+        render: visual.render.Processor;
+        hit: visual.hit.Processor;
     }
 }
 declare namespace puck.visual {
@@ -983,6 +998,21 @@ declare namespace puck.container.down {
     class Processor extends element.down.Processor {
         static instance: Processor;
         process(bag: IProcessorBag): DirtyFlags;
+    }
+}
+declare namespace puck.element.hit {
+    class Processor {
+        static instance: Processor;
+        process(el: element.IElement, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
+        protected prehit(el: element.IElement, ctx: puck.render.RenderContext, pos: Float32Array): boolean;
+        protected hit(el: element.IElement, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
+        protected draw(el: visual.IVisual, ctx: puck.render.RenderContext): void;
+    }
+}
+declare namespace puck.container.hit {
+    class Processor extends element.hit.Processor {
+        static instance: Processor;
+        protected hit(el: IContainer, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
     }
 }
 declare namespace puck.element.render {
@@ -1063,6 +1093,9 @@ declare namespace puck.element.down.transform {
 declare namespace puck.element.down.visible {
     function process(bag: IProcessorBag): boolean;
 }
+declare namespace puck.element.up.extents {
+    function process(bag: IProcessorBag): boolean;
+}
 declare namespace puck.element.render.narrow {
     function process(bag: IProcessorBag): void;
 }
@@ -1073,9 +1106,6 @@ declare namespace puck.element.render.should {
     function process(bag: IProcessorBag): boolean;
 }
 declare namespace puck.element.render.validate {
-    function process(bag: IProcessorBag): boolean;
-}
-declare namespace puck.element.up.extents {
     function process(bag: IProcessorBag): boolean;
 }
 declare namespace puck.image.down {
@@ -1089,6 +1119,12 @@ declare namespace puck.image.down {
 declare namespace puck.image.down.stretch {
     import IProcessorBag = puck.element.down.IProcessorBag;
     function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.image.hit {
+    class Processor extends element.hit.Processor {
+        static instance: Processor;
+        protected hit(el: IImage, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
+    }
 }
 declare namespace puck.image.up.extents {
     import IProcessorBag = puck.element.up.IProcessorBag;
@@ -1117,6 +1153,21 @@ declare namespace puck.path.down {
 declare namespace puck.path.down.stretch {
     import IProcessorBag = puck.element.down.IProcessorBag;
     function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.visual.hit {
+    class Processor extends element.hit.Processor {
+        static instance: Processor;
+        protected prehit(el: visual.IVisual, ctx: puck.render.RenderContext, pos: Float32Array): boolean;
+        protected hit(el: visual.IVisual, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
+        protected transformLocal(el: element.IElement, ctx: puck.render.RenderContext): void;
+    }
+}
+declare namespace puck.path.hit {
+    class Processor extends visual.hit.Processor {
+        static instance: Processor;
+        protected hit(el: IPath, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
+        protected transformLocal(path: IPath, ctx: puck.render.RenderContext): void;
+    }
 }
 declare namespace puck.visual.render {
     interface IProcessorBag extends puck.element.render.IProcessorBag {

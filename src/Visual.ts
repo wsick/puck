@@ -1,6 +1,7 @@
 namespace puck {
     import IVisualState = puck.visual.IVisualState;
     import IVisualComposite = puck.visual.IVisualComposite;
+    import IVisualProcessor = puck.visual.IVisualProcessor;
     import DirtyFlags = puck.element.DirtyFlags;
 
     /*
@@ -17,7 +18,7 @@ namespace puck {
 
         state: IVisualState;
         composite: IVisualComposite;
-        processor: {down: element.down.Processor, up: element.up.Processor, render: visual.render.Processor};
+        processor: IVisualProcessor;
 
         constructor(state?: IVisualState, composite?: IVisualComposite) {
             super(state, composite);
@@ -30,6 +31,7 @@ namespace puck {
                 down: element.down.Processor.instance,
                 up: element.up.Processor.instance,
                 render: visual.render.Processor.instance,
+                hit: visual.hit.Processor.instance,
             };
             this.stencil = stencil.visual;
         }
