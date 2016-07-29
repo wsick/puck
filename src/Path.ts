@@ -19,7 +19,7 @@ namespace puck {
             super(state, composite);
         }
 
-        init(state ?: IPathState, composite ?: IPathComposite) {
+        init(state?: IPathState, composite?: IPathComposite) {
             this.state = (state || new path.PathState()).reset();
             this.composite = (composite || new path.PathComposite()).reset();
             this.processor = {
