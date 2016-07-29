@@ -2,28 +2,28 @@
 
 namespace puck {
     import ITextState = puck.text.ITextState;
-    import IVisualComposite = puck.visual.IVisualComposite;
+    import IElementComposite = puck.element.IElementComposite;
     import DirtyFlags = puck.element.DirtyFlags;
     import ITextProcessor = puck.text.ITextProcessor;
 
-    export class Text extends Visual implements text.IText {
+    export class Text extends Element implements text.IText {
         state: puck.text.ITextState;
         processor: ITextProcessor;
 
-        constructor(state?: ITextState, composite?: IVisualComposite) {
+        constructor(state?: ITextState, composite?: IElementComposite) {
             super(state, composite);
         }
 
-        init(state?: ITextState, composite?: IVisualComposite) {
+        init(state?: ITextState, composite?: IElementComposite) {
             this.state = (state || new text.TextState()).reset();
-            this.composite = (composite || new visual.VisualComposite()).reset();
+            this.composite = (composite || new element.ElementComposite()).reset();
             this.processor = {
                 down: element.down.Processor.instance,
                 up: text.up.Processor.instance,
-                render: visual.render.Processor.instance,
-                hit: visual.hit.Processor.instance,
+                render: text.render.Processor.instance,
+                hit: text.hit.Processor.instance,
             };
-            this.stencil = stencil.visual;
+            this.stencil = stencil.empty;
         }
 
         get x(): number {

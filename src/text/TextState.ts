@@ -1,19 +1,30 @@
-/// <reference path="../visual/VisualState" />
+/// <reference path="../element/ElementState" />
 
 namespace puck.text {
-    import VisualState = puck.visual.VisualState;
+    import ElementState = puck.element.ElementState;
 
-    export interface ITextState extends visual.IVisualState {
+    export interface ITextState extends element.IElementState {
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
         font: IFont;
         text: string;
     }
 
-    export class TextState extends VisualState implements ITextState {
+    export class TextState extends ElementState implements ITextState {
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
         font: puck.IFont;
         text: string;
 
         reset(): this {
             super.reset();
+
+            this.fill = null;
+            this.stroke = null;
+            this.strokeThickness = 0;
+
             var f: puck.IFont;
             f = {
                 family: defaultFont.family,
@@ -27,6 +38,7 @@ namespace puck.text {
             };
             this.font = f;
             this.text = "";
+
             return this;
         }
     }
