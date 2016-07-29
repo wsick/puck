@@ -5,13 +5,14 @@ namespace puck {
     import IElement = puck.element.IElement;
     import IContainerState = puck.container.IContainerState;
     import IContainerComposite = puck.container.IContainerComposite;
+    import IContainerProcessor = puck.container.IContainerProcessor;
     import DirtyFlags = puck.element.DirtyFlags;
 
     export class Container implements IContainer {
         state: IContainerState;
         composite: IContainerComposite;
         elements: IElement[];
-        processor: {down: container.down.Processor, up: container.up.Processor, render: container.render.Processor};
+        processor: IContainerProcessor;
 
         constructor(state?: IContainerState, composite?: IContainerComposite) {
             this.init(state, composite);
@@ -26,6 +27,7 @@ namespace puck {
                 down: container.down.Processor.instance,
                 up: container.up.Processor.instance,
                 render: container.render.Processor.instance,
+                hit: container.hit.Processor.instance,
             };
         }
 

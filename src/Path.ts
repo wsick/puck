@@ -1,6 +1,7 @@
 namespace puck {
     import IPathState = puck.path.IPathState;
     import IPathComposite = puck.path.IPathComposite;
+    import IPathProcessor = puck.path.IPathProcessor;
     import DirtyFlags = puck.element.DirtyFlags;
 
     /*
@@ -12,7 +13,7 @@ namespace puck {
     export class Path extends Visual implements path.IPath {
         state: IPathState;
         composite: IPathComposite;
-        processor: {down: path.down.Processor; up: path.up.Processor; render: path.render.Processor};
+        processor: IPathProcessor;
 
         constructor(state?: IPathState, composite?: IPathComposite) {
             super(state, composite);
@@ -25,6 +26,7 @@ namespace puck {
                 down: path.down.Processor.instance,
                 up: path.up.Processor.instance,
                 render: path.render.Processor.instance,
+                hit: path.hit.Processor.instance,
             };
             this.stencil = stencil.path;
         }

@@ -1,7 +1,10 @@
 namespace puck.fit.extents {
     import mat3 = la.mat3;
+    import rect = la.rect;
 
     export function calc(extents: la.IRect, stretch: Stretch, natural: la.IRect, size: la.ISize) {
+        if (rect.isEmpty(natural))
+            size.width = size.height = 0;
         var fitter = fits[stretch];
         fitter && fitter(extents, natural, size);
     }

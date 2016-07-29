@@ -8,7 +8,6 @@ namespace puck {
     export class Layer extends Container {
         private $ctx: render.RenderContext;
         private $timer: Timer;
-        private $collector: element.IElement;
         frameDebug: FrameDebug;
 
         get width(): number {
@@ -22,9 +21,8 @@ namespace puck {
         init(state?: IContainerState, composite?: IContainerComposite) {
             super.init(state, composite);
             this.frameDebug = new FrameDebug();
-            this.$timer = new Timer((now) => this.onTick(now));
-            this.$collector = new Element();
             this.$ctx = new render.RenderContext();
+            this.$timer = new Timer((now) => this.onTick(now));
         }
 
         attach(ctx: CanvasRenderingContext2D): this {
@@ -42,22 +40,30 @@ namespace puck {
             return this;
         }
 
-        protected onTick(now: number) {
-            var debug = this.frameDebug;
-
-            debug.beginProcess();
+        process(): this {
+            this.frameDebug.beginProcess();
             engine.process(this);
-            debug.endProcess();
+            this.frameDebug.endProcess();
+            return this;
+        }
 
+        render(): this {
             var ctx = this.$ctx,
                 paint = this.composite.paint,
                 raw = ctx.raw;
 
-            debug.beginRender();
+            this.frameDebug.beginRender();
             raw.fillStyle = "#ffffff";
             raw.fillRect(paint.x, paint.y, paint.width, paint.height);
             engine.render(this, ctx, paint);
-            debug.endRender();
+            this.frameDebug.endRender();
+
+            return this;
+        }
+
+        protected onTick(now: number) {
+            this.process()
+                .render();
         }
     }
 }
