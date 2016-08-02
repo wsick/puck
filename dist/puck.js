@@ -286,12 +286,13 @@ var puck;
             DirtyFlags[DirtyFlags["visible"] = 2] = "visible";
             DirtyFlags[DirtyFlags["stretch"] = 4] = "stretch";
             DirtyFlags[DirtyFlags["transform"] = 8] = "transform";
-            DirtyFlags[DirtyFlags["padding"] = 16] = "padding";
-            DirtyFlags[DirtyFlags["extents"] = 32] = "extents";
-            DirtyFlags[DirtyFlags["newbounds"] = 64] = "newbounds";
-            DirtyFlags[DirtyFlags["invalidate"] = 128] = "invalidate";
+            DirtyFlags[DirtyFlags["font"] = 16] = "font";
+            DirtyFlags[DirtyFlags["padding"] = 32] = "padding";
+            DirtyFlags[DirtyFlags["extents"] = 64] = "extents";
+            DirtyFlags[DirtyFlags["newbounds"] = 128] = "newbounds";
+            DirtyFlags[DirtyFlags["invalidate"] = 256] = "invalidate";
             DirtyFlags[DirtyFlags["down"] = 15] = "down";
-            DirtyFlags[DirtyFlags["up"] = 240] = "up";
+            DirtyFlags[DirtyFlags["up"] = 496] = "up";
         })(element.DirtyFlags || (element.DirtyFlags = {}));
         var DirtyFlags = element.DirtyFlags;
     })(element = puck.element || (puck.element = {}));
@@ -311,11 +312,14 @@ var puck;
                 down: puck.element.down.Processor.instance,
                 up: puck.element.up.Processor.instance,
                 render: puck.element.render.Processor.instance,
+                hit: puck.element.hit.Processor.instance,
             };
             this.stencil = puck.stencil.empty;
         };
         Object.defineProperty(Element.prototype, "opacity", {
-            get: function () { return this.state.opacity; },
+            get: function () {
+                return this.state.opacity;
+            },
             set: function (value) {
                 if (this.state.opacity !== value) {
                     this.state.opacity = value;
@@ -326,7 +330,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Element.prototype, "visible", {
-            get: function () { return this.state.visible; },
+            get: function () {
+                return this.state.visible;
+            },
             set: function (value) {
                 if (this.state.visible !== value) {
                     this.state.visible = value;
@@ -337,7 +343,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Element.prototype, "transformOriginX", {
-            get: function () { return this.state.transformOrigin.x; },
+            get: function () {
+                return this.state.transformOrigin.x;
+            },
             set: function (value) {
                 if (this.state.transformOrigin.x !== value) {
                     this.state.transformOrigin.x = value;
@@ -348,7 +356,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Element.prototype, "transformOriginY", {
-            get: function () { return this.state.transformOrigin.y; },
+            get: function () {
+                return this.state.transformOrigin.y;
+            },
             set: function (value) {
                 if (this.state.transformOrigin.y !== value) {
                     this.state.transformOrigin.y = value;
@@ -393,6 +403,7 @@ var puck;
                 down: puck.container.down.Processor.instance,
                 up: puck.container.up.Processor.instance,
                 render: puck.container.render.Processor.instance,
+                hit: puck.container.hit.Processor.instance,
             };
         };
         Container.prototype.walk = function (reverse) {
@@ -533,6 +544,7 @@ var puck;
                 down: puck.element.down.Processor.instance,
                 up: puck.element.up.Processor.instance,
                 render: puck.visual.render.Processor.instance,
+                hit: puck.visual.hit.Processor.instance,
             };
             this.stencil = puck.stencil.visual;
         };
@@ -630,7 +642,9 @@ var puck;
             this.stencil = ellipseStencil;
         };
         Object.defineProperty(Ellipse.prototype, "x", {
-            get: function () { return this.state.offset.x; },
+            get: function () {
+                return this.state.offset.x;
+            },
             set: function (value) {
                 if (this.state.offset.x !== value) {
                     this.state.offset.x = value;
@@ -641,7 +655,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Ellipse.prototype, "y", {
-            get: function () { return this.state.offset.y; },
+            get: function () {
+                return this.state.offset.y;
+            },
             set: function (value) {
                 if (this.state.offset.y !== value) {
                     this.state.offset.y = value;
@@ -652,7 +668,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Ellipse.prototype, "width", {
-            get: function () { return this.state.size.width; },
+            get: function () {
+                return this.state.size.width;
+            },
             set: function (value) {
                 if (this.state.size.width !== value) {
                     this.state.size.width = value;
@@ -663,7 +681,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Ellipse.prototype, "height", {
-            get: function () { return this.state.size.height; },
+            get: function () {
+                return this.state.size.height;
+            },
             set: function (value) {
                 if (this.state.size.height !== value) {
                     this.state.size.height = value;
@@ -711,6 +731,48 @@ var puck;
         PenLineCap[PenLineCap["triangle"] = 3] = "triangle";
     })(puck.PenLineCap || (puck.PenLineCap = {}));
     var PenLineCap = puck.PenLineCap;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    puck.FontStyle = {
+        normal: "normal",
+        italic: "italic",
+        oblique: "oblique"
+    };
+    puck.FontStretch = {
+        ultraCondensed: "ultra-condensed",
+        extraCondensed: "extra-condensed",
+        condensed: "condensed",
+        semiCondensed: "semi-condensed",
+        normal: "normal",
+        semiExpanded: "semi-expanded",
+        expanded: "expanded",
+        extraExpanded: "extra-expanded",
+        ultraExpanded: "ultra-expanded"
+    };
+    (function (FontWeight) {
+        FontWeight[FontWeight["thin"] = 100] = "thin";
+        FontWeight[FontWeight["extraLight"] = 200] = "extraLight";
+        FontWeight[FontWeight["light"] = 300] = "light";
+        FontWeight[FontWeight["normal"] = 400] = "normal";
+        FontWeight[FontWeight["medium"] = 500] = "medium";
+        FontWeight[FontWeight["semiBold"] = 600] = "semiBold";
+        FontWeight[FontWeight["bold"] = 700] = "bold";
+        FontWeight[FontWeight["extraBold"] = 800] = "extraBold";
+        FontWeight[FontWeight["black"] = 900] = "black";
+        FontWeight[FontWeight["extraBlack"] = 950] = "extraBlack";
+    })(puck.FontWeight || (puck.FontWeight = {}));
+    var FontWeight = puck.FontWeight;
+    puck.defaultFont = {
+        family: "\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif",
+        size: 14,
+        stretch: puck.FontStretch.normal,
+        style: puck.FontStyle.normal,
+        weight: FontWeight.normal,
+        toString: function () {
+            return puck.font.toString(puck.defaultFont);
+        },
+    };
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -806,7 +868,7 @@ var puck;
             if (this.$cachedBrush && la.rect.equal(this.$cachedBounds, region))
                 return;
             la.rect.copyTo(region, this.$cachedBounds);
-            this.createBrush(ctx, region);
+            this.$cachedBrush = this.createBrush(ctx, region);
         };
         GradientBrush.prototype.toHtml5Object = function () {
             return this.$cachedBrush;
@@ -997,18 +1059,25 @@ var puck;
                 down: puck.image.down.Processor.instance,
                 up: puck.image.up.Processor.instance,
                 render: puck.element.render.Processor.instance,
+                hit: puck.image.hit.Processor.instance,
             };
             this.stencil = imageStencil;
             this.state.source.watch(function () { return _this.onSourceChanged(); }, function (e) { return _this.onSourceErrored(e); }, function () { return _this.onSourceLoaded(); });
         };
         Object.defineProperty(Image.prototype, "sourceUri", {
-            get: function () { return this.state.source.uri; },
-            set: function (value) { this.state.source.uri = value; },
+            get: function () {
+                return this.state.source.uri;
+            },
+            set: function (value) {
+                this.state.source.uri = value;
+            },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(Image.prototype, "stretch", {
-            get: function () { return this.state.stretch; },
+            get: function () {
+                return this.state.stretch;
+            },
             set: function (value) {
                 if (this.state.stretch !== value) {
                     this.state.stretch = value;
@@ -1019,7 +1088,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Image.prototype, "x", {
-            get: function () { return this.state.offset.x; },
+            get: function () {
+                return this.state.offset.x;
+            },
             set: function (value) {
                 if (this.state.offset.x !== value) {
                     this.state.offset.x = value;
@@ -1030,7 +1101,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Image.prototype, "y", {
-            get: function () { return this.state.offset.y; },
+            get: function () {
+                return this.state.offset.y;
+            },
             set: function (value) {
                 if (this.state.offset.y !== value) {
                     this.state.offset.y = value;
@@ -1041,7 +1114,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Image.prototype, "width", {
-            get: function () { return this.state.size.width; },
+            get: function () {
+                return this.state.size.width;
+            },
             set: function (value) {
                 if (this.state.size.width !== value) {
                     this.state.size.width = value;
@@ -1052,7 +1127,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Image.prototype, "height", {
-            get: function () { return this.state.size.height; },
+            get: function () {
+                return this.state.size.height;
+            },
             set: function (value) {
                 if (this.state.size.height !== value) {
                     this.state.size.height = value;
@@ -1082,7 +1159,8 @@ var puck;
     })(puck.Element);
     puck.Image = Image;
     var imageStencil = {
-        draft: function (bag) { },
+        draft: function (bag) {
+        },
         draw: function (ctx, bag) {
             var state = bag.state, comp = bag.composite;
             ctx.preapply(comp.stretchTransform);
@@ -1115,9 +1193,8 @@ var puck;
             var _this = this;
             _super.prototype.init.call(this, state, composite);
             this.frameDebug = new puck.FrameDebug();
-            this.$timer = new puck.Timer(function (now) { return _this.onTick(now); });
-            this.$collector = new puck.Element();
             this.$ctx = new puck.render.RenderContext();
+            this.$timer = new puck.Timer(function (now) { return _this.onTick(now); });
         };
         Layer.prototype.attach = function (ctx) {
             this.$ctx.init(ctx);
@@ -1131,17 +1208,24 @@ var puck;
             this.$timer.disable();
             return this;
         };
-        Layer.prototype.onTick = function (now) {
-            var debug = this.frameDebug;
-            debug.beginProcess();
+        Layer.prototype.process = function () {
+            this.frameDebug.beginProcess();
             puck.engine.process(this);
-            debug.endProcess();
+            this.frameDebug.endProcess();
+            return this;
+        };
+        Layer.prototype.render = function () {
             var ctx = this.$ctx, paint = this.composite.paint, raw = ctx.raw;
-            debug.beginRender();
+            this.frameDebug.beginRender();
             raw.fillStyle = "#ffffff";
             raw.fillRect(paint.x, paint.y, paint.width, paint.height);
             puck.engine.render(this, ctx, paint);
-            debug.endRender();
+            this.frameDebug.endRender();
+            return this;
+        };
+        Layer.prototype.onTick = function (now) {
+            this.process()
+                .render();
         };
         return Layer;
     })(puck.Container);
@@ -1154,7 +1238,7 @@ var puck;
         function LinearGradientBrush() {
             _super.apply(this, arguments);
             this.$start = { x: 0, y: 0 };
-            this.$end = { x: 0, y: 0 };
+            this.$end = { x: 0, y: 1 };
         }
         Object.defineProperty(LinearGradientBrush.prototype, "start", {
             get: function () {
@@ -1191,7 +1275,7 @@ var puck;
             for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
                 addColorStop(grd, result.value);
             }
-            return undefined;
+            return grd;
         };
         LinearGradientBrush.prototype.createReflect = function (ctx, region) {
             var mstart = this.mapPoint(region, this.start);
@@ -1243,6 +1327,7 @@ var puck;
                 down: puck.path.down.Processor.instance,
                 up: puck.path.up.Processor.instance,
                 render: puck.path.render.Processor.instance,
+                hit: puck.path.hit.Processor.instance,
             };
             this.stencil = puck.stencil.path;
         };
@@ -1416,6 +1501,7 @@ var puck;
                 down: puck.polyline.down.Processor.instance,
                 up: puck.path.up.Processor.instance,
                 render: puck.path.render.Processor.instance,
+                hit: puck.path.hit.Processor.instance,
             };
             this.stencil = puck.stencil.path;
             this.state.points.watch(function () {
@@ -1735,7 +1821,9 @@ var puck;
             this.stencil = rectangleStencil;
         };
         Object.defineProperty(Rectangle.prototype, "x", {
-            get: function () { return this.state.offset.x; },
+            get: function () {
+                return this.state.offset.x;
+            },
             set: function (value) {
                 if (this.state.offset.x !== value) {
                     this.state.offset.x = value;
@@ -1746,7 +1834,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "y", {
-            get: function () { return this.state.offset.y; },
+            get: function () {
+                return this.state.offset.y;
+            },
             set: function (value) {
                 if (this.state.offset.y !== value) {
                     this.state.offset.y = value;
@@ -1757,7 +1847,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "width", {
-            get: function () { return this.state.size.width; },
+            get: function () {
+                return this.state.size.width;
+            },
             set: function (value) {
                 if (this.state.size.width !== value) {
                     this.state.size.width = value;
@@ -1768,7 +1860,9 @@ var puck;
             configurable: true
         });
         Object.defineProperty(Rectangle.prototype, "height", {
-            get: function () { return this.state.size.height; },
+            get: function () {
+                return this.state.size.height;
+            },
             set: function (value) {
                 if (this.state.size.height !== value) {
                     this.state.size.height = value;
@@ -1835,6 +1929,188 @@ var puck;
         Stretch[Stretch["uniformToFill"] = 3] = "uniformToFill";
     })(puck.Stretch || (puck.Stretch = {}));
     var Stretch = puck.Stretch;
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var DirtyFlags = puck.element.DirtyFlags;
+    var Text = (function (_super) {
+        __extends(Text, _super);
+        function Text(state, composite) {
+            _super.call(this, state, composite);
+            this.$fillwatch = null;
+            this.$strokewatch = null;
+        }
+        Text.prototype.init = function (state, composite) {
+            this.state = (state || new puck.text.TextState()).reset();
+            this.composite = (composite || new puck.element.ElementComposite()).reset();
+            this.processor = {
+                down: puck.element.down.Processor.instance,
+                up: puck.text.up.Processor.instance,
+                render: puck.text.render.Processor.instance,
+                hit: puck.text.hit.Processor.instance,
+            };
+            this.stencil = puck.stencil.empty;
+        };
+        Object.defineProperty(Text.prototype, "fill", {
+            get: function () { return this.state.fill; },
+            set: function (value) {
+                var _this = this;
+                if (this.$fillwatch) {
+                    this.$fillwatch.unwatch();
+                    this.$fillwatch = null;
+                }
+                if ((!value) === (!this.state.fill)) {
+                    this.composite.taint(DirtyFlags.extents).invalidate();
+                }
+                if (value !== this.state.fill) {
+                    this.state.fill = value;
+                    this.composite.invalidate();
+                }
+                if (value) {
+                    this.$fillwatch = value.watch(function () { return _this.composite.invalidate(); });
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "stroke", {
+            get: function () { return this.state.stroke; },
+            set: function (value) {
+                var _this = this;
+                if (this.$strokewatch) {
+                    this.$strokewatch.unwatch();
+                    this.$strokewatch = null;
+                }
+                if ((!value) === (!this.state.stroke)) {
+                    this.composite.taint(DirtyFlags.padding).invalidate();
+                }
+                if (value !== this.state.stroke) {
+                    this.state.stroke = value;
+                    this.composite.invalidate();
+                }
+                if (value) {
+                    this.$strokewatch = value.watch(function () { return _this.composite.invalidate(); });
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "strokeThickness", {
+            get: function () { return this.state.strokeThickness; },
+            set: function (value) {
+                if (value !== this.state.strokeThickness) {
+                    this.state.strokeThickness = value;
+                    this.composite.taint(DirtyFlags.padding);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "x", {
+            get: function () {
+                return this.state.offset.x;
+            },
+            set: function (value) {
+                if (this.state.offset.x !== value) {
+                    this.state.offset.x = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "y", {
+            get: function () {
+                return this.state.offset.y;
+            },
+            set: function (value) {
+                if (this.state.offset.y !== value) {
+                    this.state.offset.y = value;
+                    this.composite.taint(DirtyFlags.transform);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "text", {
+            get: function () {
+                return this.state.text;
+            },
+            set: function (value) {
+                this.state.text = value;
+                this.composite.taint(DirtyFlags.font);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "fontFamily", {
+            get: function () {
+                return this.state.font.family;
+            },
+            set: function (value) {
+                if (this.state.font.family !== value) {
+                    this.state.font.family = value;
+                    this.composite.taint(DirtyFlags.font);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "fontSize", {
+            get: function () {
+                return this.state.font.size;
+            },
+            set: function (value) {
+                if (this.state.font.size !== value) {
+                    this.state.font.size = value;
+                    this.composite.taint(DirtyFlags.font);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "fontStretch", {
+            get: function () {
+                return this.state.font.stretch;
+            },
+            set: function (value) {
+                if (this.state.font.stretch !== value) {
+                    this.state.font.stretch = value;
+                    this.composite.taint(DirtyFlags.font);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "fontStyle", {
+            get: function () {
+                return this.state.font.style;
+            },
+            set: function (value) {
+                if (this.state.font.style !== value) {
+                    this.state.font.style = value;
+                    this.composite.taint(DirtyFlags.font);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Text.prototype, "fontWeight", {
+            get: function () {
+                return this.state.font.weight;
+            },
+            set: function (value) {
+                if (this.state.font.weight !== value) {
+                    this.state.font.weight = value;
+                    this.composite.taint(DirtyFlags.font);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return Text;
+    })(puck.Element);
+    puck.Text = Text;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -1995,6 +2271,17 @@ var puck;
         })(puck.element.ElementState);
         container.ContainerState = ContainerState;
     })(container = puck.container || (puck.container = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var engine;
+    (function (engine) {
+        function hit(el, ctx, pos, hitlist) {
+            var processor = el.processor.hit;
+            processor.process(el, ctx, pos, hitlist);
+        }
+        engine.hit = hit;
+    })(engine = puck.engine || (puck.engine = {}));
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -2225,7 +2512,10 @@ var puck;
     (function (fit) {
         var extents;
         (function (extents_1) {
+            var rect = la.rect;
             function calc(extents, stretch, natural, size) {
+                if (rect.isEmpty(natural))
+                    size.width = size.height = 0;
                 var fitter = fits[stretch];
                 fitter && fitter(extents, natural, size);
             }
@@ -2295,6 +2585,22 @@ var puck;
             };
         })(transform = fit.transform || (fit.transform = {}));
     })(fit = puck.fit || (puck.fit = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var font;
+    (function (font_1) {
+        function toString(font) {
+            var s = "";
+            s += font.style.toString() + " ";
+            s += "normal ";
+            s += font.weight.toString() + " ";
+            s += font.size + "px ";
+            s += font.family.toString();
+            return s;
+        }
+        font_1.toString = toString;
+    })(font = puck.font || (puck.font = {}));
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
@@ -3090,6 +3396,41 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var text;
+    (function (text) {
+        var ElementState = puck.element.ElementState;
+        var TextState = (function (_super) {
+            __extends(TextState, _super);
+            function TextState() {
+                _super.apply(this, arguments);
+            }
+            TextState.prototype.reset = function () {
+                _super.prototype.reset.call(this);
+                this.fill = null;
+                this.stroke = null;
+                this.strokeThickness = 0;
+                var f;
+                f = {
+                    family: puck.defaultFont.family,
+                    size: puck.defaultFont.size,
+                    stretch: puck.defaultFont.stretch,
+                    style: puck.defaultFont.style,
+                    weight: puck.defaultFont.weight,
+                    toString: function () {
+                        return puck.font.toString(f);
+                    },
+                };
+                this.font = f;
+                this.text = "";
+                return this;
+            };
+            return TextState;
+        })(ElementState);
+        text.TextState = TextState;
+    })(text = puck.text || (puck.text = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var visual;
     (function (visual) {
         var ElementComposite = puck.element.ElementComposite;
@@ -3176,6 +3517,82 @@ var puck;
             })(puck.element.down.Processor);
             down.Processor = Processor;
         })(down = container.down || (container.down = {}));
+    })(container = puck.container || (puck.container = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var element;
+    (function (element) {
+        var hit;
+        (function (hit) {
+            var mat3 = la.mat3;
+            var vec2 = la.vec2;
+            var rect = la.rect;
+            var Processor = (function () {
+                function Processor() {
+                }
+                Processor.prototype.process = function (el, ctx, pos, hitlist) {
+                    if (!this.prehit(el, ctx, pos))
+                        return;
+                    ctx.save();
+                    ctx.preapply(el.composite.transform);
+                    var inside = false;
+                    if (this.hit(el, ctx, pos, hitlist)) {
+                        inside = true;
+                        hitlist.unshift(el);
+                    }
+                    ctx.restore();
+                    return inside;
+                };
+                Processor.prototype.prehit = function (el, ctx, pos) {
+                    var comp = el.composite;
+                    if (!comp.visible || (comp.opacity * 255) < 0.5)
+                        return false;
+                    var localpos = mat3.transformVec2(ctx.currentTransform, pos, vec2.create(0, 0));
+                    return rect.containsVec2(comp.extents, localpos);
+                };
+                Processor.prototype.hit = function (el, ctx, pos, hitlist) {
+                    return false;
+                };
+                Processor.prototype.draw = function (el, ctx) {
+                    var sbag = {
+                        state: el.state,
+                        composite: el.composite,
+                        fillRect: null,
+                        strokeRect: null,
+                    };
+                    el.stencil.draw(ctx, sbag);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })();
+            hit.Processor = Processor;
+        })(hit = element.hit || (element.hit = {}));
+    })(element = puck.element || (puck.element = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var container;
+    (function (container) {
+        var hit;
+        (function (hit) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.hit = function (el, ctx, pos, hitlist) {
+                    for (var walker = el.walk(true), cur = walker.next(); !!cur; cur = walker.next()) {
+                        if (puck.engine.hit(el, ctx, pos, hitlist))
+                            return true;
+                    }
+                    return false;
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.hit.Processor);
+            hit.Processor = Processor;
+        })(hit = container.hit || (container.hit = {}));
     })(container = puck.container || (puck.container = {}));
 })(puck || (puck = {}));
 var puck;
@@ -3580,6 +3997,76 @@ var puck;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var font;
+    (function (font_2) {
+        var height;
+        (function (height_1) {
+            var heights = [];
+            height_1.cache = {
+                hits: 0,
+                misses: 0
+            };
+            function get(font) {
+                var serial = font.toString();
+                var height = heights[serial];
+                if (height == null) {
+                    heights[serial] = height = height_1.measure(serial);
+                    height_1.cache.misses++;
+                }
+                else {
+                    height_1.cache.hits++;
+                }
+                return height;
+            }
+            height_1.get = get;
+        })(height = font_2.height || (font_2.height = {}));
+    })(font = puck.font || (puck.font = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var font;
+    (function (font_3) {
+        var height;
+        (function (height) {
+            var dummy;
+            function measure(font) {
+                var serial = font.toString();
+                if (!dummy) {
+                    dummy = document.createElement("div");
+                    dummy.appendChild(document.createTextNode("Hg"));
+                    document.body.appendChild(dummy);
+                }
+                dummy.style.display = "";
+                dummy.style.font = serial;
+                var result = dummy.offsetHeight;
+                dummy.style.display = "none";
+                return result;
+            }
+            height.measure = measure;
+        })(height = font_3.height || (font_3.height = {}));
+    })(font = puck.font || (puck.font = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var font;
+    (function (font_4) {
+        var width;
+        (function (width) {
+            var dummy;
+            function measure(font, text) {
+                if (!dummy) {
+                    dummy = document.createElement("canvas");
+                }
+                var ctx = dummy.getContext("2d");
+                ctx.font = font.toString();
+                return ctx.measureText(text).width;
+            }
+            width.measure = measure;
+        })(width = font_4.width || (font_4.width = {}));
+    })(font = puck.font || (puck.font = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
     var image;
     (function (image) {
         var down;
@@ -3625,6 +4112,27 @@ var puck;
                 stretch.process = process;
             })(stretch = down.stretch || (down.stretch = {}));
         })(down = image.down || (image.down = {}));
+    })(image = puck.image || (puck.image = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var image;
+    (function (image) {
+        var hit;
+        (function (hit) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.hit = function (el, ctx, pos, hitlist) {
+                    return true;
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.hit.Processor);
+            hit.Processor = Processor;
+        })(hit = image.hit || (image.hit = {}));
     })(image = puck.image || (puck.image = {}));
 })(puck || (puck = {}));
 var puck;
@@ -3765,6 +4273,84 @@ var puck;
                 stretch.process = process;
             })(stretch = down.stretch || (down.stretch = {}));
         })(down = path.down || (path.down = {}));
+    })(path = puck.path || (puck.path = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var visual;
+    (function (visual) {
+        var hit;
+        (function (hit) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.prehit = function (el, ctx, pos) {
+                    if (!_super.prototype.prehit.call(this, el, ctx, pos))
+                        return false;
+                    var state = el.state;
+                    return !!state.fill || (!!state.stroke && state.strokeThickness > 0);
+                };
+                Processor.prototype.hit = function (el, ctx, pos, hitlist) {
+                    ctx.save();
+                    this.transformLocal(el, ctx);
+                    this.draw(el, ctx);
+                    var state = el.state, px = pos[0], py = pos[1], inside = false;
+                    if (!!state.fill && ctx.raw.isPointInPath(px, py)) {
+                        inside = true;
+                    }
+                    else if (!!state.stroke && ctx.isPointInStrokeEx(px, py, state.strokeThickness)) {
+                        inside = true;
+                    }
+                    ctx.restore();
+                    return inside;
+                };
+                Processor.prototype.transformLocal = function (el, ctx) {
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.hit.Processor);
+            hit.Processor = Processor;
+        })(hit = visual.hit || (visual.hit = {}));
+    })(visual = puck.visual || (puck.visual = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var path;
+    (function (path_2) {
+        var hit;
+        (function (hit) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.hit = function (el, ctx, pos, hitlist) {
+                    ctx.save();
+                    this.transformLocal(el, ctx);
+                    this.draw(el, ctx);
+                    var state = el.state, px = pos[0], py = pos[1], inside = false;
+                    if (!!state.fill && ctx.raw.isPointInPath(px, py)) {
+                        inside = true;
+                    }
+                    else if (!!state.stroke) {
+                        ctx.setStrokeExtras(state.strokeLineCap, state.strokeLineJoin, state.strokeMiterLimit);
+                        if (ctx.isPointInStrokeEx(px, py, state.strokeThickness)) {
+                            inside = true;
+                        }
+                    }
+                    ctx.restore();
+                    return inside;
+                };
+                Processor.prototype.transformLocal = function (path, ctx) {
+                    ctx.preapply(path.composite.stretchTransform);
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.visual.hit.Processor);
+            hit.Processor = Processor;
+        })(hit = path_2.hit || (path_2.hit = {}));
     })(path = puck.path || (puck.path = {}));
 })(puck || (puck = {}));
 var puck;
@@ -3987,6 +4573,147 @@ var puck;
             down.Processor = Processor;
         })(down = polyline.down || (polyline.down = {}));
     })(polyline = puck.polyline || (puck.polyline = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var text;
+    (function (text) {
+        var hit;
+        (function (hit) {
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.prehit = function (el, ctx, pos) {
+                    if (!_super.prototype.prehit.call(this, el, ctx, pos))
+                        return false;
+                    var state = el.state;
+                    return !!state.fill || (!!state.stroke && state.strokeThickness > 0);
+                };
+                Processor.prototype.hit = function (el, ctx, pos, hitlist) {
+                    return true;
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.hit.Processor);
+            hit.Processor = Processor;
+        })(hit = text.hit || (text.hit = {}));
+    })(text = puck.text || (puck.text = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var text;
+    (function (text) {
+        var render;
+        (function (render) {
+            var isFirefox = /firefox/i.test(navigator.userAgent);
+            var paintRegion = la.rect.init(0, 0, 0, 0);
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.render = function (bag) {
+                    var state = bag.state, noStroke = !state.stroke || state.strokeThickness <= 0;
+                    if (!state.fill && noStroke)
+                        return false;
+                    var ctx = bag.ctx, raw = ctx.raw, comp = bag.composite;
+                    ctx.save();
+                    raw.beginPath();
+                    raw.font = state.font.toString();
+                    raw.textAlign = "left";
+                    paintRegion.width = comp.extents.width;
+                    paintRegion.height = comp.extents.height;
+                    if (state.fill)
+                        this.fill(raw, state, paintRegion);
+                    if (!noStroke)
+                        this.stroke(raw, state, paintRegion);
+                    ctx.restore();
+                };
+                Processor.prototype.fill = function (ctx, state, region) {
+                    state.fill.setup(ctx, region);
+                    ctx.fillStyle = state.fill.toHtml5Object();
+                    if (isFirefox) {
+                        ctx.textBaseline = "bottom";
+                        ctx.fillText(state.text, 0, state.size.height);
+                    }
+                    else {
+                        ctx.textBaseline = "top";
+                        ctx.fillText(state.text, 0, 0);
+                    }
+                };
+                Processor.prototype.stroke = function (ctx, state, region) {
+                    state.stroke.setup(ctx, region);
+                    ctx.strokeStyle = state.stroke.toHtml5Object();
+                    ctx.lineWidth = state.strokeThickness;
+                    if (isFirefox) {
+                        ctx.textBaseline = "bottom";
+                        ctx.strokeText(state.text, 0, state.size.height);
+                    }
+                    else {
+                        ctx.textBaseline = "top";
+                        ctx.strokeText(state.text, 0, 0);
+                    }
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.render.Processor);
+            render.Processor = Processor;
+        })(render = text.render || (text.render = {}));
+    })(text = puck.text || (puck.text = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var text;
+    (function (text) {
+        var up;
+        (function (up) {
+            var font;
+            (function (font) {
+                var DirtyFlags = puck.element.DirtyFlags;
+                function process(bag) {
+                    var state = bag.state, comp = bag.composite;
+                    if (!comp.hasDirt(DirtyFlags.font))
+                        return false;
+                    var size = state.size, oldWidth = size.width, oldHeight = size.height;
+                    size.width = puck.font.width.measure(state.font, state.text);
+                    size.height = puck.font.height.get(state.font);
+                    if (oldWidth !== size.width || oldHeight !== size.height) {
+                        comp.taint(DirtyFlags.extents);
+                        return true;
+                    }
+                    return false;
+                }
+                font.process = process;
+            })(font = up.font || (up.font = {}));
+        })(up = text.up || (text.up = {}));
+    })(text = puck.text || (puck.text = {}));
+})(puck || (puck = {}));
+var puck;
+(function (puck) {
+    var text;
+    (function (text) {
+        var up;
+        (function (up) {
+            var DirtyFlags = puck.element.DirtyFlags;
+            var Processor = (function (_super) {
+                __extends(Processor, _super);
+                function Processor() {
+                    _super.apply(this, arguments);
+                }
+                Processor.prototype.process = function (bag) {
+                    var dirt = DirtyFlags.none;
+                    up.font.process(bag);
+                    dirt |= _super.prototype.process.call(this, bag);
+                    return dirt;
+                };
+                Processor.instance = new Processor();
+                return Processor;
+            })(puck.element.up.Processor);
+            up.Processor = Processor;
+        })(up = text.up || (text.up = {}));
+    })(text = puck.text || (puck.text = {}));
 })(puck || (puck = {}));
 
 //# sourceMappingURL=puck.js.map

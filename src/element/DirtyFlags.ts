@@ -6,12 +6,13 @@ namespace puck.element {
         stretch = 1 << 2,
         transform = 1 << 3,
 
-        padding = 1 << 4,
-        extents = 1 << 5,
-        newbounds = 1 << 6,
-        invalidate = 1 << 7,
+        font = 1 << 4,
+        padding = 1 << 5,
+        extents = 1 << 6,
+        newbounds = 1 << 7,
+        invalidate = 1 << 8,
 
         down = DirtyFlags.opacity | DirtyFlags.visible | DirtyFlags.stretch | DirtyFlags.transform,
-        up = DirtyFlags.padding | DirtyFlags.extents | DirtyFlags.newbounds | DirtyFlags.invalidate,
+        up = DirtyFlags.font | DirtyFlags.padding | DirtyFlags.extents | DirtyFlags.newbounds | DirtyFlags.invalidate,
     }
 }
