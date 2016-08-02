@@ -764,7 +764,7 @@ var puck;
     })(puck.FontWeight || (puck.FontWeight = {}));
     var FontWeight = puck.FontWeight;
     puck.defaultFont = {
-        family: "",
+        family: "\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif",
         size: 14,
         stretch: puck.FontStretch.normal,
         style: puck.FontStyle.normal,

@@ -40,7 +40,7 @@ namespace puck {
     }
 
     export var defaultFont: IFont = {
-        family: "",
+        family: `\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif`,
         size: 14,
         stretch: FontStretch.normal,
         style: FontStyle.normal,
