@@ -3,7 +3,7 @@
 namespace puck {
     export class LinearGradientBrush extends GradientBrush {
         private $start: la.IPoint = {x: 0, y: 0};
-        private $end: la.IPoint = {x: 0, y: 0};
+        private $end: la.IPoint = {x: 0, y: 1};
 
         get start(): la.IPoint {
             return this.$start;
