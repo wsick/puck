@@ -1343,8 +1343,8 @@ declare namespace puck.text.render {
     class Processor extends element.render.Processor {
         static instance: Processor;
         protected render(bag: IProcessorBag): boolean;
-        protected fill(ctx: CanvasRenderingContext2D, state: ITextState, comp: element.IElementComposite): void;
-        protected stroke(ctx: CanvasRenderingContext2D, state: ITextState, comp: element.IElementComposite): void;
+        protected fill(ctx: CanvasRenderingContext2D, state: ITextState, region: la.IRect): void;
+        protected stroke(ctx: CanvasRenderingContext2D, state: ITextState, region: la.IRect): void;
     }
 }
 declare namespace puck.text.up.font {
