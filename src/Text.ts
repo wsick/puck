@@ -7,6 +7,9 @@ namespace puck {
     import ITextProcessor = puck.text.ITextProcessor;
 
     export class Text extends Element implements text.IText {
+        private $fillwatch: puck.internal.IWatcher = null;
+        private $strokewatch: puck.internal.IWatcher = null;
+
         state: puck.text.ITextState;
         processor: ITextProcessor;
 
@@ -24,6 +27,52 @@ namespace puck {
                 hit: text.hit.Processor.instance,
             };
             this.stencil = stencil.empty;
+        }
+
+        get fill(): IBrush { return this.state.fill; }
+        set fill(value: IBrush) {
+            if (this.$fillwatch) {
+                this.$fillwatch.unwatch();
+                this.$fillwatch = null;
+            }
+            if ((!value) === (!this.state.fill)) {
+                // toggling fill on/off can disturb extents
+                this.composite.taint(DirtyFlags.extents).invalidate();
+            }
+            if (value !== this.state.fill) {
+                this.state.fill = value;
+                this.composite.invalidate();
+            }
+            if (value) {
+                this.$fillwatch = value.watch(() => this.composite.invalidate());
+            }
+        }
+
+        get stroke(): IBrush { return this.state.stroke; }
+        set stroke(value: IBrush) {
+            if (this.$strokewatch) {
+                this.$strokewatch.unwatch();
+                this.$strokewatch = null;
+            }
+            if ((!value) === (!this.state.stroke)) {
+                // toggling stroke on/off can disturb padding
+                this.composite.taint(DirtyFlags.padding).invalidate();
+            }
+            if (value !== this.state.stroke) {
+                this.state.stroke = value;
+                this.composite.invalidate();
+            }
+            if (value) {
+                this.$strokewatch = value.watch(() => this.composite.invalidate());
+            }
+        }
+
+        get strokeThickness(): number { return this.state.strokeThickness; }
+        set strokeThickness(value: number) {
+            if (value !== this.state.strokeThickness) {
+                this.state.strokeThickness = value;
+                this.composite.taint(DirtyFlags.padding);
+            }
         }
 
         get x(): number {

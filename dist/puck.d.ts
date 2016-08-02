@@ -176,12 +176,13 @@ declare namespace puck.element {
         visible = 2,
         stretch = 4,
         transform = 8,
-        padding = 16,
-        extents = 32,
-        newbounds = 64,
-        invalidate = 128,
+        font = 16,
+        padding = 32,
+        extents = 64,
+        newbounds = 128,
+        invalidate = 256,
         down = 15,
-        up = 240,
+        up = 496,
     }
 }
 declare namespace puck {
@@ -277,6 +278,45 @@ declare namespace puck {
         round = 2,
         triangle = 3,
     }
+}
+declare namespace puck {
+    var FontStyle: {
+        normal: string;
+        italic: string;
+        oblique: string;
+    };
+    var FontStretch: {
+        ultraCondensed: string;
+        extraCondensed: string;
+        condensed: string;
+        semiCondensed: string;
+        normal: string;
+        semiExpanded: string;
+        expanded: string;
+        extraExpanded: string;
+        ultraExpanded: string;
+    };
+    enum FontWeight {
+        thin = 100,
+        extraLight = 200,
+        light = 300,
+        normal = 400,
+        medium = 500,
+        semiBold = 600,
+        bold = 700,
+        extraBold = 800,
+        black = 900,
+        extraBlack = 950,
+    }
+    interface IFont {
+        family: string;
+        size: number;
+        stretch: string;
+        style: string;
+        weight: FontWeight;
+        toString(): string;
+    }
+    var defaultFont: IFont;
 }
 declare namespace puck {
     class FrameDebug {
@@ -515,6 +555,30 @@ declare namespace puck {
     }
 }
 declare namespace puck {
+    import ITextState = puck.text.ITextState;
+    import IElementComposite = puck.element.IElementComposite;
+    import ITextProcessor = puck.text.ITextProcessor;
+    class Text extends Element implements text.IText {
+        private $fillwatch;
+        private $strokewatch;
+        state: puck.text.ITextState;
+        processor: ITextProcessor;
+        constructor(state?: ITextState, composite?: IElementComposite);
+        init(state?: ITextState, composite?: IElementComposite): void;
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
+        x: number;
+        y: number;
+        text: string;
+        fontFamily: string;
+        fontSize: number;
+        fontStretch: string;
+        fontStyle: string;
+        fontWeight: FontWeight;
+    }
+}
+declare namespace puck {
     class Timer {
         callback: FrameRequestCallback;
         private enabled;
@@ -668,6 +732,9 @@ declare namespace puck.fit.extents {
 }
 declare namespace puck.fit.transform {
     function calc(transform: Float32Array, stretch: Stretch, natural: la.IRect, size: la.ISize): void;
+}
+declare namespace puck.font {
+    function toString(font: IFont): string;
 }
 declare namespace puck.image {
     interface IImage extends element.IElement {
@@ -947,6 +1014,35 @@ declare namespace puck.stencil {
 declare namespace puck.stencil {
     var path: IStencil;
 }
+declare namespace puck.text {
+    interface IText extends element.IElement {
+        state: ITextState;
+    }
+    interface ITextProcessor {
+        down: element.down.Processor;
+        up: text.up.Processor;
+        render: text.render.Processor;
+        hit: text.hit.Processor;
+    }
+}
+declare namespace puck.text {
+    import ElementState = puck.element.ElementState;
+    interface ITextState extends element.IElementState {
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
+        font: IFont;
+        text: string;
+    }
+    class TextState extends ElementState implements ITextState {
+        fill: IBrush;
+        stroke: IBrush;
+        strokeThickness: number;
+        font: puck.IFont;
+        text: string;
+        reset(): this;
+    }
+}
 declare namespace puck.visual {
     interface IVisual extends element.IElement {
         state: IVisualState;
@@ -1093,9 +1189,6 @@ declare namespace puck.element.down.transform {
 declare namespace puck.element.down.visible {
     function process(bag: IProcessorBag): boolean;
 }
-declare namespace puck.element.up.extents {
-    function process(bag: IProcessorBag): boolean;
-}
 declare namespace puck.element.render.narrow {
     function process(bag: IProcessorBag): void;
 }
@@ -1107,6 +1200,22 @@ declare namespace puck.element.render.should {
 }
 declare namespace puck.element.render.validate {
     function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.element.up.extents {
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.font.height {
+    var cache: {
+        hits: number;
+        misses: number;
+    };
+    function get(font: IFont | string): number;
+}
+declare namespace puck.font.height {
+    function measure(font: IFont | string): number;
+}
+declare namespace puck.font.width {
+    function measure(font: IFont | string, text: string): number;
 }
 declare namespace puck.image.down {
     import IProcessorBag = puck.element.down.IProcessorBag;
@@ -1218,6 +1327,34 @@ declare namespace puck.polyline.down {
     import IProcessorBag = puck.element.down.IProcessorBag;
     import DirtyFlags = puck.element.DirtyFlags;
     class Processor extends path.down.Processor {
+        static instance: Processor;
+        process(bag: IProcessorBag): DirtyFlags;
+    }
+}
+declare namespace puck.text.hit {
+    class Processor extends element.hit.Processor {
+        static instance: Processor;
+        protected prehit(el: text.IText, ctx: puck.render.RenderContext, pos: Float32Array): boolean;
+        protected hit(el: text.IText, ctx: puck.render.RenderContext, pos: Float32Array, hitlist: element.IElement[]): boolean;
+    }
+}
+declare namespace puck.text.render {
+    import IProcessorBag = puck.element.render.IProcessorBag;
+    class Processor extends element.render.Processor {
+        static instance: Processor;
+        protected render(bag: IProcessorBag): boolean;
+        protected fill(ctx: CanvasRenderingContext2D, state: ITextState, comp: element.IElementComposite): void;
+        protected stroke(ctx: CanvasRenderingContext2D, state: ITextState, comp: element.IElementComposite): void;
+    }
+}
+declare namespace puck.text.up.font {
+    import IProcessorBag = puck.element.up.IProcessorBag;
+    function process(bag: IProcessorBag): boolean;
+}
+declare namespace puck.text.up {
+    import DirtyFlags = puck.element.DirtyFlags;
+    import IProcessorBag = puck.element.up.IProcessorBag;
+    class Processor extends element.up.Processor {
         static instance: Processor;
         process(bag: IProcessorBag): DirtyFlags;
     }

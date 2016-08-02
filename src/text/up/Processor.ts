@@ -5,6 +5,8 @@ namespace puck.text.up {
     import IProcessorBag = puck.element.up.IProcessorBag;
 
     export class Processor extends element.up.Processor {
+        static instance = new Processor();
+
         process(bag: IProcessorBag): DirtyFlags {
             var dirt = DirtyFlags.none;
             font.process(bag);
