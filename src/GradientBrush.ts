@@ -46,7 +46,7 @@ namespace puck {
             if (this.$cachedBrush && la.rect.equal(this.$cachedBounds, region))
                 return;
             la.rect.copyTo(region, this.$cachedBounds);
-            this.createBrush(ctx, region);
+            this.$cachedBrush = this.createBrush(ctx, region);
         }
 
         toHtml5Object(): any {
