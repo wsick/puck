@@ -20,11 +20,25 @@
             text1.text = "This is a test";
             text1.fill = new puck.SolidColorBrush("Black");
             root.elements.push(text1);
+
+            var text2 = new puck.Text();
+            text2.x = 50;
+            text2.y = 100;
+            text2.text = "This is a big test";
+            var lgb = new puck.LinearGradientBrush();
+            lgb.stops.add({offset: 0.0, color: puck.KnownColors.Red});
+            lgb.stops.add({offset: 0.2, color: puck.KnownColors.Orange});
+            lgb.stops.add({offset: 0.4, color: puck.KnownColors.Yellow});
+            lgb.stops.add({offset: 0.6, color: puck.KnownColors.Green});
+            lgb.stops.add({offset: 0.8, color: puck.KnownColors.Blue});
+            lgb.stops.add({offset: 1.0, color: puck.KnownColors.Violet});
+            text2.fill = lgb;
+            root.elements.push(text2);
         };
     </script>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="600">
-    </canvas>
+<canvas id="canvas" width="800" height="600">
+</canvas>
 </body>
 </html>
