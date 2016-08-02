@@ -36,7 +36,7 @@ namespace puck {
             for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
                 addColorStop(grd, result.value);
             }
-            return undefined;
+            return grd;
         }
 
         protected createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string|CanvasGradient|CanvasPattern {

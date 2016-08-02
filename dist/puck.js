@@ -868,7 +868,7 @@ var puck;
             if (this.$cachedBrush && la.rect.equal(this.$cachedBounds, region))
                 return;
             la.rect.copyTo(region, this.$cachedBounds);
-            this.createBrush(ctx, region);
+            this.$cachedBrush = this.createBrush(ctx, region);
         };
         GradientBrush.prototype.toHtml5Object = function () {
             return this.$cachedBrush;
@@ -1238,7 +1238,7 @@ var puck;
         function LinearGradientBrush() {
             _super.apply(this, arguments);
             this.$start = { x: 0, y: 0 };
-            this.$end = { x: 0, y: 0 };
+            this.$end = { x: 0, y: 1 };
         }
         Object.defineProperty(LinearGradientBrush.prototype, "start", {
             get: function () {
@@ -1275,7 +1275,7 @@ var puck;
             for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
                 addColorStop(grd, result.value);
             }
-            return undefined;
+            return grd;
         };
         LinearGradientBrush.prototype.createReflect = function (ctx, region) {
             var mstart = this.mapPoint(region, this.start);
