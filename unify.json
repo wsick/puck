@@ -1,0 +1,10 @@
+{
+  "name": "puck",
+  "type": "lib",
+  "dist": "dist/puck.js",
+  "library": {
+    "type": "export",
+    "exports": "puck"
+  },
+  "typings": ["dist/puck.d.ts"]
+}

@@ -1,5 +1,6 @@
 {
   "name": "puck",
+  "description": "Canvas Scene Graph Library",
   "version": "0.1.0",
   "ignore": [
     "gulp",
@@ -13,5 +14,14 @@
   },
   "devDependencies": {
     "qunit": "~1.20.0"
-  }
+  },
+  "homepage": "https://github.com/wsick/puck",
+  "authors": [
+    "Brad Sickles <brad.sickles@gmail.com>"
+  ],
+  "main": "dist/puck.js",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT"
 }
