@@ -6,7 +6,7 @@ namespace puck {
     import IVisualState = puck.visual.IVisualState;
     import IVisualComposite = puck.visual.IVisualComposite;
 
-    export class Rectangle extends Visual {
+    export class Rectangle extends Visual implements rectangle.IRectangle {
         init(state?: IVisualState, composite?: IVisualComposite) {
             super.init(state, composite);
             this.stencil = rectangleStencil;

@@ -7,7 +7,7 @@ namespace puck {
     import IVisualComposite = puck.visual.IVisualComposite;
     var PI2 = Math.PI * 2;
 
-    export class Ellipse extends Visual {
+    export class Ellipse extends Visual implements ellipse.IEllipse {
         init(state?: IVisualState, composite?: IVisualComposite) {
             super.init(state, composite);
             this.stencil = ellipseStencil;
