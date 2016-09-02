@@ -1,5 +1,15 @@
 namespace puck {
-    export abstract class GradientBrush implements IBrush {
+    export interface IGradientBrush extends IBrush {
+        attr(name: "spreadMethod"): GradientSpreadMethod;
+        attr(name: "spreadMethod", value: GradientSpreadMethod): this;
+        attr(name: "mappingMode"): BrushMappingMode;
+        attr(name: "mappingMode", value: BrushMappingMode): this;
+        attr(name: "stops"): GradientStops;
+        attr(name: string): any;
+        attr(name: string, value: any);
+    }
+
+    export abstract class GradientBrush implements IGradientBrush {
         private $cachedBrush: string | CanvasGradient | CanvasPattern = null;
         private $cachedBounds = la.rect.init(0, 0, 0, 0);
         protected $changer = new puck.internal.WatchChanger();
@@ -10,6 +20,15 @@ namespace puck {
 
         constructor() {
             this.$stops.watch(() => this.$changer.on());
+        }
+
+        attr(name: string, value?: any): any {
+            if (typeof value === "undefined") {
+                return this[name];
+            } else {
+                this[name] = value;
+                return this;
+            }
         }
 
         get spreadMethod(): GradientSpreadMethod {

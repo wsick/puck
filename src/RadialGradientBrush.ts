@@ -5,7 +5,20 @@ namespace puck {
     var tmpCtx: CanvasRenderingContext2D = tmpCanvas.getContext('2d');
     var epsilon = 1E-10;
 
-    export class RadialGradientBrush extends GradientBrush {
+    export interface IRadialGradientBrush extends IGradientBrush {
+        attr(name: "center"): la.IPoint;
+        attr(name: "center", value: la.IPoint): this;
+        attr(name: "origin"): la.IPoint;
+        attr(name: "origin", value: la.IPoint): this;
+        attr(name: "radiusX"): number;
+        attr(name: "radiusX", value: number): this;
+        attr(name: "radiusY"): number;
+        attr(name: "radiusY", value: number): this;
+        attr(name: string): any;
+        attr(name: string, value: any);
+    }
+
+    export class RadialGradientBrush extends GradientBrush implements IRadialGradientBrush {
         private $center: la.IPoint = {x: 0.5, y: 0.5};
         private $origin: la.IPoint = {x: 0.5, y: 0.5};
         private $radius: la.IPoint = {x: 0.5, y: 0.5};

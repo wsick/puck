@@ -1,7 +1,16 @@
 /// <reference path="GradientBrush" />
 
 namespace puck {
-    export class LinearGradientBrush extends GradientBrush {
+    export interface ILinearGradientBrush extends IGradientBrush {
+        attr(name: "start"): la.IPoint;
+        attr(name: "start", value: la.IPoint): this;
+        attr(name: "end"): la.IPoint;
+        attr(name: "end", value: la.IPoint): this;
+        attr(name: string): any;
+        attr(name: string, value: any);
+    }
+
+    export class LinearGradientBrush extends GradientBrush implements ILinearGradientBrush {
         private $start: la.IPoint = {x: 0, y: 0};
         private $end: la.IPoint = {x: 0, y: 1};
 
