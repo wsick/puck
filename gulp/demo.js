@@ -15,8 +15,7 @@ module.exports = function (meta) {
         return gulp.src(scaffold.src)
             .pipe(sourcemaps.init())
             .pipe(ts({
-                target: 'ES5',
-                pathFilter: {'demo': ''}
+                target: 'ES5'
             }))
             .pipe(sourcemaps.write('./', {sourceRoot: '/', debug: true}))
             .pipe(gulp.dest('demo/.build/'))

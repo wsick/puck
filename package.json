@@ -42,7 +42,7 @@
     "gulp-uglify": "^1.2.0",
     "merge2": "^0.3.3",
     "run-sequence": "^1.0.2",
-    "typescript": "^1.8.0-dev.20151228",
+    "typescript": "^1.8.10",
     "version-ts": "^0.1.1"
   }
 }
