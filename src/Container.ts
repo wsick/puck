@@ -52,6 +52,15 @@ namespace puck {
             };
         }
 
+        attr(name: string, value?: any): any {
+            if (typeof value === "undefined") {
+                return this[name];
+            } else {
+                this[name] = value;
+                return this;
+            }
+        }
+
         get opacity(): number {
             return this.state.opacity;
         }
