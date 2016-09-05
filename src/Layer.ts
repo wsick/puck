@@ -10,11 +10,11 @@ namespace puck {
         private $timer: Timer;
         frameDebug: FrameDebug;
 
-        get width(): number {
+        width(): number {
             return this.$ctx.raw.canvas.width;
         }
 
-        get height(): number {
+        height(): number {
             return this.$ctx.raw.canvas.height;
         }
 
