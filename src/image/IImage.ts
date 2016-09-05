@@ -5,20 +5,18 @@ namespace puck.image {
         processor: IImageProcessor;
         stencil: stencil.IStencil;
 
-        attr(name: "sourceUri"): string;
-        attr(name: "sourceUri", value: string): this;
-        attr(name: "stretch"): Stretch;
-        attr(name: "stretch", value: Stretch): this;
-        attr(name: "x"): number;
-        attr(name: "x", value: number): this;
-        attr(name: "y"): number;
-        attr(name: "y", value: number): this;
-        attr(name: "width"): number;
-        attr(name: "width", value: number): this;
-        attr(name: "height"): number;
-        attr(name: "height", value: number): this;
-        attr(name: string): any;
-        attr(name: string, value: any): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        sourceUri(): string;
+        sourceUri(value: string): this;
     }
 
     export interface IImageProcessor {
