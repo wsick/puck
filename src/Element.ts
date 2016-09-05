@@ -32,7 +32,7 @@ namespace puck {
 
         opacity(): number;
         opacity(value: number): this;
-        opacity(value?: number): number|this {
+        opacity(value?: number): any {
             if (arguments.length < 1)
                 return this.state.opacity;
             if (this.state.opacity !== value) {
@@ -44,7 +44,7 @@ namespace puck {
 
         visible(): boolean;
         visible(value: boolean): this;
-        visible(value?: boolean): boolean|this {
+        visible(value?: boolean): any {
             if (arguments.length < 1)
                 return this.state.visible;
             if (this.state.visible !== value) {
@@ -56,7 +56,7 @@ namespace puck {
 
         transformOriginX(): number;
         transformOriginX(value: number): this;
-        transformOriginX(value?: number): number|this {
+        transformOriginX(value?: number): any {
             if (arguments.length < 1)
                 return this.state.transformOrigin.x;
             if (this.state.transformOrigin.x !== value) {
@@ -68,7 +68,7 @@ namespace puck {
 
         transformOriginY(): number;
         transformOriginY(value: number): this;
-        transformOriginY(value?: number): number|this {
+        transformOriginY(value?: number): any {
             if (arguments.length < 1)
                 return this.state.transformOrigin.y;
             if (this.state.transformOrigin.y !== value) {

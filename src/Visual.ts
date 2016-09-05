@@ -38,7 +38,7 @@ namespace puck {
 
         fill(): IBrush;
         fill(value: IBrush): this;
-        fill(value?: IBrush): IBrush|this {
+        fill(value?: IBrush): any {
             if (arguments.length < 1)
                 return this.state.fill;
             if (this.$fillwatch) {
@@ -61,7 +61,7 @@ namespace puck {
 
         stroke(): IBrush;
         stroke(value: IBrush): this;
-        stroke(value?: IBrush): IBrush|this {
+        stroke(value?: IBrush): any {
             if (arguments.length < 1)
                 return this.state.stroke;
             if (this.$strokewatch) {
@@ -84,7 +84,7 @@ namespace puck {
 
         strokeThickness(): number;
         strokeThickness(value: number): this;
-        strokeThickness(value: number): number|this {
+        strokeThickness(value?: number): any {
             if (arguments.length < 1)
                 return this.state.strokeThickness;
             if (value !== this.state.strokeThickness) {

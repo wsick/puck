@@ -31,7 +31,7 @@ namespace puck {
 
         fill(): IBrush;
         fill(value: IBrush): this;
-        fill(value?: IBrush): IBrush|this {
+        fill(value?: IBrush): any {
             if (arguments.length < 1)
                 return this.state.fill;
             if (this.$fillwatch) {
@@ -54,7 +54,7 @@ namespace puck {
 
         stroke(): IBrush;
         stroke(value: IBrush): this;
-        stroke(value?: IBrush): IBrush|this {
+        stroke(value?: IBrush): any {
             if (arguments.length < 1)
                 return this.state.stroke;
             if (this.$strokewatch) {
@@ -77,7 +77,7 @@ namespace puck {
 
         strokeThickness(): number;
         strokeThickness(value: number): this;
-        strokeThickness(value: number): number|this {
+        strokeThickness(value?: number): any {
             if (arguments.length < 1)
                 return this.state.strokeThickness;
             if (value !== this.state.strokeThickness) {
@@ -89,7 +89,7 @@ namespace puck {
 
         x(): number;
         x(value: number): this;
-        x(value?: number): number|this {
+        x(value?: number): any {
             if (arguments.length < 1)
                 return this.state.offset.x;
             if (this.state.offset.x !== value) {
@@ -101,7 +101,7 @@ namespace puck {
 
         y(): number;
         y(value: number): this;
-        y(value: number): number|this {
+        y(value?: number): any {
             if (arguments.length < 1)
                 return this.state.offset.y;
             if (this.state.offset.y !== value) {
@@ -113,7 +113,7 @@ namespace puck {
 
         text(): string;
         text(value: string): this;
-        text(value?: string): string|this {
+        text(value?: string): any {
             if (arguments.length < 1)
                 return this.state.text;
             this.state.text = value;
@@ -123,7 +123,7 @@ namespace puck {
 
         fontFamily(): string;
         fontFamily(value: string): this;
-        fontFamily(value?: string): string|this {
+        fontFamily(value?: string): any {
             if (arguments.length < 1)
                 return this.state.font.family;
             if (this.state.font.family !== value) {
@@ -135,7 +135,7 @@ namespace puck {
 
         fontSize(): number;
         fontSize(value: number): this;
-        fontSize(value?: number): number|this {
+        fontSize(value?: number): any {
             if (arguments.length < 1)
                 return this.state.font.size;
             if (this.state.font.size !== value) {
@@ -147,7 +147,7 @@ namespace puck {
 
         fontStretch(): string;
         fontStretch(value: string): this;
-        fontStretch(value?: string): string|this {
+        fontStretch(value?: string): any {
             if (arguments.length < 1)
                 return this.state.font.stretch;
             if (this.state.font.stretch !== value) {
@@ -159,7 +159,7 @@ namespace puck {
 
         fontStyle(): string;
         fontStyle(value: string): this;
-        fontStyle(value?: string): string|this {
+        fontStyle(value?: string): any {
             if (arguments.length < 1)
                 return this.state.font.style;
             if (this.state.font.style !== value) {
@@ -171,7 +171,7 @@ namespace puck {
 
         fontWeight(): number;
         fontWeight(value: number): this;
-        fontWeight(value?: number): number|this {
+        fontWeight(value?: number): any {
             if (arguments.length < 1)
                 return this.state.font.weight;
             if (this.state.font.weight !== value) {
