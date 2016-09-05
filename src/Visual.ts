@@ -93,5 +93,14 @@ namespace puck {
             }
             return this;
         }
+
+        sub(attr: string, func: any): any {
+            var getFunc = <Function>this[attr];
+            if (typeof getFunc !== "function") {
+                throw new Error("cannot modify sub-property, unknown attribute: " + attr);
+            }
+            func(getFunc.call(this));
+            return this;
+        }
     }
 }

@@ -28,6 +28,10 @@ namespace puck.polyline {
         strokeLineJoin(value: PenLineJoin): this;
         strokeMiterLimit(): number;
         strokeMiterLimit(value: number): this;
+
+        sub(attr: "points", func: (value: Points) => any): this;
+        sub(attr: "path", func: (value: curve.Path) => any): this;
+        sub(attr: string, func: (value: any) => any): this;
     }
 
     export interface IPolylineProcessor {

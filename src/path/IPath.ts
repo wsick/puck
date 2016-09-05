@@ -25,6 +25,9 @@ namespace puck.path {
         strokeLineJoin(value: PenLineJoin): this;
         strokeMiterLimit(): number;
         strokeMiterLimit(value: number): this;
+
+        sub(attr: "path", func: (value: curve.Path) => any): this;
+        sub(attr: string, func: any): this;
     }
 
     export interface IPathProcessor {

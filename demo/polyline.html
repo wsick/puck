@@ -21,13 +21,13 @@
                 .height(200)
                 .fill(new puck.SolidColorBrush("Yellow"))
                 .stroke(new puck.SolidColorBrush("Black"))
-                .strokeThickness(10);
-            poly1.points().addMany([
-                {x: 0, y: 0},
-                {x: 10, y: 10},
-                {x: 10, y: 50},
-                {x: 60, y: 10},
-            ]);
+                .strokeThickness(10)
+                .sub("points", points => points.addMany([
+                    {x: 0, y: 0},
+                    {x: 10, y: 10},
+                    {x: 10, y: 50},
+                    {x: 60, y: 10},
+                ]));
             root.elements.push(poly1);
         };
     </script>

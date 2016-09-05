@@ -259,6 +259,7 @@ declare namespace puck {
         stroke(value: IBrush): this;
         strokeThickness(): number;
         strokeThickness(value: number): this;
+        sub(attr: string, func: any): any;
     }
 }
 declare namespace puck.stencil {
@@ -358,6 +359,8 @@ declare namespace puck {
         mappingMode(): BrushMappingMode;
         mappingMode(value: BrushMappingMode): this;
         stops(): GradientStops;
+        sub(attr: "stops", func: (value: GradientStops) => any): this;
+        sub(attr: string, func: any): this;
     }
     abstract class GradientBrush implements IGradientBrush {
         private $cachedBrush;
@@ -372,6 +375,7 @@ declare namespace puck {
         mappingMode(): BrushMappingMode;
         mappingMode(value: BrushMappingMode): this;
         stops(): GradientStops;
+        sub(attr: string, func: (value: any) => any): this;
         watch(onChanged: () => void): puck.internal.IWatcher;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): void;
         toHtml5Object(): any;
@@ -1012,6 +1016,8 @@ declare namespace puck.path {
         strokeLineJoin(value: PenLineJoin): this;
         strokeMiterLimit(): number;
         strokeMiterLimit(value: number): this;
+        sub(attr: "path", func: (value: curve.Path) => any): this;
+        sub(attr: string, func: any): this;
     }
     interface IPathProcessor {
         down: down.Processor;
@@ -1107,6 +1113,9 @@ declare namespace puck.polyline {
         strokeLineJoin(value: PenLineJoin): this;
         strokeMiterLimit(): number;
         strokeMiterLimit(value: number): this;
+        sub(attr: "points", func: (value: Points) => any): this;
+        sub(attr: "path", func: (value: curve.Path) => any): this;
+        sub(attr: string, func: (value: any) => any): this;
     }
     interface IPolylineProcessor {
         down: polyline.down.Processor;
@@ -1272,6 +1281,9 @@ declare namespace puck.visual {
         stroke(value: IBrush): this;
         strokeThickness(): number;
         strokeThickness(value: number): this;
+        sub(attr: "fill", func: (value: IBrush) => any): this;
+        sub(attr: "stroke", func: (value: IBrush) => any): this;
+        sub(attr: string, func: any): this;
     }
     interface IVisualProcessor {
         down: element.down.Processor;

@@ -11,6 +11,10 @@ namespace puck.visual {
         stroke(value: IBrush): this;
         strokeThickness(): number;
         strokeThickness(value: number): this;
+
+        sub(attr: "fill", func: (value: IBrush) => any): this;
+        sub(attr: "stroke", func: (value: IBrush) => any): this;
+        sub(attr: string, func: any): this;
     }
 
     export interface IVisualProcessor {

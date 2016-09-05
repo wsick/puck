@@ -21,21 +21,19 @@
                 .text("This is a test");
             root.elements.push(text1);
 
-            var lgb = new puck.LinearGradientBrush();
-            lgb.stops()
-                    .add({offset: 0.0, color: puck.KnownColors.Red})
-                    .add({offset: 0.2, color: puck.KnownColors.Orange})
-                    .add({offset: 0.4, color: puck.KnownColors.Yellow})
-                    .add({offset: 0.6, color: puck.KnownColors.Green})
-                    .add({offset: 0.8, color: puck.KnownColors.Blue})
-                    .add({offset: 1.0, color: puck.KnownColors.Violet});
-
             var text2 = new puck.Text()
                 .x(50)
                 .y(100)
                 .fontSize(24)
                 .fontWeight(puck.FontWeight.bold)
-                .fill(lgb)
+                .fill(new puck.LinearGradientBrush()
+                    .sub("stops", stops => stops
+                        .add({offset: 0.0, color: puck.KnownColors.Red})
+                        .add({offset: 0.2, color: puck.KnownColors.Orange})
+                        .add({offset: 0.4, color: puck.KnownColors.Yellow})
+                        .add({offset: 0.6, color: puck.KnownColors.Green})
+                        .add({offset: 0.8, color: puck.KnownColors.Blue})
+                        .add({offset: 1.0, color: puck.KnownColors.Violet})))
                 .stroke(new puck.SolidColorBrush("Gray"))
                 .strokeThickness(1)
                 .text("This is a big test");

@@ -557,6 +557,14 @@ var puck;
             }
             return this;
         };
+        Visual.prototype.sub = function (attr, func) {
+            var getFunc = this[attr];
+            if (typeof getFunc !== "function") {
+                throw new Error("cannot modify sub-property, unknown attribute: " + attr);
+            }
+            func(getFunc.call(this));
+            return this;
+        };
         return Visual;
     })(puck.Element);
     puck.Visual = Visual;
@@ -786,6 +794,14 @@ var puck;
         };
         GradientBrush.prototype.stops = function () {
             return this.$stops;
+        };
+        GradientBrush.prototype.sub = function (attr, func) {
+            var getFunc = this[attr];
+            if (typeof getFunc !== "function") {
+                throw new Error("cannot modify sub-property, unknown attribute: " + attr);
+            }
+            func(getFunc.call(this));
+            return this;
         };
         GradientBrush.prototype.watch = function (onChanged) {
             return this.$changer.watch(onChanged);

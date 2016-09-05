@@ -5,6 +5,9 @@ namespace puck {
         mappingMode(): BrushMappingMode;
         mappingMode(value: BrushMappingMode): this;
         stops(): GradientStops;
+
+        sub(attr: "stops", func: (value: GradientStops) => any): this;
+        sub(attr: string, func: any): this;
     }
 
     export abstract class GradientBrush implements IGradientBrush {
@@ -46,6 +49,15 @@ namespace puck {
 
         stops(): GradientStops {
             return this.$stops;
+        }
+
+        sub(attr: string, func: (value: any) => any): this {
+            var getFunc = <Function>this[attr];
+            if (typeof getFunc !== "function") {
+                throw new Error("cannot modify sub-property, unknown attribute: " + attr);
+            }
+            func(getFunc.call(this));
+            return this;
         }
 
         watch(onChanged: ()=>void): puck.internal.IWatcher {
