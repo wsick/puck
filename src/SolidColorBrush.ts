@@ -32,7 +32,7 @@ namespace puck {
         }
 
         toHtml5Object(): any {
-            return this.color.toString();
+            return this.color().toString();
         }
     }
 }

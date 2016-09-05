@@ -1696,7 +1696,7 @@ var puck;
         SolidColorBrush.prototype.setup = function (ctx, region) {
         };
         SolidColorBrush.prototype.toHtml5Object = function () {
-            return this.color.toString();
+            return this.color().toString();
         };
         return SolidColorBrush;
     })();
