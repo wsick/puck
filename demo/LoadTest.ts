@@ -33,7 +33,7 @@ namespace demo {
             console.profile("add elements");
 
             var root = this.root;
-            var constraint = la.rect.init(0, 0, root.width, root.height);
+            var constraint = la.rect.init(0, 0, root.width(), root.height());
             for (var i = 0; i < count; i++) {
                 root.elements.push(random.element(constraint));
             }
@@ -86,22 +86,28 @@ namespace demo {
         }
 
         function ellipse(constraint: la.IRect): puck.Ellipse {
-            var el = new puck.Ellipse();
-            el.fill = brush();
-            el.stroke = brush();
-            //el.strokeThickness = strokeThickness();
-            el.strokeThickness = 0;
-            la.rect.copyTo(rect(constraint), el);
+            var el = new puck.Ellipse()
+                .fill(brush())
+                .stroke(brush())
+                .strokeThickness(0)
+                .x(constraint.x)
+                .y(constraint.y)
+                .width(constraint.width)
+                .height(constraint.height);
+            //.strokeThickness(strokeThickness())
             return el;
         }
 
         function rectangle(constraint: la.IRect): puck.Rectangle {
-            var el = new puck.Rectangle();
-            el.fill = brush();
-            el.stroke = brush();
-            //el.strokeThickness = strokeThickness();
-            el.strokeThickness = 0;
-            la.rect.copyTo(rect(constraint), el);
+            var el = new puck.Rectangle()
+                .fill(brush())
+                .stroke(brush())
+                .strokeThickness(0)
+                .x(constraint.x)
+                .y(constraint.y)
+                .width(constraint.width)
+                .height(constraint.height);
+            //.strokeThickness(strokeThickness())
             return el;
         }
 

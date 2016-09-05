@@ -11,32 +11,34 @@
         window.onload = (e) => {
             var c = document.getElementById('canvas');
             root = new puck.Layer()
-                    .attach(c.getContext('2d'))
-                    .activate();
+                .attach(c.getContext('2d'))
+                .activate();
 
-            var text1 = new puck.Text();
-            text1.x = 50;
-            text1.y = 50;
-            text1.text = "This is a test";
-            text1.fill = new puck.SolidColorBrush("Black");
+            var text1 = new puck.Text()
+                .x(50)
+                .y(50)
+                .fill(new puck.SolidColorBrush("Black"))
+                .text("This is a test");
             root.elements.push(text1);
 
-            var text2 = new puck.Text();
-            text2.x = 50;
-            text2.y = 100;
-            text2.text = "This is a big test";
-            text2.fontSize = 24;
-            text2.fontWeight = puck.FontWeight.bold;
-            text2.stroke = new puck.SolidColorBrush("Gray");
-            text2.strokeThickness = 1;
             var lgb = new puck.LinearGradientBrush();
-            lgb.stops.add({offset: 0.0, color: puck.KnownColors.Red});
-            lgb.stops.add({offset: 0.2, color: puck.KnownColors.Orange});
-            lgb.stops.add({offset: 0.4, color: puck.KnownColors.Yellow});
-            lgb.stops.add({offset: 0.6, color: puck.KnownColors.Green});
-            lgb.stops.add({offset: 0.8, color: puck.KnownColors.Blue});
-            lgb.stops.add({offset: 1.0, color: puck.KnownColors.Violet});
-            text2.fill = lgb;
+            lgb.stops()
+                    .add({offset: 0.0, color: puck.KnownColors.Red})
+                    .add({offset: 0.2, color: puck.KnownColors.Orange})
+                    .add({offset: 0.4, color: puck.KnownColors.Yellow})
+                    .add({offset: 0.6, color: puck.KnownColors.Green})
+                    .add({offset: 0.8, color: puck.KnownColors.Blue})
+                    .add({offset: 1.0, color: puck.KnownColors.Violet});
+
+            var text2 = new puck.Text()
+                .x(50)
+                .y(100)
+                .fontSize(24)
+                .fontWeight(puck.FontWeight.bold)
+                .fill(lgb)
+                .stroke(new puck.SolidColorBrush("Gray"))
+                .strokeThickness(1)
+                .text("This is a big test");
             root.elements.push(text2);
         };
     </script>

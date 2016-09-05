@@ -11,18 +11,18 @@
         window.onload = (e) => {
             var c = document.getElementById('canvas');
             root = new puck.Layer()
-                    .attach(c.getContext('2d'))
-                    .activate();
+                .attach(c.getContext('2d'))
+                .activate();
 
-            var poly1 = new puck.Polyline();
-            poly1.x = 50;
-            poly1.y = 50;
-            poly1.width = 200;
-            poly1.height = 200;
-            poly1.fill = new puck.SolidColorBrush("Yellow");
-            poly1.stroke = new puck.SolidColorBrush("Black");
-            poly1.strokeThickness = 10;
-            poly1.points.addMany([
+            var poly1 = new puck.Polyline()
+                .x(50)
+                .y(50)
+                .width(200)
+                .height(200)
+                .fill(new puck.SolidColorBrush("Yellow"))
+                .stroke(new puck.SolidColorBrush("Black"))
+                .strokeThickness(10);
+            poly1.points().addMany([
                 {x: 0, y: 0},
                 {x: 10, y: 10},
                 {x: 10, y: 50},

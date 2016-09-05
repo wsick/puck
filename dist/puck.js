@@ -1,8 +1,3 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 var puck;
 (function (puck) {
     puck.version = '0.1.0';
@@ -108,7 +103,7 @@ var puck;
             return c;
         };
         return Color;
-    }());
+    })();
     puck.Color = Color;
     puck.KnownColors = {
         AliceBlue: Color.fromHex("#FFF0F8FF"),
@@ -321,58 +316,42 @@ var puck;
             };
             this.stencil = puck.stencil.empty;
         };
-        Object.defineProperty(Element.prototype, "opacity", {
-            get: function () {
+        Element.prototype.opacity = function (value) {
+            if (arguments.length < 1)
                 return this.state.opacity;
-            },
-            set: function (value) {
-                if (this.state.opacity !== value) {
-                    this.state.opacity = value;
-                    this.composite.taint(DirtyFlags.opacity);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Element.prototype, "visible", {
-            get: function () {
+            if (this.state.opacity !== value) {
+                this.state.opacity = value;
+                this.composite.taint(DirtyFlags.opacity);
+            }
+            return this;
+        };
+        Element.prototype.visible = function (value) {
+            if (arguments.length < 1)
                 return this.state.visible;
-            },
-            set: function (value) {
-                if (this.state.visible !== value) {
-                    this.state.visible = value;
-                    this.composite.taint(DirtyFlags.visible);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Element.prototype, "transformOriginX", {
-            get: function () {
+            if (this.state.visible !== value) {
+                this.state.visible = value;
+                this.composite.taint(DirtyFlags.visible);
+            }
+            return this;
+        };
+        Element.prototype.transformOriginX = function (value) {
+            if (arguments.length < 1)
                 return this.state.transformOrigin.x;
-            },
-            set: function (value) {
-                if (this.state.transformOrigin.x !== value) {
-                    this.state.transformOrigin.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Element.prototype, "transformOriginY", {
-            get: function () {
+            if (this.state.transformOrigin.x !== value) {
+                this.state.transformOrigin.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Element.prototype.transformOriginY = function (value) {
+            if (arguments.length < 1)
                 return this.state.transformOrigin.y;
-            },
-            set: function (value) {
-                if (this.state.transformOrigin.y !== value) {
-                    this.state.transformOrigin.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.transformOrigin.y !== value) {
+                this.state.transformOrigin.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
         Element.prototype.resetTransform = function () {
             la.mat3.identity(this.state.transform);
             this.composite.taint(DirtyFlags.transform);
@@ -389,7 +368,7 @@ var puck;
             return this;
         };
         return Element;
-    }());
+    })();
     puck.Element = Element;
 })(puck || (puck = {}));
 var puck;
@@ -430,84 +409,60 @@ var puck;
                 }
             };
         };
-        Object.defineProperty(Container.prototype, "opacity", {
-            get: function () {
+        Container.prototype.opacity = function (value) {
+            if (arguments.length < 1)
                 return this.state.opacity;
-            },
-            set: function (value) {
-                if (this.state.opacity !== value) {
-                    this.state.opacity = value;
-                    this.composite.taint(DirtyFlags.opacity);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Container.prototype, "visible", {
-            get: function () {
+            if (this.state.opacity !== value) {
+                this.state.opacity = value;
+                this.composite.taint(DirtyFlags.opacity);
+            }
+            return this;
+        };
+        Container.prototype.visible = function (value) {
+            if (arguments.length < 1)
                 return this.state.visible;
-            },
-            set: function (value) {
-                if (this.state.visible !== value) {
-                    this.state.visible = value;
-                    this.composite.taint(DirtyFlags.visible);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Container.prototype, "x", {
-            get: function () {
-                return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Container.prototype, "y", {
-            get: function () {
-                return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Container.prototype, "transformOriginX", {
-            get: function () {
+            if (this.state.visible !== value) {
+                this.state.visible = value;
+                this.composite.taint(DirtyFlags.visible);
+            }
+            return this;
+        };
+        Container.prototype.transformOriginX = function (value) {
+            if (arguments.length < 1)
                 return this.state.transformOrigin.x;
-            },
-            set: function (value) {
-                if (this.state.transformOrigin.x !== value) {
-                    this.state.transformOrigin.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Container.prototype, "transformOriginY", {
-            get: function () {
+            if (this.state.transformOrigin.x !== value) {
+                this.state.transformOrigin.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Container.prototype.transformOriginY = function (value) {
+            if (arguments.length < 1)
                 return this.state.transformOrigin.y;
-            },
-            set: function (value) {
-                if (this.state.transformOrigin.y !== value) {
-                    this.state.transformOrigin.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.transformOrigin.y !== value) {
+                this.state.transformOrigin.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Container.prototype.x = function (value) {
+            if (arguments.length < 1)
+                return this.state.offset.x;
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Container.prototype.y = function (value) {
+            if (arguments.length < 1)
+                return this.state.offset.y;
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
         Container.prototype.resetTransform = function () {
             la.mat3.identity(this.state.transform);
             this.composite.taint(DirtyFlags.transform);
@@ -524,9 +479,14 @@ var puck;
             return this;
         };
         return Container;
-    }());
+    })();
     puck.Container = Container;
 })(puck || (puck = {}));
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var puck;
 (function (puck) {
     var DirtyFlags = puck.element.DirtyFlags;
@@ -548,63 +508,57 @@ var puck;
             };
             this.stencil = puck.stencil.visual;
         };
-        Object.defineProperty(Visual.prototype, "fill", {
-            get: function () { return this.state.fill; },
-            set: function (value) {
-                var _this = this;
-                if (this.$fillwatch) {
-                    this.$fillwatch.unwatch();
-                    this.$fillwatch = null;
-                }
-                if ((!value) === (!this.state.fill)) {
-                    this.composite.taint(DirtyFlags.extents).invalidate();
-                }
-                if (value !== this.state.fill) {
-                    this.state.fill = value;
-                    this.composite.invalidate();
-                }
-                if (value) {
-                    this.$fillwatch = value.watch(function () { return _this.composite.invalidate(); });
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Visual.prototype, "stroke", {
-            get: function () { return this.state.stroke; },
-            set: function (value) {
-                var _this = this;
-                if (this.$strokewatch) {
-                    this.$strokewatch.unwatch();
-                    this.$strokewatch = null;
-                }
-                if ((!value) === (!this.state.stroke)) {
-                    this.composite.taint(DirtyFlags.padding).invalidate();
-                }
-                if (value !== this.state.stroke) {
-                    this.state.stroke = value;
-                    this.composite.invalidate();
-                }
-                if (value) {
-                    this.$strokewatch = value.watch(function () { return _this.composite.invalidate(); });
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Visual.prototype, "strokeThickness", {
-            get: function () { return this.state.strokeThickness; },
-            set: function (value) {
-                if (value !== this.state.strokeThickness) {
-                    this.state.strokeThickness = value;
-                    this.composite.taint(DirtyFlags.padding);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+        Visual.prototype.fill = function (value) {
+            var _this = this;
+            if (arguments.length < 1)
+                return this.state.fill;
+            if (this.$fillwatch) {
+                this.$fillwatch.unwatch();
+                this.$fillwatch = null;
+            }
+            if ((!value) === (!this.state.fill)) {
+                this.composite.taint(DirtyFlags.extents).invalidate();
+            }
+            if (value !== this.state.fill) {
+                this.state.fill = value;
+                this.composite.invalidate();
+            }
+            if (value) {
+                this.$fillwatch = value.watch(function () { return _this.composite.invalidate(); });
+            }
+            return this;
+        };
+        Visual.prototype.stroke = function (value) {
+            var _this = this;
+            if (arguments.length < 1)
+                return this.state.stroke;
+            if (this.$strokewatch) {
+                this.$strokewatch.unwatch();
+                this.$strokewatch = null;
+            }
+            if ((!value) === (!this.state.stroke)) {
+                this.composite.taint(DirtyFlags.padding).invalidate();
+            }
+            if (value !== this.state.stroke) {
+                this.state.stroke = value;
+                this.composite.invalidate();
+            }
+            if (value) {
+                this.$strokewatch = value.watch(function () { return _this.composite.invalidate(); });
+            }
+            return this;
+        };
+        Visual.prototype.strokeThickness = function (value) {
+            if (arguments.length < 1)
+                return this.state.strokeThickness;
+            if (value !== this.state.strokeThickness) {
+                this.state.strokeThickness = value;
+                this.composite.taint(DirtyFlags.padding);
+            }
+            return this;
+        };
         return Visual;
-    }(puck.Element));
+    })(puck.Element);
     puck.Visual = Visual;
 })(puck || (puck = {}));
 var puck;
@@ -641,60 +595,44 @@ var puck;
             _super.prototype.init.call(this, state, composite);
             this.stencil = ellipseStencil;
         };
-        Object.defineProperty(Ellipse.prototype, "x", {
-            get: function () {
+        Ellipse.prototype.x = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Ellipse.prototype, "y", {
-            get: function () {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Ellipse.prototype.y = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Ellipse.prototype, "width", {
-            get: function () {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Ellipse.prototype.width = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.width;
-            },
-            set: function (value) {
-                if (this.state.size.width !== value) {
-                    this.state.size.width = value;
-                    this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Ellipse.prototype, "height", {
-            get: function () {
+            if (this.state.size.width !== value) {
+                this.state.size.width = value;
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
+            }
+            return this;
+        };
+        Ellipse.prototype.height = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.height;
-            },
-            set: function (value) {
-                if (this.state.size.height !== value) {
-                    this.state.size.height = value;
-                    this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.size.height !== value) {
+                this.state.size.height = value;
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
+            }
+            return this;
+        };
         return Ellipse;
-    }(puck.Visual));
+    })(puck.Visual);
     puck.Ellipse = Ellipse;
     var ellipseStencil = {
         draft: puck.stencil.visual.draft,
@@ -812,7 +750,7 @@ var puck;
             this.$onEndRender && this.$onEndRender();
         };
         return FrameDebug;
-    }());
+    })();
     puck.FrameDebug = FrameDebug;
 })(puck || (puck = {}));
 var puck;
@@ -828,39 +766,27 @@ var puck;
             this.$mappingMode = puck.BrushMappingMode.relativeToBounds;
             this.$stops.watch(function () { return _this.$changer.on(); });
         }
-        Object.defineProperty(GradientBrush.prototype, "spreadMethod", {
-            get: function () {
+        GradientBrush.prototype.spreadMethod = function (value) {
+            if (arguments.length < 1)
                 return this.$spreadMethod;
-            },
-            set: function (value) {
-                if (this.$spreadMethod !== value) {
-                    this.$spreadMethod = value;
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GradientBrush.prototype, "mappingMode", {
-            get: function () {
+            if (this.$spreadMethod !== value) {
+                this.$spreadMethod = value;
+                this.$changer.on();
+            }
+            return this;
+        };
+        GradientBrush.prototype.mappingMode = function (value) {
+            if (arguments.length < 1)
                 return this.$mappingMode;
-            },
-            set: function (value) {
-                if (this.$mappingMode !== value) {
-                    this.$mappingMode = value;
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(GradientBrush.prototype, "stops", {
-            get: function () {
-                return this.$stops;
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.$mappingMode !== value) {
+                this.$mappingMode = value;
+                this.$changer.on();
+            }
+            return this;
+        };
+        GradientBrush.prototype.stops = function () {
+            return this.$stops;
+        };
         GradientBrush.prototype.watch = function (onChanged) {
             return this.$changer.watch(onChanged);
         };
@@ -874,7 +800,7 @@ var puck;
             return this.$cachedBrush;
         };
         GradientBrush.prototype.createBrush = function (ctx, region) {
-            switch (this.spreadMethod) {
+            switch (this.$spreadMethod) {
                 case puck.GradientSpreadMethod.pad:
                     return this.createPad(ctx, region);
                 default:
@@ -886,7 +812,7 @@ var puck;
         };
         GradientBrush.prototype.mapPoint = function (region, point) {
             var mapped = { x: point.x, y: point.y };
-            if (this.mappingMode === puck.BrushMappingMode.relativeToBounds) {
+            if (this.$mappingMode === puck.BrushMappingMode.relativeToBounds) {
                 mapped.x *= region.width;
                 mapped.y *= region.height;
             }
@@ -895,7 +821,7 @@ var puck;
             return mapped;
         };
         return GradientBrush;
-    }());
+    })();
     puck.GradientBrush = GradientBrush;
 })(puck || (puck = {}));
 var puck;
@@ -916,7 +842,7 @@ var puck;
             Object.freeze(this);
         }
         return GradientStop;
-    }());
+    })();
     puck.GradientStop = GradientStop;
 })(puck || (puck = {}));
 var puck;
@@ -1011,7 +937,7 @@ var puck;
             };
         };
         return PuckArray;
-    }());
+    })();
     puck.PuckArray = PuckArray;
 })(puck || (puck = {}));
 var puck;
@@ -1040,7 +966,7 @@ var puck;
             return puck.PuckArray.arrayIter(tmp);
         };
         return GradientStops;
-    }(puck.PuckArray));
+    })(puck.PuckArray);
     puck.GradientStops = GradientStops;
 })(puck || (puck = {}));
 var puck;
@@ -1064,81 +990,57 @@ var puck;
             this.stencil = imageStencil;
             this.state.source.watch(function () { return _this.onSourceChanged(); }, function (e) { return _this.onSourceErrored(e); }, function () { return _this.onSourceLoaded(); });
         };
-        Object.defineProperty(Image.prototype, "sourceUri", {
-            get: function () {
-                return this.state.source.uri;
-            },
-            set: function (value) {
-                this.state.source.uri = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Image.prototype, "stretch", {
-            get: function () {
-                return this.state.stretch;
-            },
-            set: function (value) {
-                if (this.state.stretch !== value) {
-                    this.state.stretch = value;
-                    this.composite.taint(DirtyFlags.stretch);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Image.prototype, "x", {
-            get: function () {
+        Image.prototype.x = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Image.prototype, "y", {
-            get: function () {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Image.prototype.y = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Image.prototype, "width", {
-            get: function () {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Image.prototype.width = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.width;
-            },
-            set: function (value) {
-                if (this.state.size.width !== value) {
-                    this.state.size.width = value;
-                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Image.prototype, "height", {
-            get: function () {
+            if (this.state.size.width !== value) {
+                this.state.size.width = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+            return this;
+        };
+        Image.prototype.height = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.height;
-            },
-            set: function (value) {
-                if (this.state.size.height !== value) {
-                    this.state.size.height = value;
-                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.size.height !== value) {
+                this.state.size.height = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+            return this;
+        };
+        Image.prototype.stretch = function (value) {
+            if (arguments.length < 1)
+                return this.state.stretch;
+            if (this.state.stretch !== value) {
+                this.state.stretch = value;
+                this.composite.taint(DirtyFlags.stretch);
+            }
+            return this;
+        };
+        Image.prototype.sourceUri = function (value) {
+            if (arguments.length < 1)
+                return this.state.source.uri;
+            this.state.source.uri = value;
+            return this;
+        };
         Image.prototype.onSourceChanged = function () {
             this.setNaturalSize(0, 0);
         };
@@ -1156,7 +1058,7 @@ var puck;
             this.composite.taint(DirtyFlags.stretch | DirtyFlags.extents).invalidate();
         };
         return Image;
-    }(puck.Element));
+    })(puck.Element);
     puck.Image = Image;
     var imageStencil = {
         draft: function (bag) {
@@ -1175,20 +1077,12 @@ var puck;
         function Layer() {
             _super.apply(this, arguments);
         }
-        Object.defineProperty(Layer.prototype, "width", {
-            get: function () {
-                return this.$ctx.raw.canvas.width;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Layer.prototype, "height", {
-            get: function () {
-                return this.$ctx.raw.canvas.height;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        Layer.prototype.width = function () {
+            return this.$ctx.raw.canvas.width;
+        };
+        Layer.prototype.height = function () {
+            return this.$ctx.raw.canvas.height;
+        };
         Layer.prototype.init = function (state, composite) {
             var _this = this;
             _super.prototype.init.call(this, state, composite);
@@ -1228,11 +1122,12 @@ var puck;
                 .render();
         };
         return Layer;
-    }(puck.Container));
+    })(puck.Container);
     puck.Layer = Layer;
 })(puck || (puck = {}));
 var puck;
 (function (puck) {
+    var fallbackColor = puck.Color.fromHex("#FF000000");
     var LinearGradientBrush = (function (_super) {
         __extends(LinearGradientBrush, _super);
         function LinearGradientBrush() {
@@ -1240,56 +1135,48 @@ var puck;
             this.$start = { x: 0, y: 0 };
             this.$end = { x: 0, y: 1 };
         }
-        Object.defineProperty(LinearGradientBrush.prototype, "start", {
-            get: function () {
+        LinearGradientBrush.prototype.start = function (value) {
+            if (arguments.length < 1)
                 return this.$start;
-            },
-            set: function (value) {
-                if (this.$start !== value) {
-                    this.$start = value;
-                    Object.freeze(value);
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(LinearGradientBrush.prototype, "end", {
-            get: function () {
+            if (this.$start !== value) {
+                this.$start = value;
+                Object.freeze(value);
+                this.$changer.on();
+            }
+            return this;
+        };
+        LinearGradientBrush.prototype.end = function (value) {
+            if (arguments.length < 1)
                 return this.$end;
-            },
-            set: function (value) {
-                if (this.$end !== value) {
-                    this.$end = value;
-                    Object.freeze(value);
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.$end !== value) {
+                this.$end = value;
+                Object.freeze(value);
+                this.$changer.on();
+            }
+            return this;
+        };
         LinearGradientBrush.prototype.createPad = function (ctx, region) {
-            var mstart = this.mapPoint(region, this.start);
-            var mend = this.mapPoint(region, this.end);
+            var mstart = this.mapPoint(region, this.$start);
+            var mend = this.mapPoint(region, this.$end);
             var grd = ctx.createLinearGradient(mstart.x, mstart.y, mend.x, mend.y);
-            for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
+            for (var it = this.stops().iter(), result = it.next(); !result.done; result = it.next()) {
                 addColorStop(grd, result.value);
             }
             return grd;
         };
         LinearGradientBrush.prototype.createReflect = function (ctx, region) {
-            var mstart = this.mapPoint(region, this.start);
-            var mend = this.mapPoint(region, this.end);
+            var mstart = this.mapPoint(region, this.$start);
+            var mend = this.mapPoint(region, this.$end);
             return this.createInterpolated(ctx, puck.linearGradient.createRepeatInterpolator(mstart, mend, region));
         };
         LinearGradientBrush.prototype.createRepeat = function (ctx, region) {
-            var mstart = this.mapPoint(region, this.start);
-            var mend = this.mapPoint(region, this.end);
+            var mstart = this.mapPoint(region, this.$start);
+            var mend = this.mapPoint(region, this.$end);
             return this.createInterpolated(ctx, puck.linearGradient.createReflectInterpolator(mstart, mend, region));
         };
         LinearGradientBrush.prototype.createInterpolated = function (ctx, interpolator) {
             var grd = ctx.createLinearGradient(interpolator.x0, interpolator.y0, interpolator.x1, interpolator.y1);
-            var allStops = this.stops.paddedIter();
+            var allStops = this.stops().paddedIter();
             for (; interpolator.step();) {
                 for (var result = allStops.next(); !result.done; result = allStops.next()) {
                     var cur = result.value;
@@ -1304,11 +1191,11 @@ var puck;
             return grd;
         };
         return LinearGradientBrush;
-    }(puck.GradientBrush));
+    })(puck.GradientBrush);
     puck.LinearGradientBrush = LinearGradientBrush;
     function addColorStop(grd, stop) {
         var offset = Math.min(1.0, Math.max(0.0, stop.offset));
-        var color = stop.color.toString();
+        var color = (stop.color || fallbackColor).toString();
         grd.addColorStop(offset, color);
     }
 })(puck || (puck = {}));
@@ -1331,147 +1218,107 @@ var puck;
             };
             this.stencil = puck.stencil.path;
         };
-        Object.defineProperty(Path.prototype, "x", {
-            get: function () {
+        Path.prototype.x = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "y", {
-            get: function () {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Path.prototype.y = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "width", {
-            get: function () {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Path.prototype.width = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.width;
-            },
-            set: function (value) {
-                if (this.state.size.width !== value) {
-                    this.state.size.width = value;
-                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "height", {
-            get: function () {
+            if (this.state.size.width !== value) {
+                this.state.size.width = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+            return this;
+        };
+        Path.prototype.height = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.height;
-            },
-            set: function (value) {
-                if (this.state.size.height !== value) {
-                    this.state.size.height = value;
-                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "stretch", {
-            get: function () {
+            if (this.state.size.height !== value) {
+                this.state.size.height = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+            return this;
+        };
+        Path.prototype.stretch = function (value) {
+            if (arguments.length < 1)
                 return this.state.stretch;
-            },
-            set: function (value) {
-                if (this.state.stretch !== value) {
-                    this.state.stretch = value;
-                    this.composite.taint(DirtyFlags.stretch);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "path", {
-            get: function () {
+            if (this.state.stretch !== value) {
+                this.state.stretch = value;
+                this.composite.taint(DirtyFlags.stretch);
+            }
+            return this;
+        };
+        Path.prototype.path = function (value) {
+            if (arguments.length < 1)
                 return this.state.path;
-            },
-            set: function (value) {
-                if (this.state.path !== value) {
-                    this.state.path = value;
-                    this.composite.bounder.setPath(value);
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "fillRule", {
-            get: function () {
+            if (this.state.path !== value) {
+                this.state.path = value;
+                this.composite.bounder.setPath(value);
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
+        Path.prototype.fillRule = function (value) {
+            if (arguments.length < 1)
                 return this.state.fillRule;
-            },
-            set: function (value) {
-                if (this.state.fillRule !== value) {
-                    this.state.fillRule = value;
-                    this.composite.invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "strokeLineCap", {
-            get: function () {
+            if (this.state.fillRule !== value) {
+                this.state.fillRule = value;
+                this.composite.invalidate();
+            }
+            return this;
+        };
+        Path.prototype.strokeLineCap = function (value) {
+            if (arguments.length < 1)
                 return this.state.strokeLineCap;
-            },
-            set: function (value) {
-                if (this.state.strokeLineCap !== value) {
-                    this.state.strokeLineCap = value;
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "strokeLineJoin", {
-            get: function () {
+            if (this.state.strokeLineCap !== value) {
+                this.state.strokeLineCap = value;
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
+        Path.prototype.strokeLineJoin = function (value) {
+            if (arguments.length < 1)
                 return this.state.strokeLineJoin;
-            },
-            set: function (value) {
-                if (this.state.strokeLineJoin !== value) {
-                    this.state.strokeLineJoin = value;
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Path.prototype, "strokeMiterLimit", {
-            get: function () {
+            if (this.state.strokeLineJoin !== value) {
+                this.state.strokeLineJoin = value;
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
+        Path.prototype.strokeMiterLimit = function (value) {
+            if (arguments.length < 1)
                 return this.state.strokeMiterLimit;
-            },
-            set: function (value) {
-                if (this.state.strokeMiterLimit !== value) {
-                    this.state.strokeMiterLimit = value;
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.strokeMiterLimit !== value) {
+                this.state.strokeMiterLimit = value;
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
         return Path;
-    }(puck.Visual));
+    })(puck.Visual);
     puck.Path = Path;
 })(puck || (puck = {}));
 var puck;
@@ -1482,7 +1329,7 @@ var puck;
             _super.apply(this, arguments);
         }
         return Points;
-    }(puck.PuckArray));
+    })(puck.PuckArray);
     puck.Points = Points;
 })(puck || (puck = {}));
 var puck;
@@ -1509,151 +1356,119 @@ var puck;
                     _this.state.path.reset();
             });
         };
-        Object.defineProperty(Polyline.prototype, "points", {
-            get: function () {
-                return this.state.points;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "closed", {
-            get: function () {
-                return this.closed;
-            },
-            set: function (value) {
-                if (this.state.closed !== value) {
-                    this.state.closed = value;
-                    this.composite.invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "x", {
-            get: function () {
+        Polyline.prototype.points = function () {
+            return this.state.points;
+        };
+        Polyline.prototype.closed = function (value) {
+            if (arguments.length < 1)
+                return this.state.closed;
+            if (this.state.closed !== value) {
+                this.state.closed = value;
+                this.composite.invalidate();
+            }
+            return this;
+        };
+        Polyline.prototype.x = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "y", {
-            get: function () {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Polyline.prototype.y = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "width", {
-            get: function () {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Polyline.prototype.width = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.width;
-            },
-            set: function (value) {
-                if (this.state.size.width !== value) {
-                    this.state.size.width = value;
-                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "height", {
-            get: function () {
+            if (this.state.size.width !== value) {
+                this.state.size.width = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+            return this;
+        };
+        Polyline.prototype.height = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.height;
-            },
-            set: function (value) {
-                if (this.state.size.height !== value) {
-                    this.state.size.height = value;
-                    this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "stretch", {
-            get: function () {
+            if (this.state.size.height !== value) {
+                this.state.size.height = value;
+                this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
+            }
+            return this;
+        };
+        Polyline.prototype.stretch = function (value) {
+            if (arguments.length < 1)
                 return this.state.stretch;
-            },
-            set: function (value) {
-                if (this.state.stretch !== value) {
-                    this.state.stretch = value;
-                    this.composite.taint(DirtyFlags.stretch);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "fillRule", {
-            get: function () {
+            if (this.state.stretch !== value) {
+                this.state.stretch = value;
+                this.composite.taint(DirtyFlags.stretch);
+            }
+            return this;
+        };
+        Polyline.prototype.path = function (value) {
+            if (arguments.length < 1)
+                return this.state.path;
+            if (this.state.path !== value) {
+                this.state.path = value;
+                this.composite.bounder.setPath(value);
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
+        Polyline.prototype.fillRule = function (value) {
+            if (arguments.length < 1)
                 return this.state.fillRule;
-            },
-            set: function (value) {
-                if (this.state.fillRule !== value) {
-                    this.state.fillRule = value;
-                    this.composite.invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "strokeLineCap", {
-            get: function () {
+            if (this.state.fillRule !== value) {
+                this.state.fillRule = value;
+                this.composite.invalidate();
+            }
+            return this;
+        };
+        Polyline.prototype.strokeLineCap = function (value) {
+            if (arguments.length < 1)
                 return this.state.strokeLineCap;
-            },
-            set: function (value) {
-                if (this.state.strokeLineCap !== value) {
-                    this.state.strokeLineCap = value;
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "strokeLineJoin", {
-            get: function () {
+            if (this.state.strokeLineCap !== value) {
+                this.state.strokeLineCap = value;
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
+        Polyline.prototype.strokeLineJoin = function (value) {
+            if (arguments.length < 1)
                 return this.state.strokeLineJoin;
-            },
-            set: function (value) {
-                if (this.state.strokeLineJoin !== value) {
-                    this.state.strokeLineJoin = value;
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Polyline.prototype, "strokeMiterLimit", {
-            get: function () {
+            if (this.state.strokeLineJoin !== value) {
+                this.state.strokeLineJoin = value;
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
+        Polyline.prototype.strokeMiterLimit = function (value) {
+            if (arguments.length < 1)
                 return this.state.strokeMiterLimit;
-            },
-            set: function (value) {
-                if (this.state.strokeMiterLimit !== value) {
-                    this.state.strokeMiterLimit = value;
-                    this.composite
-                        .taint(DirtyFlags.padding)
-                        .invalidate();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.strokeMiterLimit !== value) {
+                this.state.strokeMiterLimit = value;
+                this.composite
+                    .taint(DirtyFlags.padding)
+                    .invalidate();
+            }
+            return this;
+        };
         return Polyline;
-    }(puck.Visual));
+    })(puck.Visual);
     puck.Polyline = Polyline;
 })(puck || (puck = {}));
 var puck;
@@ -1661,6 +1476,7 @@ var puck;
     var tmpCanvas = document.createElement('canvas');
     var tmpCtx = tmpCanvas.getContext('2d');
     var epsilon = 1E-10;
+    var fallbackColor = puck.Color.fromHex("#FF000000");
     var RadialGradientBrush = (function (_super) {
         __extends(RadialGradientBrush, _super);
         function RadialGradientBrush() {
@@ -1669,64 +1485,48 @@ var puck;
             this.$origin = { x: 0.5, y: 0.5 };
             this.$radius = { x: 0.5, y: 0.5 };
         }
-        Object.defineProperty(RadialGradientBrush.prototype, "center", {
-            get: function () {
+        RadialGradientBrush.prototype.center = function (value) {
+            if (arguments.length < 1)
                 return this.$center;
-            },
-            set: function (value) {
-                if (this.$center !== value) {
-                    this.$center = value;
-                    Object.freeze(value);
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RadialGradientBrush.prototype, "origin", {
-            get: function () {
+            if (this.$center !== value) {
+                this.$center = value;
+                Object.freeze(value);
+                this.$changer.on();
+            }
+            return this;
+        };
+        RadialGradientBrush.prototype.origin = function (value) {
+            if (arguments.length < 1)
                 return this.$origin;
-            },
-            set: function (value) {
-                if (this.$origin !== value) {
-                    this.$origin = value;
-                    Object.freeze(value);
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RadialGradientBrush.prototype, "radiusX", {
-            get: function () {
+            if (this.$origin !== value) {
+                this.$origin = value;
+                Object.freeze(value);
+                this.$changer.on();
+            }
+            return this;
+        };
+        RadialGradientBrush.prototype.radiusX = function (value) {
+            if (arguments.length < 1)
                 return this.$radius.x;
-            },
-            set: function (value) {
-                if (this.$radius.x !== value) {
-                    this.$radius.x = value;
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(RadialGradientBrush.prototype, "radiusY", {
-            get: function () {
+            if (this.$radius.x !== value) {
+                this.$radius.x = value;
+                this.$changer.on();
+            }
+            return this;
+        };
+        RadialGradientBrush.prototype.radiusY = function (value) {
+            if (arguments.length < 1)
                 return this.$radius.y;
-            },
-            set: function (value) {
-                if (this.$radius.y !== value) {
-                    this.$radius.y = value;
-                    this.$changer.on();
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.$radius.y !== value) {
+                this.$radius.y = value;
+                this.$changer.on();
+            }
+            return this;
+        };
         RadialGradientBrush.prototype.createPad = function (ctx, region) {
             var data = this.getPointData(region);
             var grd = (!data.balanced ? tmpCtx : ctx).createRadialGradient(data.x0, data.y0, 0, data.x1, data.y1, data.r1);
-            for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
+            for (var it = this.stops().iter(), result = it.next(); !result.done; result = it.next()) {
                 addColorStop(grd, result.value);
             }
             return this.fit(ctx, grd, data, region);
@@ -1747,7 +1547,7 @@ var puck;
                 tmpCtx.scale(data.sx, data.sy);
             tmpCtx.globalCompositeOperation = "destination-over";
             var inverted = false;
-            var allStops = this.stops.paddedIter();
+            var allStops = this.stops().paddedIter();
             for (var extender = puck.radialGradient.createExtender(data, bounds); extender.step(); inverted = !inverted) {
                 var grd = extender.createGradient(tmpCtx);
                 for (var result = allStops.next(); !result.done; result = allStops.next()) {
@@ -1769,8 +1569,8 @@ var puck;
             return pattern;
         };
         RadialGradientBrush.prototype.getPointData = function (bounds) {
-            var mcenter = this.mapPoint(bounds, this.center);
-            var morigin = this.mapPoint(bounds, this.origin);
+            var mcenter = this.mapPoint(bounds, this.$center);
+            var morigin = this.mapPoint(bounds, this.$origin);
             var mradius = this.mapPoint(bounds, this.$radius);
             var rad = Math.max(mradius.x, mradius.y);
             var side = Math.max(bounds.width, bounds.height), sx = bounds.width / side, sy = bounds.height / side;
@@ -1800,11 +1600,11 @@ var puck;
             return pattern;
         };
         return RadialGradientBrush;
-    }(puck.GradientBrush));
+    })(puck.GradientBrush);
     puck.RadialGradientBrush = RadialGradientBrush;
     function addColorStop(grd, stop) {
         var offset = Math.min(1.0, Math.max(0.0, stop.offset));
-        var color = stop.color.toString();
+        var color = (stop.color || fallbackColor).toString();
         grd.addColorStop(offset, color);
     }
 })(puck || (puck = {}));
@@ -1820,60 +1620,44 @@ var puck;
             _super.prototype.init.call(this, state, composite);
             this.stencil = rectangleStencil;
         };
-        Object.defineProperty(Rectangle.prototype, "x", {
-            get: function () {
+        Rectangle.prototype.x = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Rectangle.prototype, "y", {
-            get: function () {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Rectangle.prototype.y = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Rectangle.prototype, "width", {
-            get: function () {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Rectangle.prototype.width = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.width;
-            },
-            set: function (value) {
-                if (this.state.size.width !== value) {
-                    this.state.size.width = value;
-                    this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Rectangle.prototype, "height", {
-            get: function () {
+            if (this.state.size.width !== value) {
+                this.state.size.width = value;
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
+            }
+            return this;
+        };
+        Rectangle.prototype.height = function (value) {
+            if (arguments.length < 1)
                 return this.state.size.height;
-            },
-            set: function (value) {
-                if (this.state.size.height !== value) {
-                    this.state.size.height = value;
-                    this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.size.height !== value) {
+                this.state.size.height = value;
+                this.composite.taint(DirtyFlags.transform | DirtyFlags.extents);
+            }
+            return this;
+        };
         return Rectangle;
-    }(puck.Visual));
+    })(puck.Visual);
     puck.Rectangle = Rectangle;
     var rectangleStencil = {
         draft: puck.stencil.visual.draft,
@@ -1895,19 +1679,17 @@ var puck;
         function SolidColorBrush(color) {
             this.$color = null;
             this.$changer = new puck.internal.WatchChanger();
-            this.color = new puck.Color(color);
+            this.color(new puck.Color(color));
         }
-        Object.defineProperty(SolidColorBrush.prototype, "color", {
-            get: function () { return this.$color; },
-            set: function (value) {
-                if (!puck.Color.equals(this.$color, value)) {
-                    this.$changer.on();
-                }
-                this.$color = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        SolidColorBrush.prototype.color = function (value) {
+            if (arguments.length < 1)
+                return this.$color;
+            if (!puck.Color.equals(this.$color, value)) {
+                this.$changer.on();
+            }
+            this.$color = value;
+            return this;
+        };
         SolidColorBrush.prototype.watch = function (onChanged) {
             return this.$changer.watch(onChanged);
         };
@@ -1917,7 +1699,7 @@ var puck;
             return this.color.toString();
         };
         return SolidColorBrush;
-    }());
+    })();
     puck.SolidColorBrush = SolidColorBrush;
 })(puck || (puck = {}));
 var puck;
@@ -1951,165 +1733,127 @@ var puck;
             };
             this.stencil = puck.stencil.empty;
         };
-        Object.defineProperty(Text.prototype, "fill", {
-            get: function () { return this.state.fill; },
-            set: function (value) {
-                var _this = this;
-                if (this.$fillwatch) {
-                    this.$fillwatch.unwatch();
-                    this.$fillwatch = null;
-                }
-                if ((!value) === (!this.state.fill)) {
-                    this.composite.taint(DirtyFlags.extents).invalidate();
-                }
-                if (value !== this.state.fill) {
-                    this.state.fill = value;
-                    this.composite.invalidate();
-                }
-                if (value) {
-                    this.$fillwatch = value.watch(function () { return _this.composite.invalidate(); });
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "stroke", {
-            get: function () { return this.state.stroke; },
-            set: function (value) {
-                var _this = this;
-                if (this.$strokewatch) {
-                    this.$strokewatch.unwatch();
-                    this.$strokewatch = null;
-                }
-                if ((!value) === (!this.state.stroke)) {
-                    this.composite.taint(DirtyFlags.padding).invalidate();
-                }
-                if (value !== this.state.stroke) {
-                    this.state.stroke = value;
-                    this.composite.invalidate();
-                }
-                if (value) {
-                    this.$strokewatch = value.watch(function () { return _this.composite.invalidate(); });
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "strokeThickness", {
-            get: function () { return this.state.strokeThickness; },
-            set: function (value) {
-                if (value !== this.state.strokeThickness) {
-                    this.state.strokeThickness = value;
-                    this.composite.taint(DirtyFlags.padding);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "x", {
-            get: function () {
+        Text.prototype.fill = function (value) {
+            var _this = this;
+            if (arguments.length < 1)
+                return this.state.fill;
+            if (this.$fillwatch) {
+                this.$fillwatch.unwatch();
+                this.$fillwatch = null;
+            }
+            if ((!value) === (!this.state.fill)) {
+                this.composite.taint(DirtyFlags.extents).invalidate();
+            }
+            if (value !== this.state.fill) {
+                this.state.fill = value;
+                this.composite.invalidate();
+            }
+            if (value) {
+                this.$fillwatch = value.watch(function () { return _this.composite.invalidate(); });
+            }
+            return this;
+        };
+        Text.prototype.stroke = function (value) {
+            var _this = this;
+            if (arguments.length < 1)
+                return this.state.stroke;
+            if (this.$strokewatch) {
+                this.$strokewatch.unwatch();
+                this.$strokewatch = null;
+            }
+            if ((!value) === (!this.state.stroke)) {
+                this.composite.taint(DirtyFlags.padding).invalidate();
+            }
+            if (value !== this.state.stroke) {
+                this.state.stroke = value;
+                this.composite.invalidate();
+            }
+            if (value) {
+                this.$strokewatch = value.watch(function () { return _this.composite.invalidate(); });
+            }
+            return this;
+        };
+        Text.prototype.strokeThickness = function (value) {
+            if (arguments.length < 1)
+                return this.state.strokeThickness;
+            if (value !== this.state.strokeThickness) {
+                this.state.strokeThickness = value;
+                this.composite.taint(DirtyFlags.padding);
+            }
+            return this;
+        };
+        Text.prototype.x = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.x;
-            },
-            set: function (value) {
-                if (this.state.offset.x !== value) {
-                    this.state.offset.x = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "y", {
-            get: function () {
+            if (this.state.offset.x !== value) {
+                this.state.offset.x = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Text.prototype.y = function (value) {
+            if (arguments.length < 1)
                 return this.state.offset.y;
-            },
-            set: function (value) {
-                if (this.state.offset.y !== value) {
-                    this.state.offset.y = value;
-                    this.composite.taint(DirtyFlags.transform);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "text", {
-            get: function () {
+            if (this.state.offset.y !== value) {
+                this.state.offset.y = value;
+                this.composite.taint(DirtyFlags.transform);
+            }
+            return this;
+        };
+        Text.prototype.text = function (value) {
+            if (arguments.length < 1)
                 return this.state.text;
-            },
-            set: function (value) {
-                this.state.text = value;
-                this.composite.taint(DirtyFlags.font);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "fontFamily", {
-            get: function () {
+            this.state.text = value;
+            this.composite.taint(DirtyFlags.font);
+            return this;
+        };
+        Text.prototype.fontFamily = function (value) {
+            if (arguments.length < 1)
                 return this.state.font.family;
-            },
-            set: function (value) {
-                if (this.state.font.family !== value) {
-                    this.state.font.family = value;
-                    this.composite.taint(DirtyFlags.font);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "fontSize", {
-            get: function () {
+            if (this.state.font.family !== value) {
+                this.state.font.family = value;
+                this.composite.taint(DirtyFlags.font);
+            }
+            return this;
+        };
+        Text.prototype.fontSize = function (value) {
+            if (arguments.length < 1)
                 return this.state.font.size;
-            },
-            set: function (value) {
-                if (this.state.font.size !== value) {
-                    this.state.font.size = value;
-                    this.composite.taint(DirtyFlags.font);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "fontStretch", {
-            get: function () {
+            if (this.state.font.size !== value) {
+                this.state.font.size = value;
+                this.composite.taint(DirtyFlags.font);
+            }
+            return this;
+        };
+        Text.prototype.fontStretch = function (value) {
+            if (arguments.length < 1)
                 return this.state.font.stretch;
-            },
-            set: function (value) {
-                if (this.state.font.stretch !== value) {
-                    this.state.font.stretch = value;
-                    this.composite.taint(DirtyFlags.font);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "fontStyle", {
-            get: function () {
+            if (this.state.font.stretch !== value) {
+                this.state.font.stretch = value;
+                this.composite.taint(DirtyFlags.font);
+            }
+            return this;
+        };
+        Text.prototype.fontStyle = function (value) {
+            if (arguments.length < 1)
                 return this.state.font.style;
-            },
-            set: function (value) {
-                if (this.state.font.style !== value) {
-                    this.state.font.style = value;
-                    this.composite.taint(DirtyFlags.font);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Text.prototype, "fontWeight", {
-            get: function () {
+            if (this.state.font.style !== value) {
+                this.state.font.style = value;
+                this.composite.taint(DirtyFlags.font);
+            }
+            return this;
+        };
+        Text.prototype.fontWeight = function (value) {
+            if (arguments.length < 1)
                 return this.state.font.weight;
-            },
-            set: function (value) {
-                if (this.state.font.weight !== value) {
-                    this.state.font.weight = value;
-                    this.composite.taint(DirtyFlags.font);
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
+            if (this.state.font.weight !== value) {
+                this.state.font.weight = value;
+                this.composite.taint(DirtyFlags.font);
+            }
+            return this;
+        };
         return Text;
-    }(puck.Element));
+    })(puck.Element);
     puck.Text = Text;
 })(puck || (puck = {}));
 var puck;
@@ -2138,7 +1882,7 @@ var puck;
             this.active = animate.request(function (now) { return _this.onFrame(now); });
         };
         return Timer;
-    }());
+    })();
     puck.Timer = Timer;
     var animate;
     (function (animate) {
@@ -2203,7 +1947,7 @@ var puck;
                 return this;
             };
             return ElementComposite;
-        }());
+        })();
         element.ElementComposite = ElementComposite;
     })(element = puck.element || (puck.element = {}));
 })(puck || (puck = {}));
@@ -2217,7 +1961,7 @@ var puck;
                 _super.apply(this, arguments);
             }
             return ContainerComposite;
-        }(puck.element.ElementComposite));
+        })(puck.element.ElementComposite);
         container.ContainerComposite = ContainerComposite;
     })(container = puck.container || (puck.container = {}));
 })(puck || (puck = {}));
@@ -2254,7 +1998,7 @@ var puck;
                 };
             };
             return ElementState;
-        }());
+        })();
         element.ElementState = ElementState;
     })(element = puck.element || (puck.element = {}));
 })(puck || (puck = {}));
@@ -2268,7 +2012,7 @@ var puck;
                 _super.apply(this, arguments);
             }
             return ContainerState;
-        }(puck.element.ElementState));
+        })(puck.element.ElementState);
         container.ContainerState = ContainerState;
     })(container = puck.container || (puck.container = {}));
 })(puck || (puck = {}));
@@ -2475,7 +2219,7 @@ var puck;
                 raw.miterLimit = miterLimit;
             };
             return RenderContext;
-        }());
+        })();
         render.RenderContext = RenderContext;
         function getIEVersion() {
             var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
@@ -2618,7 +2362,7 @@ var puck;
                 return this;
             };
             return ImageComposite;
-        }(puck.element.ElementComposite));
+        })(puck.element.ElementComposite);
         image.ImageComposite = ImageComposite;
     })(image = puck.image || (puck.image = {}));
 })(puck || (puck = {}));
@@ -2696,7 +2440,7 @@ var puck;
                 }
             };
             return ImageSource;
-        }());
+        })();
         image.ImageSource = ImageSource;
     })(image = puck.image || (puck.image = {}));
 })(puck || (puck = {}));
@@ -2730,7 +2474,7 @@ var puck;
                 return this.stretch;
             };
             return ImageState;
-        }(puck.element.ElementState));
+        })(puck.element.ElementState);
         image.ImageState = ImageState;
     })(image = puck.image || (puck.image = {}));
 })(puck || (puck = {}));
@@ -2761,7 +2505,7 @@ var puck;
                 }
             };
             return WatchChanger;
-        }());
+        })();
         internal.WatchChanger = WatchChanger;
     })(internal = puck.internal || (puck.internal = {}));
 })(puck || (puck = {}));
@@ -3024,7 +2768,7 @@ var puck;
                 pars.strokeMiterLimit = state.strokeMiterLimit;
             };
             return Bounder;
-        }());
+        })();
         path_1.Bounder = Bounder;
     })(path = puck.path || (puck.path = {}));
 })(puck || (puck = {}));
@@ -3048,7 +2792,7 @@ var puck;
                 return this;
             };
             return PathComposite;
-        }(puck.element.ElementComposite));
+        })(puck.element.ElementComposite);
         path.PathComposite = PathComposite;
     })(path = puck.path || (puck.path = {}));
 })(puck || (puck = {}));
@@ -3070,7 +2814,7 @@ var puck;
                 return this;
             };
             return VisualState;
-        }(ElementState));
+        })(ElementState);
         visual.VisualState = VisualState;
     })(visual = puck.visual || (puck.visual = {}));
 })(puck || (puck = {}));
@@ -3119,7 +2863,7 @@ var puck;
                 };
             };
             return PathState;
-        }(puck.visual.VisualState));
+        })(puck.visual.VisualState);
         path.PathState = PathState;
     })(path = puck.path || (puck.path = {}));
 })(puck || (puck = {}));
@@ -3141,7 +2885,7 @@ var puck;
                 return this;
             };
             return PolylineState;
-        }(puck.path.PathState));
+        })(puck.path.PathState);
         polyline.PolylineState = PolylineState;
     })(polyline = puck.polyline || (puck.polyline = {}));
 })(puck || (puck = {}));
@@ -3314,7 +3058,7 @@ var puck;
                 this.$$lastDpiRatio = dpiRatio;
             };
             return RenderContextSize;
-        }());
+        })();
         render.RenderContextSize = RenderContextSize;
     })(render = puck.render || (puck.render = {}));
 })(puck || (puck = {}));
@@ -3425,7 +3169,7 @@ var puck;
                 return this;
             };
             return TextState;
-        }(ElementState));
+        })(ElementState);
         text.TextState = TextState;
     })(text = puck.text || (puck.text = {}));
 })(puck || (puck = {}));
@@ -3440,7 +3184,7 @@ var puck;
                 _super.apply(this, arguments);
             }
             return VisualComposite;
-        }(ElementComposite));
+        })(ElementComposite);
         visual.VisualComposite = VisualComposite;
     })(visual = puck.visual || (puck.visual = {}));
 })(puck || (puck = {}));
@@ -3489,7 +3233,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }());
+            })();
             down.Processor = Processor;
         })(down = element.down || (element.down = {}));
     })(element = puck.element || (puck.element = {}));
@@ -3514,7 +3258,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.down.Processor));
+            })(puck.element.down.Processor);
             down.Processor = Processor;
         })(down = container.down || (container.down = {}));
     })(container = puck.container || (puck.container = {}));
@@ -3565,7 +3309,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }());
+            })();
             hit.Processor = Processor;
         })(hit = element.hit || (element.hit = {}));
     })(element = puck.element || (puck.element = {}));
@@ -3590,7 +3334,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.hit.Processor));
+            })(puck.element.hit.Processor);
             hit.Processor = Processor;
         })(hit = container.hit || (container.hit = {}));
     })(container = puck.container || (puck.container = {}));
@@ -3652,7 +3396,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }());
+            })();
             render.Processor = Processor;
         })(render = element.render || (element.render = {}));
     })(element = puck.element || (puck.element = {}));
@@ -3675,7 +3419,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.render.Processor));
+            })(puck.element.render.Processor);
             render.Processor = Processor;
         })(render = container.render || (container.render = {}));
     })(container = puck.container || (puck.container = {}));
@@ -3763,7 +3507,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }());
+            })();
             up.Processor = Processor;
         })(up = element.up || (element.up = {}));
     })(element = puck.element || (puck.element = {}));
@@ -3812,7 +3556,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.up.Processor));
+            })(puck.element.up.Processor);
             up.Processor = Processor;
         })(up = container.up || (container.up = {}));
     })(container = puck.container || (puck.container = {}));
@@ -4082,7 +3826,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.down.Processor));
+            })(puck.element.down.Processor);
             down.Processor = Processor;
         })(down = image.down || (image.down = {}));
     })(image = puck.image || (puck.image = {}));
@@ -4130,7 +3874,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.hit.Processor));
+            })(puck.element.hit.Processor);
             hit.Processor = Processor;
         })(hit = image.hit || (image.hit = {}));
     })(image = puck.image || (puck.image = {}));
@@ -4188,7 +3932,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.up.Processor));
+            })(puck.element.up.Processor);
             up.Processor = Processor;
         })(up = image.up || (image.up = {}));
     })(image = puck.image || (puck.image = {}));
@@ -4243,7 +3987,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.down.Processor));
+            })(puck.element.down.Processor);
             down.Processor = Processor;
         })(down = path.down || (path.down = {}));
     })(path = puck.path || (puck.path = {}));
@@ -4310,7 +4054,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.hit.Processor));
+            })(puck.element.hit.Processor);
             hit.Processor = Processor;
         })(hit = visual.hit || (visual.hit = {}));
     })(visual = puck.visual || (puck.visual = {}));
@@ -4348,7 +4092,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.visual.hit.Processor));
+            })(puck.visual.hit.Processor);
             hit.Processor = Processor;
         })(hit = path_2.hit || (path_2.hit = {}));
     })(path = puck.path || (puck.path = {}));
@@ -4392,7 +4136,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.render.Processor));
+            })(puck.element.render.Processor);
             render.Processor = Processor;
         })(render = visual.render || (visual.render = {}));
     })(visual = puck.visual || (puck.visual = {}));
@@ -4425,7 +4169,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.visual.render.Processor));
+            })(puck.visual.render.Processor);
             render.Processor = Processor;
         })(render = path.render || (path.render = {}));
     })(path = puck.path || (puck.path = {}));
@@ -4483,7 +4227,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.up.Processor));
+            })(puck.element.up.Processor);
             up.Processor = Processor;
         })(up = path.up || (path.up = {}));
     })(path = puck.path || (puck.path = {}));
@@ -4569,7 +4313,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.path.down.Processor));
+            })(puck.path.down.Processor);
             down.Processor = Processor;
         })(down = polyline.down || (polyline.down = {}));
     })(polyline = puck.polyline || (puck.polyline = {}));
@@ -4596,7 +4340,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.hit.Processor));
+            })(puck.element.hit.Processor);
             hit.Processor = Processor;
         })(hit = text.hit || (text.hit = {}));
     })(text = puck.text || (puck.text = {}));
@@ -4658,7 +4402,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.render.Processor));
+            })(puck.element.render.Processor);
             render.Processor = Processor;
         })(render = text.render || (text.render = {}));
     })(text = puck.text || (puck.text = {}));
@@ -4710,7 +4454,7 @@ var puck;
                 };
                 Processor.instance = new Processor();
                 return Processor;
-            }(puck.element.up.Processor));
+            })(puck.element.up.Processor);
             up.Processor = Processor;
         })(up = text.up || (text.up = {}));
     })(text = puck.text || (puck.text = {}));

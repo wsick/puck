@@ -197,10 +197,14 @@ declare namespace puck {
         stencil: stencil.IStencil;
         constructor(state?: IElementState, composite?: IElementComposite);
         init(state?: IElementState, composite?: IElementComposite): void;
-        opacity: number;
-        visible: boolean;
-        transformOriginX: number;
-        transformOriginY: number;
+        opacity(): number;
+        opacity(value: number): this;
+        visible(): boolean;
+        visible(value: boolean): this;
+        transformOriginX(): number;
+        transformOriginX(value: number): this;
+        transformOriginY(): number;
+        transformOriginY(value: number): this;
         resetTransform(): this;
         setTransform(mat: Float32Array): this;
         applyTransform(mat: Float32Array): this;
@@ -220,12 +224,18 @@ declare namespace puck {
         constructor(state?: IContainerState, composite?: IContainerComposite);
         init(state?: IContainerState, composite?: IContainerComposite): void;
         walk(reverse?: boolean): walk.IWalker<element.IElement>;
-        opacity: number;
-        visible: boolean;
-        x: number;
-        y: number;
-        transformOriginX: number;
-        transformOriginY: number;
+        opacity(): number;
+        opacity(value: number): this;
+        visible(): boolean;
+        visible(value: boolean): this;
+        transformOriginX(): number;
+        transformOriginX(value: number): this;
+        transformOriginY(): number;
+        transformOriginY(value: number): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
         resetTransform(): this;
         setTransform(mat: Float32Array): this;
         applyTransform(mat: Float32Array): this;
@@ -243,9 +253,12 @@ declare namespace puck {
         processor: IVisualProcessor;
         constructor(state?: IVisualState, composite?: IVisualComposite);
         init(state?: IVisualState, composite?: IVisualComposite): void;
-        fill: IBrush;
-        stroke: IBrush;
-        strokeThickness: number;
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
     }
 }
 declare namespace puck.stencil {
@@ -254,12 +267,16 @@ declare namespace puck.stencil {
 declare namespace puck {
     import IVisualState = puck.visual.IVisualState;
     import IVisualComposite = puck.visual.IVisualComposite;
-    class Ellipse extends Visual {
+    class Ellipse extends Visual implements ellipse.IEllipse {
         init(state?: IVisualState, composite?: IVisualComposite): void;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
     }
 }
 declare namespace puck {
@@ -335,7 +352,14 @@ declare namespace puck {
     }
 }
 declare namespace puck {
-    abstract class GradientBrush implements IBrush {
+    interface IGradientBrush extends IBrush {
+        spreadMethod(): GradientSpreadMethod;
+        spreadMethod(value: GradientSpreadMethod): this;
+        mappingMode(): BrushMappingMode;
+        mappingMode(value: BrushMappingMode): this;
+        stops(): GradientStops;
+    }
+    abstract class GradientBrush implements IGradientBrush {
         private $cachedBrush;
         private $cachedBounds;
         protected $changer: internal.WatchChanger;
@@ -343,9 +367,11 @@ declare namespace puck {
         private $spreadMethod;
         private $mappingMode;
         constructor();
-        spreadMethod: GradientSpreadMethod;
-        mappingMode: BrushMappingMode;
-        stops: GradientStops;
+        spreadMethod(): GradientSpreadMethod;
+        spreadMethod(value: GradientSpreadMethod): this;
+        mappingMode(): BrushMappingMode;
+        mappingMode(value: BrushMappingMode): this;
+        stops(): GradientStops;
         watch(onChanged: () => void): puck.internal.IWatcher;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): void;
         toHtml5Object(): any;
@@ -416,12 +442,18 @@ declare namespace puck {
         stencil: stencil.IStencil;
         constructor(state?: IImageState, composite?: IImageComposite);
         init(state?: IImageState, composite?: IImageComposite): void;
-        sourceUri: string;
-        stretch: Stretch;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        sourceUri(): string;
+        sourceUri(value: string): this;
         protected onSourceChanged(): void;
         protected onSourceErrored(err: any): void;
         protected onSourceLoaded(): void;
@@ -431,12 +463,12 @@ declare namespace puck {
 declare namespace puck {
     import IContainerState = puck.container.IContainerState;
     import IContainerComposite = puck.container.IContainerComposite;
-    class Layer extends Container {
+    class Layer extends Container implements layer.ILayer {
         private $ctx;
         private $timer;
         frameDebug: FrameDebug;
-        width: number;
-        height: number;
+        width(): number;
+        height(): number;
         init(state?: IContainerState, composite?: IContainerComposite): void;
         attach(ctx: CanvasRenderingContext2D): this;
         activate(): this;
@@ -447,11 +479,19 @@ declare namespace puck {
     }
 }
 declare namespace puck {
-    class LinearGradientBrush extends GradientBrush {
+    interface ILinearGradientBrush extends IGradientBrush {
+        start(): la.IPoint;
+        start(value: la.IPoint): this;
+        end(): la.IPoint;
+        end(value: la.IPoint): this;
+    }
+    class LinearGradientBrush extends GradientBrush implements ILinearGradientBrush {
         private $start;
         private $end;
-        start: la.IPoint;
-        end: la.IPoint;
+        start(): la.IPoint;
+        start(value: la.IPoint): this;
+        end(): la.IPoint;
+        end(value: la.IPoint): this;
         protected createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
         protected createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
         protected createRepeat(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
@@ -468,16 +508,26 @@ declare namespace puck {
         processor: IPathProcessor;
         constructor(state?: IPathState, composite?: IPathComposite);
         init(state?: IPathState, composite?: IPathComposite): void;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        stretch: Stretch;
-        path: curve.Path;
-        fillRule: FillRule;
-        strokeLineCap: PenLineCap;
-        strokeLineJoin: PenLineJoin;
-        strokeMiterLimit: number;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        path(): curve.Path;
+        path(value: curve.Path): this;
+        fillRule(): FillRule;
+        fillRule(value: FillRule): this;
+        strokeLineCap(): PenLineCap;
+        strokeLineCap(value: PenLineCap): this;
+        strokeLineJoin(): PenLineJoin;
+        strokeLineJoin(value: PenLineJoin): this;
+        strokeMiterLimit(): number;
+        strokeMiterLimit(value: number): this;
     }
 }
 declare namespace puck {
@@ -494,28 +544,54 @@ declare namespace puck {
         processor: IPolylineProcessor;
         constructor(state?: IPolylineState, composite?: IPathComposite);
         init(state?: IPolylineState, composite?: IPathComposite): void;
-        points: Points;
-        closed: boolean;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        stretch: Stretch;
-        fillRule: FillRule;
-        strokeLineCap: PenLineCap;
-        strokeLineJoin: PenLineJoin;
-        strokeMiterLimit: number;
+        points(): Points;
+        closed(): boolean;
+        closed(value: boolean): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        path(): curve.Path;
+        path(value: curve.Path): this;
+        fillRule(): FillRule;
+        fillRule(value: FillRule): this;
+        strokeLineCap(): PenLineCap;
+        strokeLineCap(value: PenLineCap): this;
+        strokeLineJoin(): PenLineJoin;
+        strokeLineJoin(value: PenLineJoin): this;
+        strokeMiterLimit(): number;
+        strokeMiterLimit(value: number): this;
     }
 }
 declare namespace puck {
-    class RadialGradientBrush extends GradientBrush {
+    interface IRadialGradientBrush extends IGradientBrush {
+        center(): la.IPoint;
+        center(value: la.IPoint): this;
+        origin(): la.IPoint;
+        origin(value: la.IPoint): this;
+        radiusX(): number;
+        radiusX(value: number): this;
+        radiusY(): number;
+        radiusY(value: number): this;
+    }
+    class RadialGradientBrush extends GradientBrush implements IRadialGradientBrush {
         private $center;
         private $origin;
         private $radius;
-        center: la.IPoint;
-        origin: la.IPoint;
-        radiusX: number;
-        radiusY: number;
+        center(): la.IPoint;
+        center(value: la.IPoint): this;
+        origin(): la.IPoint;
+        origin(value: la.IPoint): this;
+        radiusX(): number;
+        radiusX(value: number): this;
+        radiusY(): number;
+        radiusY(value: number): this;
         protected createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
         protected createReflect(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
         protected createRepeat(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern;
@@ -527,20 +603,29 @@ declare namespace puck {
 declare namespace puck {
     import IVisualState = puck.visual.IVisualState;
     import IVisualComposite = puck.visual.IVisualComposite;
-    class Rectangle extends Visual {
+    class Rectangle extends Visual implements rectangle.IRectangle {
         init(state?: IVisualState, composite?: IVisualComposite): void;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
     }
 }
 declare namespace puck {
-    class SolidColorBrush implements IBrush {
+    interface ISolidColorBrush extends IBrush {
+        color(): Color;
+        color(value: Color): this;
+    }
+    class SolidColorBrush implements ISolidColorBrush {
         private $color;
         private $changer;
         constructor(color?: Color | string);
-        color: Color;
+        color(): Color;
+        color(value: Color): this;
         watch(onChanged: () => void): puck.internal.IWatcher;
         setup(ctx: CanvasRenderingContext2D, region: la.IRect): void;
         toHtml5Object(): any;
@@ -565,17 +650,28 @@ declare namespace puck {
         processor: ITextProcessor;
         constructor(state?: ITextState, composite?: IElementComposite);
         init(state?: ITextState, composite?: IElementComposite): void;
-        fill: IBrush;
-        stroke: IBrush;
-        strokeThickness: number;
-        x: number;
-        y: number;
-        text: string;
-        fontFamily: string;
-        fontSize: number;
-        fontStretch: string;
-        fontStyle: string;
-        fontWeight: FontWeight;
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        text(): string;
+        text(value: string): this;
+        fontFamily(): string;
+        fontFamily(value: string): this;
+        fontSize(): number;
+        fontSize(value: number): this;
+        fontStretch(): string;
+        fontStretch(value: string): this;
+        fontStyle(): string;
+        fontStyle(value: string): this;
+        fontWeight(): number;
+        fontWeight(value: number): this;
     }
 }
 declare namespace puck {
@@ -668,6 +764,10 @@ declare namespace puck.container {
         elements: element.IElement[];
         processor: IContainerProcessor;
         walk(reverse?: boolean): walk.IWalker<element.IElement>;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
     }
     interface IContainerProcessor {
         down: down.Processor;
@@ -681,12 +781,32 @@ declare namespace puck.element {
         state: IElementState;
         composite: IElementComposite;
         processor: IElementProcessor;
+        opacity(): number;
+        opacity(value: number): this;
+        visible(): boolean;
+        visible(value: boolean): this;
+        transformOriginX(): number;
+        transformOriginX(value: number): this;
+        transformOriginY(): number;
+        transformOriginY(value: number): this;
     }
     interface IElementProcessor {
         down: down.Processor;
         up: up.Processor;
         render: render.Processor;
         hit: hit.Processor;
+    }
+}
+declare namespace puck.ellipse {
+    interface IEllipse extends visual.IVisual {
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
     }
 }
 declare namespace puck.engine {
@@ -742,6 +862,18 @@ declare namespace puck.image {
         composite: IImageComposite;
         processor: IImageProcessor;
         stencil: stencil.IStencil;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        sourceUri(): string;
+        sourceUri(value: string): this;
     }
     interface IImageProcessor {
         down: down.Processor;
@@ -817,6 +949,12 @@ declare namespace puck.internal {
         on(): void;
     }
 }
+declare namespace puck.layer {
+    interface ILayer extends container.IContainer {
+        width(): number;
+        height(): number;
+    }
+}
 declare namespace puck.linearGradient {
     interface IInterpolator {
         x0: number;
@@ -854,6 +992,26 @@ declare namespace puck.path {
         composite: IPathComposite;
         processor: IPathProcessor;
         stencil: stencil.IStencil;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        path(): curve.Path;
+        path(value: curve.Path): this;
+        fillRule(): FillRule;
+        fillRule(value: FillRule): this;
+        strokeLineCap(): PenLineCap;
+        strokeLineCap(value: PenLineCap): this;
+        strokeLineJoin(): PenLineJoin;
+        strokeLineJoin(value: PenLineJoin): this;
+        strokeMiterLimit(): number;
+        strokeMiterLimit(value: number): this;
     }
     interface IPathProcessor {
         down: down.Processor;
@@ -926,6 +1084,29 @@ declare namespace puck.polyline {
         composite: path.IPathComposite;
         processor: IPolylineProcessor;
         stencil: stencil.IStencil;
+        points(): Points;
+        closed(): boolean;
+        closed(value: boolean): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        path(): curve.Path;
+        path(value: curve.Path): this;
+        fillRule(): FillRule;
+        fillRule(value: FillRule): this;
+        strokeLineCap(): PenLineCap;
+        strokeLineCap(value: PenLineCap): this;
+        strokeLineJoin(): PenLineJoin;
+        strokeLineJoin(value: PenLineJoin): this;
+        strokeMiterLimit(): number;
+        strokeMiterLimit(value: number): this;
     }
     interface IPolylineProcessor {
         down: polyline.down.Processor;
@@ -968,6 +1149,18 @@ declare namespace puck.radialGradient {
         balanced: boolean;
     }
     function createExtender(data: IRadialPointData, bounds: la.IRect): IExtender;
+}
+declare namespace puck.rectangle {
+    interface IRectangle extends visual.IVisual {
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+    }
 }
 declare namespace puck.render {
     function getNaturalCanvasSize(canvas: HTMLCanvasElement): la.ISize;
@@ -1017,6 +1210,30 @@ declare namespace puck.stencil {
 declare namespace puck.text {
     interface IText extends element.IElement {
         state: ITextState;
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        text(): string;
+        text(value: string): this;
+        fontFamily(): string;
+        fontFamily(value: string): this;
+        fontSize(): number;
+        fontSize(value: number): this;
+        fontStretch(): string;
+        fontStretch(value: string): this;
+        fontStyle(): string;
+        fontStyle(value: string): this;
+        fontStyle(): string;
+        fontStyle(value: string): this;
+        fontWeight(): number;
+        fontWeight(value: number): this;
     }
     interface ITextProcessor {
         down: element.down.Processor;
@@ -1049,6 +1266,12 @@ declare namespace puck.visual {
         composite: IVisualComposite;
         processor: IVisualProcessor;
         stencil: stencil.IStencil;
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
     }
     interface IVisualProcessor {
         down: element.down.Processor;

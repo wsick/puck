@@ -11,33 +11,33 @@
         window.onload = (e) => {
             var c = document.getElementById('canvas');
             root = new puck.Layer()
-                    .attach(c.getContext('2d'))
-                    .activate();
+                .attach(c.getContext('2d'))
+                .activate();
 
-            var ellipse = new puck.Ellipse();
-            ellipse.fill = new puck.SolidColorBrush("AliceBlue");
-            ellipse.stroke = new puck.SolidColorBrush("Gray");
-            ellipse.strokeThickness = 10;
-            ellipse.x = 50;
-            ellipse.y = 50;
-            ellipse.width = 100;
-            ellipse.height = 100;
+            var ellipse = new puck.Ellipse()
+                .fill(new puck.SolidColorBrush("AliceBlue"))
+                .stroke(new puck.SolidColorBrush("Gray"))
+                .strokeThickness(10)
+                .x(50)
+                .y(50)
+                .width(100)
+                .height(100);
             root.elements.push(ellipse);
 
-            var rectangle = new puck.Rectangle();
-            rectangle.fill = new puck.SolidColorBrush("#88FFFFFF");
-            rectangle.stroke = new puck.SolidColorBrush("DarkOliveGreen");
-            rectangle.strokeThickness = 5;
-            rectangle.x = 75;
-            rectangle.y = 75;
-            rectangle.width = 200;
-            rectangle.height = 200;
+            var rectangle = new puck.Rectangle()
+                .fill(new puck.SolidColorBrush("#88FFFFFF"))
+                .stroke(new puck.SolidColorBrush("DarkOliveGreen"))
+                .strokeThickness(5)
+                .x(75)
+                .y(75)
+                .width(200)
+                .height(200);
             root.elements.push(rectangle);
         };
     </script>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="600">
-    </canvas>
+<canvas id="canvas" width="800" height="600">
+</canvas>
 </body>
 </html>

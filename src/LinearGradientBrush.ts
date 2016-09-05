@@ -2,7 +2,7 @@
 
 namespace puck {
     var fallbackColor = Color.fromHex("#FF000000");
-    
+
     export interface ILinearGradientBrush extends IGradientBrush {
         start(): la.IPoint;
         start(value: la.IPoint): this;
