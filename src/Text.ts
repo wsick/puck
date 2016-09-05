@@ -29,8 +29,11 @@ namespace puck {
             this.stencil = stencil.empty;
         }
 
-        get fill(): IBrush { return this.state.fill; }
-        set fill(value: IBrush) {
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        fill(value?: IBrush): IBrush|this {
+            if (arguments.length < 1)
+                return this.state.fill;
             if (this.$fillwatch) {
                 this.$fillwatch.unwatch();
                 this.$fillwatch = null;
@@ -46,10 +49,14 @@ namespace puck {
             if (value) {
                 this.$fillwatch = value.watch(() => this.composite.invalidate());
             }
+            return this;
         }
 
-        get stroke(): IBrush { return this.state.stroke; }
-        set stroke(value: IBrush) {
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        stroke(value?: IBrush): IBrush|this {
+            if (arguments.length < 1)
+                return this.state.stroke;
             if (this.$strokewatch) {
                 this.$strokewatch.unwatch();
                 this.$strokewatch = null;
@@ -65,100 +72,113 @@ namespace puck {
             if (value) {
                 this.$strokewatch = value.watch(() => this.composite.invalidate());
             }
+            return this;
         }
 
-        get strokeThickness(): number { return this.state.strokeThickness; }
-        set strokeThickness(value: number) {
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
+        strokeThickness(value: number): number|this {
+            if (arguments.length < 1)
+                return this.state.strokeThickness;
             if (value !== this.state.strokeThickness) {
                 this.state.strokeThickness = value;
                 this.composite.taint(DirtyFlags.padding);
             }
+            return this;
         }
 
-        get x(): number {
-            return this.state.offset.x;
-        }
-
-        set x(value: number) {
+        x(): number;
+        x(value: number): this;
+        x(value?: number): number|this {
+            if (arguments.length < 1)
+                return this.state.offset.x;
             if (this.state.offset.x !== value) {
                 this.state.offset.x = value;
                 this.composite.taint(DirtyFlags.transform);
             }
+            return this;
         }
 
-        get y(): number {
-            return this.state.offset.y;
-        }
-
-        set y(value: number) {
+        y(): number;
+        y(value: number): this;
+        y(value: number): number|this {
+            if (arguments.length < 1)
+                return this.state.offset.y;
             if (this.state.offset.y !== value) {
                 this.state.offset.y = value;
                 this.composite.taint(DirtyFlags.transform);
             }
+            return this;
         }
 
-        get text(): string {
-            return this.state.text;
-        }
-
-        set text(value: string) {
+        text(): string;
+        text(value: string): this;
+        text(value?: string): string|this {
+            if (arguments.length < 1)
+                return this.state.text;
             this.state.text = value;
             this.composite.taint(DirtyFlags.font);
+            return this;
         }
 
-        get fontFamily(): string {
-            return this.state.font.family;
-        }
-
-        set fontFamily(value: string) {
+        fontFamily(): string;
+        fontFamily(value: string): this;
+        fontFamily(value?: string): string|this {
+            if (arguments.length < 1)
+                return this.state.font.family;
             if (this.state.font.family !== value) {
                 this.state.font.family = value;
                 this.composite.taint(DirtyFlags.font);
             }
+            return this;
         }
 
-        get fontSize(): number {
-            return this.state.font.size;
-        }
-
-        set fontSize(value: number) {
+        fontSize(): number;
+        fontSize(value: number): this;
+        fontSize(value?: number): number|this {
+            if (arguments.length < 1)
+                return this.state.font.size;
             if (this.state.font.size !== value) {
                 this.state.font.size = value;
                 this.composite.taint(DirtyFlags.font);
             }
+            return this;
         }
 
-        get fontStretch(): string {
-            return this.state.font.stretch;
-        }
-
-        set fontStretch(value: string) {
+        fontStretch(): string;
+        fontStretch(value: string): this;
+        fontStretch(value?: string): string|this {
+            if (arguments.length < 1)
+                return this.state.font.stretch;
             if (this.state.font.stretch !== value) {
                 this.state.font.stretch = value;
                 this.composite.taint(DirtyFlags.font);
             }
+            return this;
         }
 
-        get fontStyle(): string {
-            return this.state.font.style;
-        }
-
-        set fontStyle(value: string) {
+        fontStyle(): string;
+        fontStyle(value: string): this;
+        fontStyle(value?: string): string|this {
+            if (arguments.length < 1)
+                return this.state.font.style;
             if (this.state.font.style !== value) {
                 this.state.font.style = value;
                 this.composite.taint(DirtyFlags.font);
             }
+            return this;
         }
 
-        get fontWeight(): FontWeight {
-            return this.state.font.weight;
-        }
-
-        set fontWeight(value: FontWeight) {
+        fontWeight(): number;
+        fontWeight(value: number): this;
+        fontWeight(value?: number): number|this {
+            if (arguments.length < 1)
+                return this.state.font.weight;
             if (this.state.font.weight !== value) {
                 this.state.font.weight = value;
                 this.composite.taint(DirtyFlags.font);
             }
+            return this;
         }
     }
 }
