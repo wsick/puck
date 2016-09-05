@@ -4,18 +4,17 @@ namespace puck {
     var tmpCanvas: HTMLCanvasElement = document.createElement('canvas');
     var tmpCtx: CanvasRenderingContext2D = tmpCanvas.getContext('2d');
     var epsilon = 1E-10;
+    var fallbackColor = Color.fromHex("#FF000000");
 
     export interface IRadialGradientBrush extends IGradientBrush {
-        attr(name: "center"): la.IPoint;
-        attr(name: "center", value: la.IPoint): this;
-        attr(name: "origin"): la.IPoint;
-        attr(name: "origin", value: la.IPoint): this;
-        attr(name: "radiusX"): number;
-        attr(name: "radiusX", value: number): this;
-        attr(name: "radiusY"): number;
-        attr(name: "radiusY", value: number): this;
-        attr(name: string): any;
-        attr(name: string, value: any);
+        center(): la.IPoint;
+        center(value: la.IPoint): this;
+        origin(): la.IPoint;
+        origin(value: la.IPoint): this;
+        radiusX(): number;
+        radiusX(value: number): this;
+        radiusY(): number;
+        radiusY(value: number): this;
     }
 
     export class RadialGradientBrush extends GradientBrush implements IRadialGradientBrush {
@@ -23,50 +22,54 @@ namespace puck {
         private $origin: la.IPoint = {x: 0.5, y: 0.5};
         private $radius: la.IPoint = {x: 0.5, y: 0.5};
 
-        get center() {
-            return this.$center;
-        }
-
-        set center(value: la.IPoint) {
+        center(): la.IPoint;
+        center(value: la.IPoint): this;
+        center(value?: la.IPoint): any {
+            if (arguments.length < 1)
+                return this.$center;
             if (this.$center !== value) {
                 this.$center = value;
                 Object.freeze(value);
                 this.$changer.on();
             }
+            return this;
         }
 
-        get origin() {
-            return this.$origin;
-        }
-
-        set origin(value: la.IPoint) {
+        origin(): la.IPoint;
+        origin(value: la.IPoint): this;
+        origin(value?: la.IPoint): any {
+            if (arguments.length < 1)
+                return this.$origin;
             if (this.$origin !== value) {
                 this.$origin = value;
                 Object.freeze(value);
                 this.$changer.on();
             }
+            return this;
         }
 
-        get radiusX() {
-            return this.$radius.x;
-        }
-
-        set radiusX(value: number) {
+        radiusX(): number;
+        radiusX(value: number): this;
+        radiusX(value?: number): any {
+            if (arguments.length < 1)
+                return this.$radius.x;
             if (this.$radius.x !== value) {
                 this.$radius.x = value;
                 this.$changer.on();
             }
+            return this;
         }
 
-        get radiusY() {
-            return this.$radius.y;
-        }
-
-        set radiusY(value: number) {
+        radiusY(): number;
+        radiusY(value: number): this;
+        radiusY(value?: number): any {
+            if (arguments.length < 1)
+                return this.$radius.y;
             if (this.$radius.y !== value) {
                 this.$radius.y = value;
                 this.$changer.on();
             }
+            return this;
         }
 
         protected createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string|CanvasGradient|CanvasPattern {
@@ -121,8 +124,8 @@ namespace puck {
         }
 
         private getPointData(bounds: la.IRect): radialGradient.IRadialPointData {
-            var mcenter = this.mapPoint(bounds, this.center);
-            var morigin = this.mapPoint(bounds, this.origin);
+            var mcenter = this.mapPoint(bounds, this.$center);
+            var morigin = this.mapPoint(bounds, this.$origin);
             var mradius = this.mapPoint(bounds, this.$radius);
 
             var rad = Math.max(mradius.x, mradius.y);
@@ -166,7 +169,7 @@ namespace puck {
         // Placing color stop in between [0.0, 1.0]
         // Otherwise, gradient will not render
         var offset = Math.min(1.0, Math.max(0.0, stop.offset));
-        var color = stop.color.toString();
+        var color = (stop.color || fallbackColor).toString();
         grd.addColorStop(offset, color);
     }
 }
