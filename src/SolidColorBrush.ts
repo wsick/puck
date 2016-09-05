@@ -1,9 +1,7 @@
 namespace puck {
     export interface ISolidColorBrush extends IBrush {
-        attr(name: "color"): Color;
-        attr(name: "color", value: Color): this;
-        attr(name: string): any;
-        attr(name: string, value: any);
+        color(): Color;
+        color(value: Color): this;
     }
 
     export class SolidColorBrush implements ISolidColorBrush {
@@ -11,24 +9,19 @@ namespace puck {
         private $changer = new puck.internal.WatchChanger();
 
         constructor(color?: Color|string) {
-            this.color = new Color(color);
+            this.color(new Color(color));
         }
 
-        attr(name: string, value?: any): any {
-            if (typeof value === "undefined") {
-                return this[name];
-            } else {
-                this[name] = value;
-                return this;
-            }
-        }
-
-        get color(): Color { return this.$color; }
-        set color(value: Color) {
+        color(): Color;
+        color(value: Color): this;
+        color(value?: Color): any {
+            if (arguments.length < 1)
+                return this.$color;
             if (!Color.equals(this.$color, value)) {
                 this.$changer.on();
             }
             this.$color = value; // always set in case ref changes
+            return this;
         }
 
         watch(onChanged: () => void): puck.internal.IWatcher {
