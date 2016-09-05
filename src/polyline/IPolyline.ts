@@ -4,6 +4,34 @@ namespace puck.polyline {
         composite: path.IPathComposite;
         processor: IPolylineProcessor;
         stencil: stencil.IStencil;
+
+        points(): Points;
+        closed(): boolean;
+        closed(value: boolean): this;
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
+        width(): number;
+        width(value: number): this;
+        height(): number;
+        height(value: number): this;
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        path(): curve.Path;
+        path(value: curve.Path): this;
+        fillRule(): FillRule;
+        fillRule(value: FillRule): this;
+        strokeLineCap(): PenLineCap;
+        strokeLineCap(value: PenLineCap): this;
+        strokeLineJoin(): PenLineJoin;
+        strokeLineJoin(value: PenLineJoin): this;
+        strokeMiterLimit(): number;
+        strokeMiterLimit(value: number): this;
+
+        sub(attr: "points", func: (value: Points) => any): this;
+        sub(attr: "path", func: (value: curve.Path) => any): this;
+        sub(attr: string, func: (value: any) => any): this;
     }
 
     export interface IPolylineProcessor {

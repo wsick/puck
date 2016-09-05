@@ -1,18 +1,27 @@
 namespace puck {
-    export class SolidColorBrush implements IBrush {
+    export interface ISolidColorBrush extends IBrush {
+        color(): Color;
+        color(value: Color): this;
+    }
+
+    export class SolidColorBrush implements ISolidColorBrush {
         private $color: Color = null;
         private $changer = new puck.internal.WatchChanger();
 
         constructor(color?: Color|string) {
-            this.color = new Color(color);
+            this.color(new Color(color));
         }
 
-        get color(): Color { return this.$color; }
-        set color(value: Color) {
+        color(): Color;
+        color(value: Color): this;
+        color(value?: Color): any {
+            if (arguments.length < 1)
+                return this.$color;
             if (!Color.equals(this.$color, value)) {
                 this.$changer.on();
             }
             this.$color = value; // always set in case ref changes
+            return this;
         }
 
         watch(onChanged: () => void): puck.internal.IWatcher {
@@ -23,7 +32,7 @@ namespace puck {
         }
 
         toHtml5Object(): any {
-            return this.color.toString();
+            return this.color().toString();
         }
     }
 }

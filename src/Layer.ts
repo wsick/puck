@@ -5,16 +5,16 @@ namespace puck {
     import IContainerComposite = puck.container.IContainerComposite;
     import DirtyFlags = puck.element.DirtyFlags;
 
-    export class Layer extends Container {
+    export class Layer extends Container implements layer.ILayer {
         private $ctx: render.RenderContext;
         private $timer: Timer;
         frameDebug: FrameDebug;
 
-        get width(): number {
+        width(): number {
             return this.$ctx.raw.canvas.width;
         }
 
-        get height(): number {
+        height(): number {
             return this.$ctx.raw.canvas.height;
         }
 

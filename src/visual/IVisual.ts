@@ -4,6 +4,17 @@ namespace puck.visual {
         composite: IVisualComposite;
         processor: IVisualProcessor;
         stencil: stencil.IStencil;
+
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
+
+        sub(attr: "fill", func: (value: IBrush) => any): this;
+        sub(attr: "stroke", func: (value: IBrush) => any): this;
+        sub(attr: string, func: any): this;
     }
 
     export interface IVisualProcessor {

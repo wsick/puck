@@ -5,6 +5,11 @@ namespace puck.container {
         elements: element.IElement[];
         processor: IContainerProcessor;
         walk(reverse?: boolean): walk.IWalker<element.IElement>;
+
+        x(): number;
+        x(value: number): this;
+        y(): number;
+        y(value: number): this;
     }
 
     export interface IContainerProcessor {

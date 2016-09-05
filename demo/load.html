@@ -12,8 +12,8 @@
         var test = new demo.LoadTest();
         window.onload = (e) => {
             test.init(document.getElementById('canvas'))
-                    .addElements(1000)
-                    .start();
+                .addElements(1000)
+                .start();
         };
         function addMore() {
             test.addElements(1000);

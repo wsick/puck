@@ -30,48 +30,52 @@ namespace puck {
             this.stencil = stencil.empty;
         }
 
-        get opacity(): number {
-            return this.state.opacity;
-        }
-
-        set opacity(value: number) {
+        opacity(): number;
+        opacity(value: number): this;
+        opacity(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.opacity;
             if (this.state.opacity !== value) {
                 this.state.opacity = value;
                 this.composite.taint(DirtyFlags.opacity);
             }
+            return this;
         }
 
-        get visible(): boolean {
-            return this.state.visible;
-        }
-
-        set visible(value: boolean) {
+        visible(): boolean;
+        visible(value: boolean): this;
+        visible(value?: boolean): any {
+            if (arguments.length < 1)
+                return this.state.visible;
             if (this.state.visible !== value) {
                 this.state.visible = value;
                 this.composite.taint(DirtyFlags.visible);
             }
+            return this;
         }
 
-        get transformOriginX(): number {
-            return this.state.transformOrigin.x;
-        }
-
-        set transformOriginX(value: number) {
+        transformOriginX(): number;
+        transformOriginX(value: number): this;
+        transformOriginX(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.transformOrigin.x;
             if (this.state.transformOrigin.x !== value) {
                 this.state.transformOrigin.x = value;
                 this.composite.taint(DirtyFlags.transform);
             }
+            return this;
         }
 
-        get transformOriginY(): number {
-            return this.state.transformOrigin.y;
-        }
-
-        set transformOriginY(value: number) {
+        transformOriginY(): number;
+        transformOriginY(value: number): this;
+        transformOriginY(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.transformOrigin.y;
             if (this.state.transformOrigin.y !== value) {
                 this.state.transformOrigin.y = value;
                 this.composite.taint(DirtyFlags.transform);
             }
+            return this;
         }
 
         resetTransform(): this {

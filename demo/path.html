@@ -14,39 +14,39 @@
                     .attach(c.getContext('2d'))
                     .activate();
 
-            var path1 = new puck.Path();
-            path1.x = 50;
-            path1.y = 50;
-            path1.width = 200;
-            path1.height = 200;
-            path1.path = new curve.Path("M 0 0 A 10 10 0 0,1 0 100");
-            path1.fill = new puck.SolidColorBrush("#88FFFFFF");
-            path1.stroke = new puck.SolidColorBrush("Black");
-            path1.strokeThickness = 10;
+            var path1 = new puck.Path()
+                .x(50)
+                .y(50)
+                .width(200)
+                .height(200)
+                .fill(new puck.SolidColorBrush("#88FFFFFF"))
+                .stroke(new puck.SolidColorBrush("Black"))
+                .strokeThickness(10)
+                .path(new curve.Path("M 0 0 A 10 10 0 0,1 0 100"));
             root.elements.push(path1);
 
-            var path2 = new puck.Path();
-            path2.x = 75;
-            path2.y = 75;
-            path2.width = 200;
-            path2.height = 200;
-            path2.path = new curve.Path("M 0 0 A 10 10 0 0,1 0 100");
-            path2.fill = new puck.SolidColorBrush("Yellow");
-            path2.stroke = new puck.SolidColorBrush("Black");
-            path2.applyTransform(la.mat3.createScale(-1, 1));
-            path2.strokeThickness = 5;
+            var path2 = new puck.Path()
+                .x(75)
+                .y(75)
+                .width(200)
+                .height(200)
+                .fill(new puck.SolidColorBrush("Yellow"))
+                .stroke(new puck.SolidColorBrush("Black"))
+                .strokeThickness(5)
+                .path(new curve.Path("M 0 0 A 10 10 0 0,1 0 100"))
+                .applyTransform(la.mat3.createScale(-1, 1));
             root.elements.push(path2);
 
-            var path3 = new puck.Path();
-            path3.x = 75;
-            path3.y = 75;
-            path3.width = 400;
-            path3.height = 400;
-            path3.stretch = puck.Stretch.fill;
-            path3.path = new curve.Path("M 0 0 A 10 10 0 0,1 0 100");
-            path3.fill = new puck.SolidColorBrush("Yellow");
-            path3.stroke = new puck.SolidColorBrush("Black");
-            path3.strokeThickness = 5;
+            var path3 = new puck.Path()
+                .x(75)
+                .y(75)
+                .width(400)
+                .height(400)
+                .fill(new puck.SolidColorBrush("Yellow"))
+                .stroke(new puck.SolidColorBrush("Black"))
+                .strokeThickness(5)
+                .path(new curve.Path("M 0 0 A 10 10 0 0,1 0 100"))
+                .stretch(puck.Stretch.fill);
             root.elements.push(path3);
         };
     </script>

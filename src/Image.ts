@@ -36,68 +36,74 @@ namespace puck {
                 () => this.onSourceLoaded());
         }
 
-        get sourceUri(): string {
-            return this.state.source.uri;
-        }
-
-        // invalidations come through watcher
-        set sourceUri(value: string) {
-            this.state.source.uri = value;
-        }
-
-        get stretch(): Stretch {
-            return this.state.stretch;
-        }
-
-        set stretch(value: Stretch) {
-            if (this.state.stretch !== value) {
-                this.state.stretch = value;
-                this.composite.taint(DirtyFlags.stretch);
-            }
-        }
-
-        get x(): number {
-            return this.state.offset.x;
-        }
-
-        set x(value: number) {
+        x(): number;
+        x(value: number): this;
+        x(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.offset.x;
             if (this.state.offset.x !== value) {
                 this.state.offset.x = value;
                 this.composite.taint(DirtyFlags.transform);
             }
+            return this;
         }
 
-        get y(): number {
-            return this.state.offset.y;
-        }
-
-        set y(value: number) {
+        y(): number;
+        y(value: number): this;
+        y(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.offset.y;
             if (this.state.offset.y !== value) {
                 this.state.offset.y = value;
                 this.composite.taint(DirtyFlags.transform);
             }
+            return this;
         }
 
-        get width(): number {
-            return this.state.size.width;
-        }
-
-        set width(value: number) {
+        width(): number;
+        width(value: number): this;
+        width(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.size.width;
             if (this.state.size.width !== value) {
                 this.state.size.width = value;
                 this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
             }
+            return this;
         }
 
-        get height(): number {
-            return this.state.size.height;
-        }
-
-        set height(value: number) {
+        height(): number;
+        height(value: number): this;
+        height(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.size.height;
             if (this.state.size.height !== value) {
                 this.state.size.height = value;
                 this.composite.taint(DirtyFlags.stretch | DirtyFlags.transform);
             }
+            return this;
+        }
+
+        stretch(): Stretch;
+        stretch(value: Stretch): this;
+        stretch(value?: Stretch): any {
+            if (arguments.length < 1)
+                return this.state.stretch;
+            if (this.state.stretch !== value) {
+                this.state.stretch = value;
+                this.composite.taint(DirtyFlags.stretch);
+            }
+            return this;
+        }
+
+        sourceUri(): string;
+        sourceUri(value: string): this;
+        // invalidations come through watcher
+        sourceUri(value?: string): any {
+            if (arguments.length < 1)
+                return this.state.source.uri;
+            this.state.source.uri = value;
+            return this;
         }
 
         protected onSourceChanged() {

@@ -36,8 +36,11 @@ namespace puck {
             this.stencil = stencil.visual;
         }
 
-        get fill(): IBrush { return this.state.fill; }
-        set fill(value: IBrush) {
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        fill(value?: IBrush): any {
+            if (arguments.length < 1)
+                return this.state.fill;
             if (this.$fillwatch) {
                 this.$fillwatch.unwatch();
                 this.$fillwatch = null;
@@ -53,10 +56,14 @@ namespace puck {
             if (value) {
                 this.$fillwatch = value.watch(() => this.composite.invalidate());
             }
+            return this;
         }
 
-        get stroke(): IBrush { return this.state.stroke; }
-        set stroke(value: IBrush) {
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        stroke(value?: IBrush): any {
+            if (arguments.length < 1)
+                return this.state.stroke;
             if (this.$strokewatch) {
                 this.$strokewatch.unwatch();
                 this.$strokewatch = null;
@@ -72,14 +79,28 @@ namespace puck {
             if (value) {
                 this.$strokewatch = value.watch(() => this.composite.invalidate());
             }
+            return this;
         }
 
-        get strokeThickness(): number { return this.state.strokeThickness; }
-        set strokeThickness(value: number) {
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
+        strokeThickness(value?: number): any {
+            if (arguments.length < 1)
+                return this.state.strokeThickness;
             if (value !== this.state.strokeThickness) {
                 this.state.strokeThickness = value;
                 this.composite.taint(DirtyFlags.padding);
             }
+            return this;
+        }
+
+        sub(attr: string, func: any): any {
+            var getFunc = <Function>this[attr];
+            if (typeof getFunc !== "function") {
+                throw new Error("cannot modify sub-property, unknown attribute: " + attr);
+            }
+            func(getFunc.call(this));
+            return this;
         }
     }
 }
