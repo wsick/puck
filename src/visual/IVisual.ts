@@ -5,14 +5,12 @@ namespace puck.visual {
         processor: IVisualProcessor;
         stencil: stencil.IStencil;
 
-        attr(name: "fill"): IBrush;
-        attr(name: "fill", value: IBrush): this;
-        attr(name: "stroke"): IBrush;
-        attr(name: "stroke", value: IBrush): this;
-        attr(name: "strokeThickness"): IBrush;
-        attr(name: "strokeThickness", value: IBrush): this;
-        attr(name: string): any;
-        attr(name: string, value: any): this;
+        fill(): IBrush;
+        fill(value: IBrush): this;
+        stroke(): IBrush;
+        stroke(value: IBrush): this;
+        strokeThickness(): number;
+        strokeThickness(value: number): this;
     }
 
     export interface IVisualProcessor {
