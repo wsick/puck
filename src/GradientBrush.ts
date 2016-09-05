@@ -1,12 +1,10 @@
 namespace puck {
     export interface IGradientBrush extends IBrush {
-        attr(name: "spreadMethod"): GradientSpreadMethod;
-        attr(name: "spreadMethod", value: GradientSpreadMethod): this;
-        attr(name: "mappingMode"): BrushMappingMode;
-        attr(name: "mappingMode", value: BrushMappingMode): this;
-        attr(name: "stops"): GradientStops;
-        attr(name: string): any;
-        attr(name: string, value: any);
+        spreadMethod(): GradientSpreadMethod;
+        spreadMethod(value: GradientSpreadMethod): this;
+        mappingMode(): BrushMappingMode;
+        mappingMode(value: BrushMappingMode): this;
+        stops(): GradientStops;
     }
 
     export abstract class GradientBrush implements IGradientBrush {
@@ -22,38 +20,31 @@ namespace puck {
             this.$stops.watch(() => this.$changer.on());
         }
 
-        attr(name: string, value?: any): any {
-            if (typeof value === "undefined") {
-                return this[name];
-            } else {
-                this[name] = value;
-                return this;
-            }
-        }
-
-        get spreadMethod(): GradientSpreadMethod {
-            return this.$spreadMethod;
-        }
-
-        set spreadMethod(value: GradientSpreadMethod) {
+        spreadMethod(): GradientSpreadMethod;
+        spreadMethod(value: GradientSpreadMethod): this;
+        spreadMethod(value?: GradientSpreadMethod): any {
+            if (arguments.length < 1)
+                return this.$spreadMethod;
             if (this.$spreadMethod !== value) {
                 this.$spreadMethod = value;
                 this.$changer.on();
             }
+            return this;
         }
 
-        get mappingMode(): BrushMappingMode {
-            return this.$mappingMode;
-        }
-
-        set mappingMode(value: BrushMappingMode) {
+        mappingMode(): BrushMappingMode;
+        mappingMode(value: BrushMappingMode): this;
+        mappingMode(value?: BrushMappingMode): any {
+            if (arguments.length < 1)
+                return this.$mappingMode;
             if (this.$mappingMode !== value) {
                 this.$mappingMode = value;
                 this.$changer.on();
             }
+            return this;
         }
 
-        get stops(): GradientStops {
+        stops(): GradientStops {
             return this.$stops;
         }
 
@@ -73,7 +64,7 @@ namespace puck {
         }
 
         protected createBrush(ctx: CanvasRenderingContext2D, region: la.IRect): string | CanvasGradient | CanvasPattern {
-            switch (this.spreadMethod) {
+            switch (this.$spreadMethod) {
                 case GradientSpreadMethod.pad:
                     return this.createPad(ctx, region);
                 default:
@@ -92,7 +83,7 @@ namespace puck {
 
         protected mapPoint(region: la.IRect, point: la.IPoint): la.IPoint {
             var mapped = {x: point.x, y: point.y};
-            if (this.mappingMode === BrushMappingMode.relativeToBounds) {
+            if (this.$mappingMode === BrushMappingMode.relativeToBounds) {
                 mapped.x *= region.width;
                 mapped.y *= region.height;
             }

@@ -75,7 +75,7 @@ namespace puck {
         protected createPad(ctx: CanvasRenderingContext2D, region: la.IRect): string|CanvasGradient|CanvasPattern {
             var data = this.getPointData(region);
             var grd = (!data.balanced ? tmpCtx : ctx).createRadialGradient(data.x0, data.y0, 0, data.x1, data.y1, data.r1);
-            for (var it = this.stops.iter(), result = it.next(); !result.done; result = it.next()) {
+            for (var it = this.stops().iter(), result = it.next(); !result.done; result = it.next()) {
                 addColorStop(grd, result.value);
             }
             return this.fit(ctx, grd, data, region);
@@ -100,7 +100,7 @@ namespace puck {
             tmpCtx.globalCompositeOperation = "destination-over";
 
             var inverted = false;
-            var allStops = this.stops.paddedIter();
+            var allStops = this.stops().paddedIter();
             for (var extender = radialGradient.createExtender(data, bounds); extender.step(); inverted = !inverted) {
                 var grd = extender.createGradient(tmpCtx);
                 for (var result = allStops.next(); !result.done; result = allStops.next()) {
